@@ -1,1 +1,2 @@
 # Adaboost
+Implementation of the Adaboost classification algorithm using ID3 as a base-learner. The following [letter recognition data set](https://archive.ics.uci.edu/dataset/59/letter+recognition) is used.
