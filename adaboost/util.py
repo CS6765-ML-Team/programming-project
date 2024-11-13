@@ -21,19 +21,38 @@ def calc_info_gain(S, A, targets, target_name):
   """
   e = calc_entropy(targets, target_name)
 
-  # Split the data set S based on feature A, where
-  # Sv becomes the subset for each value of A that S
-  # has been split by. We must calculate the entropy
-  # for each Sv. How do we split based on A if
-  # A is an integer?
+
+  # For each value of feature A in dataset S, split
+  # S into subsets greater than or equal to and less 
+  # than each value of feature A. For each of these splits
+  # determine the total information gain.
 
   total_count = S[A].count()
   unique_vals = S[A].value_counts()
-  entropy_sum = 0
-  for value in unique_vals.index:
-    sv = S[S[A] == value]
-    sv_targets = targets.loc[sv.index]
-    #print("Subset when {} = {}.\tNumber of occurences = {}.".format(A, value, unique_vals[value]))
-    entropy_sum += (unique_vals[value] / total_count) * calc_entropy(sv_targets, target_name)
 
-  return e - entropy_sum
+
+
+  split_value = 0
+  max_info_gain = 0
+  for value in unique_vals.index:
+    sv_false = S[S[A] < value]
+    sv_false_entropy = calc_entropy(targets.loc[sv_false.index], target_name)
+    sv_true = S[S[A] >= value]
+    sv_true_entropy = calc_entropy(targets.loc[sv_true.index], target_name)
+
+    info_gain = e - (len(sv_true.index) / total_count) * sv_true_entropy + (len(sv_false.index) / total_count) * sv_false_entropy
+    if (info_gain >= max_info_gain):
+      max_info_gain, split_value = info_gain, value 
+
+
+
+#
+#  entropy_sum = 0
+#  for value in unique_vals.index:
+#    sv = S[S[A] == value]
+#    sv_targets = targets.loc[sv.index]
+#    sv_entropy = (unique_vals[value] / total_count) * calc_entropy(sv_targets, target_name)
+#    print("Subset when {} = {}.\tSV Entropy = {}.".format(A, value, sv_entropy))
+#    entropy_sum += sv_entropy 
+
+  return info_gain, split_value 

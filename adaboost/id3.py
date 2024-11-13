@@ -1,9 +1,9 @@
 import pandas as pd                         # For data manipulation
 import numpy as np                          # For data calculation
-from tree import DecisionTree, DecisionLeaf # Tree implementation
+from tree import BinaryDecisionTree, DecisionLeaf # Tree implementation
 from util import calc_info_gain             # Function for calculating information gain of attribute
 
-def id3_train(features, feature_names, descriminatory_feature, descriminatory_value, targets, target_name):
+def id3_train(features, feature_names, targets, target_name):
   """ Implementation of the ID3 decision tree
   induction algorithm used for classification.
   This is a recursive algorithm that choses the next
@@ -36,41 +36,44 @@ def id3_train(features, feature_names, descriminatory_feature, descriminatory_va
     # there are no features left to partition by, or return
     # the only remaining target value if there is only 1 remaining.
     # return target_counts.first()
-    return DecisionLeaf(target_counts.head(1))
+    return DecisionLeaf(target_counts.index.to_numpy()[0][0])
   
   # Examine the information gain of dividing the 
   # data based on each remaining feature greedily.
   # Recurse using the feature with the highest information gain.
   best_feature = ''
   best_info_gain = 0 
+  best_split_value = 0
   for feature in feature_names:
-    info_gain = calc_info_gain(features, feature, targets, target_name)
+    info_gain, split_value = calc_info_gain(features, feature, targets, target_name)
     if (info_gain >= best_info_gain):
-      best_feature, best_info_gain = feature, info_gain
+      best_feature, best_info_gain, best_split_value = feature, info_gain, split_value
 
   # Remove the chosen best feature from the list of feature names
   # pruned_feature_names = feature_names.remove(best_feature)
   pruned_feature_names = np.delete(feature_names, np.where(feature_names == best_feature))
 
-  # TODO: Will we need to control the size of this split?
-  # Split the data based off the best feature that was found.
-  feature_split = features[best_feature].value_counts()
 
   # Create a new DecisionTree to be returned
-  dt = DecisionTree(descriminatory_feature, descriminatory_value)
+  dt = BinaryDecisionTree(best_feature, best_split_value)
 
-  # Spawn a new recursive call for each feature split.
-  for split in feature_split.index:
-    new_features = features[features[best_feature] == split]
-    if (new_features.empty):
-      # Base case where new_features is empty, don't even issue the
-      # recursive call, just return the current target value of majority.
-      return target_counts.head(1)
+  # Create the true and false branches based on split feature
+  false_branch = features[features[best_feature] < best_split_value]
+  true_branch = features[features[best_feature] >= best_split_value]
 
-    new_targets = targets.loc[new_features.index]
+  # Spawn recursive calls for true and false branches of decision tree, checking
+  # for base case first where there are no features left in these trees so we just
+  # return the current target value of majority as a leaf
+  if (false_branch.empty):
+    dt.add_false(DecisionLeaf(target_counts.index.to_numpy()[0][0]))
+  else:
+    dt.add_false(id3_train(false_branch, pruned_feature_names, targets.loc[false_branch.index], target_name))
 
-    dt.add_child(id3_train(new_features, pruned_feature_names, best_feature, split, new_targets, target_name))
-  
+  if (true_branch.empty):
+    dt.add_true(DecisionLeaf(target_counts.index.to_numpy()[0][0]))
+  else:
+    dt.add_true(id3_train(true_branch, pruned_feature_names, targets.loc[true_branch.index], target_name))
+
   return dt
 
 def id3_fit():

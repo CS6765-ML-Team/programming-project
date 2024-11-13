@@ -35,5 +35,12 @@ if __name__ == '__main__':
   # We will have to create our own tree representation.
 
   # TODO: For the root do we just want the descriminatory feature/value to be None?
-  dt = id3_train(X_train, X_train.columns.values, None, None, y_train, "lettr")
-  print(len(dt.children))
+  dt = id3_train(X_train, X_train.columns.values, y_train, "lettr")
+  print(dt.feature)
+  print(dt.value)
+  true_branch = X_train[X_train[dt.feature] >= dt.value]
+  true_targets = y_train.loc[true_branch.index]
+  print(true_branch)
+  print(true_targets)
+  print(dt.true_branch.print_decision())
+  print(dt.false_branch)
