@@ -1,4 +1,3 @@
-import numpy as np                    # For numerical operations
 import pandas as pd                   # For data manipulation and analysis
 from sklearn.metrics import accuracy_score, confusion_matrix  # For model evaluation
 from sklearn.model_selection import train_test_split  # For splitting the data

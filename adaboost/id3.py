@@ -1,4 +1,3 @@
-import pandas as pd                     # For data manipulation
 import numpy as np                      # For data calculation
 from tree import BinaryDecisionTree     # Tree implementation
 from util import calc_split_attribute   # Function for calculating information gain of attribute
@@ -38,21 +37,9 @@ def id3_train(features, feature_names, targets, target_name):
     # return target_counts.first()
     return BinaryDecisionTree(target_name, target_counts.index.to_numpy()[0][0])
 
-  
   # Determine the optimal feature and feature value to partition
   # the dataset into true and false branches
   split_feature, split_value = calc_split_attribute(features, targets, target_name) 
-
-  # Examine the information gain of dividing the 
-  # data based on each remaining feature greedily.
-  # Recurse using the feature with the highest information gain.
-  #best_feature = ''
-  #best_info_gain = 0 
-  #best_split_value = 0
-  #for feature in feature_names:
-  #  info_gain, split_value = calc_info_gain(features, feature, targets, target_name)
-  #  if (info_gain >= best_info_gain):
-  #    best_feature, best_info_gain, best_split_value = feature, info_gain, split_value
 
   # Remove the chosen best feature from the list of feature names
   # pruned_feature_names = feature_names.remove(best_feature)
