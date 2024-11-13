@@ -24,7 +24,7 @@ class BinaryDecisionTree:
             return self.value
 
         feature_value = data_row[self.feature]
-        if (feature_value >= self.value):
+        if (feature_value > self.value):
             return self.true_branch.traverse(data_row)
         else:
             return self.false_branch.traverse(data_row)

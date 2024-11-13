@@ -1,7 +1,7 @@
 import pandas as pd                     # For data manipulation
 import numpy as np                      # For data calculation
 from tree import BinaryDecisionTree     # Tree implementation
-from util import calc_info_gain         # Function for calculating information gain of attribute
+from util import calc_split_attribute   # Function for calculating information gain of attribute
 
 def id3_train(features, feature_names, targets, target_name):
   """ Implementation of the ID3 decision tree
@@ -37,29 +37,33 @@ def id3_train(features, feature_names, targets, target_name):
     # the only remaining target value if there is only 1 remaining.
     # return target_counts.first()
     return BinaryDecisionTree(target_name, target_counts.index.to_numpy()[0][0])
+
   
+  # Determine the optimal feature and feature value to partition
+  # the dataset into true and false branches
+  split_feature, split_value = calc_split_attribute(features, targets, target_name) 
+
   # Examine the information gain of dividing the 
   # data based on each remaining feature greedily.
   # Recurse using the feature with the highest information gain.
-  best_feature = ''
-  best_info_gain = 0 
-  best_split_value = 0
-  for feature in feature_names:
-    info_gain, split_value = calc_info_gain(features, feature, targets, target_name)
-    if (info_gain >= best_info_gain):
-      best_feature, best_info_gain, best_split_value = feature, info_gain, split_value
+  #best_feature = ''
+  #best_info_gain = 0 
+  #best_split_value = 0
+  #for feature in feature_names:
+  #  info_gain, split_value = calc_info_gain(features, feature, targets, target_name)
+  #  if (info_gain >= best_info_gain):
+  #    best_feature, best_info_gain, best_split_value = feature, info_gain, split_value
 
   # Remove the chosen best feature from the list of feature names
   # pruned_feature_names = feature_names.remove(best_feature)
-  pruned_feature_names = np.delete(feature_names, np.where(feature_names == best_feature))
-
+  pruned_feature_names = np.delete(feature_names, np.where(feature_names == split_feature))
 
   # Create a new DecisionTree to be returned
-  dt = BinaryDecisionTree(best_feature, best_split_value)
+  dt = BinaryDecisionTree(split_feature, split_value)
 
   # Create the true and false branches based on split feature
-  false_branch = features[features[best_feature] < best_split_value]
-  true_branch = features[features[best_feature] >= best_split_value]
+  false_branch = features[features[split_feature] <= split_value]
+  true_branch = features[features[split_feature] > split_value]
 
   # Spawn recursive calls for true and false branches of decision tree, checking
   # for base case first where there are no features left in these trees so we just
