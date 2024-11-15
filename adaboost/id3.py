@@ -56,11 +56,13 @@ def id3_train(features, feature_names, targets, target_name):
   # for base case first where there are no features left in these trees so we just
   # return the current target value of majority as a leaf
   if (false_branch.empty):
+    print("general")
     dt.add_false(BinaryDecisionTree(target_name, target_counts.index.to_numpy()[0][0]))
   else:
     dt.add_false(id3_train(false_branch, pruned_feature_names, targets.loc[false_branch.index], target_name))
 
   if (true_branch.empty):
+    print("general")
     dt.add_true(BinaryDecisionTree(target_name, target_counts.index.to_numpy()[0][0]))
   else:
     dt.add_true(id3_train(true_branch, pruned_feature_names, targets.loc[true_branch.index], target_name))

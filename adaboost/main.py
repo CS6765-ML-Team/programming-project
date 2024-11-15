@@ -31,7 +31,7 @@ if __name__ == '__main__':
   #   print(total[label].value_counts())
 
   # Split the data into training and testing sets (80% train, 20% test)
-  X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.2, random_state=42)
+  X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.95, random_state=42)
 
   start_time = time.time()
   y_pred = adaboost(X_train, y_train, X_test, 1)
@@ -42,6 +42,6 @@ if __name__ == '__main__':
   print(f"Accuracy: {accuracy * 100:.2f}%")
  
   # Generate a confusion matrix
-  conf_matrix = confusion_matrix(y_test, y_pred)
-  print("Confusion Matrix:")
-  print(conf_matrix)
+  # conf_matrix = confusion_matrix(y_test, y_pred)
+  # print("Confusion Matrix:")
+  # print(conf_matrix)
