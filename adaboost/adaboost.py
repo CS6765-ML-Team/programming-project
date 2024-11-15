@@ -39,7 +39,7 @@ def adaboost(X_train, y_train, X_test, T):
 
     # Create an array of prediction results where 1 represents a correct
     # prediction and -1 represents an incorrect prediction
-    prediction_booleans = id3_predict(X_train, dt) == y_train[target_name]
+    prediction_booleans = id3_predict(features, dt) == targets[target_name]
     prediction_results = [1 if pred else -1 for pred in prediction_booleans.values]
 
     # Calculate the error from the incorrect predictions
@@ -63,33 +63,28 @@ def adaboost(X_train, y_train, X_test, T):
     # Normalize the new sample weights so they add to 1
     features["weight"] /= features["weight"].to_numpy().sum()
 
-    # # We now resample the training data, using the weights
-    # # of each training example as a distribution from
-    # # which we populate the dataset. 
-    # old_features = features.copy(deep=True)
-    # old_targets = targets.copy(deep=True)
+    # Accumulate list of feature weights
+    weights_nparray = features["weight"].tolist()
+    acc_weights = [sum(weights_nparray[:y]) for y in range(1, len(weights_nparray) + 1)]
+
+    # Use the accumulated weights as a distribution to resample the features and targets
+    old_features = features.copy(deep=True)
+    old_targets = targets.copy(deep=True)
+    resampled_indicies = []
+    for i in range(n_examples):
+      x = random.random() + acc_weights[0]  # Add smallest weight so we never have zero matches
+      sample = [w[0] for w in zip(features.index.tolist(), acc_weights) if w[1] <= x][-1]
+      resampled_indicies.append(sample)
+
+    # Build the re-sampled features and target dataframes 
+    # in a way that re-indexes the re-sampled data
+    features = pd.DataFrame(data=old_features.loc[resampled_indicies].to_numpy(), columns=np.append(feature_names, "weight"))
+    targets = pd.DataFrame(data=old_targets.loc[resampled_indicies].to_numpy(), columns=old_targets.columns.values)
     
-    # # TODO: CHANGE
-    # # THIS IS SLOW????
-    # resampled_indicies = []
-    # for i in range(n_examples):
-    #   x = random.random()
-    #   for index in old_features.index:
-    #     x -= old_features.loc[index]["weight"]
-    #     if (x <= 0):
-    #       resampled_indicies.append(index)
-    #       break
-
-    # print(resampled_indicies)
-
-    # # Build the re-sampled features and target dataframes
-    # features = old_features.loc[resampled_indicies]
-    # targets = old_targets.loc[resampled_indicies]
-
-    # # Initialize all of the example weights in the newly
-    # # sampled data to the same value before
-    # # we continue training
-    # features["weight"] = [1/n_examples] * n_examples
+    # Initialize all of the example weights in the newly
+    # sampled data to the same value before
+    # we continue training
+    features["weight"] = [1/n_examples] * n_examples
 
   # Create a dataframe of the trained trees and their weights
   trained_trees = pd.DataFrame({'tree': trees, 'tree_weight': tree_weights})

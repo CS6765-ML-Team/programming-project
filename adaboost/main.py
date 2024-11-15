@@ -34,7 +34,7 @@ if __name__ == '__main__':
   X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.95, random_state=42)
 
   start_time = time.time()
-  y_pred = adaboost(X_train, y_train, X_test, 1)
+  y_pred = adaboost(X_train, y_train, X_test, 5)
   print(f"--- Model Trained on {len(X_train.index)} Examples in {time.time() - start_time} seconds ---")
 
   # Calculate accuracy
