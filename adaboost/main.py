@@ -3,9 +3,7 @@ from sklearn.metrics import accuracy_score, confusion_matrix  # For model evalua
 from sklearn.model_selection import train_test_split  # For splitting the data
 from ucimlrepo import fetch_ucirepo   # Letter recognition data set
 import time                               # For execution timing
-from adaboost import adaboost
-import random
-import numpy as np
+from adaboost import adaboost_train
 
 if __name__ == '__main__':
   # fetch dataset 
@@ -31,10 +29,10 @@ if __name__ == '__main__':
   #   print(total[label].value_counts())
 
   # Split the data into training and testing sets (80% train, 20% test)
-  X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.95, random_state=42)
+  X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.5, random_state=42)
 
   start_time = time.time()
-  y_pred = adaboost(X_train, y_train, X_test, 5)
+  y_pred = adaboost_train(X_train, y_train, X_test, 10)
   print(f"--- Model Trained on {len(X_train.index)} Examples in {time.time() - start_time} seconds ---")
 
   # Calculate accuracy

@@ -25,6 +25,7 @@ def id3_train(features, feature_names, targets, target_name):
         the generalization power of ID3.
   """
   target_counts = targets.value_counts()
+  majority_target = target_counts.index.to_numpy()[0][0]
 
   # Note, the third
   # base case explained above is handled in the recursive
@@ -34,12 +35,11 @@ def id3_train(features, feature_names, targets, target_name):
     # Return the target value of majority in current data set if
     # there are no features left to partition by, or return
     # the only remaining target value if there is only 1 remaining.
-    # return target_counts.first()
-    return BinaryDecisionTree(target_name, target_counts.index.to_numpy()[0][0])
+    return BinaryDecisionTree(target_name, majority_target)
 
   # Determine the optimal feature and feature value to partition
   # the dataset into true and false branches
-  split_feature, split_value = calc_split_attribute(features, targets, target_name) 
+  split_feature, split_value = calc_split_attribute(features, feature_names, targets, target_name) 
 
   # Remove the chosen best feature from the list of feature names
   # pruned_feature_names = feature_names.remove(best_feature)
@@ -56,14 +56,12 @@ def id3_train(features, feature_names, targets, target_name):
   # for base case first where there are no features left in these trees so we just
   # return the current target value of majority as a leaf
   if (false_branch.empty):
-    print("general")
-    dt.add_false(BinaryDecisionTree(target_name, target_counts.index.to_numpy()[0][0]))
+    dt.add_false(BinaryDecisionTree(target_name, majority_target))
   else:
     dt.add_false(id3_train(false_branch, pruned_feature_names, targets.loc[false_branch.index], target_name))
 
   if (true_branch.empty):
-    print("general")
-    dt.add_true(BinaryDecisionTree(target_name, target_counts.index.to_numpy()[0][0]))
+    dt.add_true(BinaryDecisionTree(target_name, majority_target))
   else:
     dt.add_true(id3_train(true_branch, pruned_feature_names, targets.loc[true_branch.index], target_name))
 
