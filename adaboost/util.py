@@ -1,4 +1,4 @@
-import numpy as np    # For numerical operations
+import numpy as np                       # For numerical operations
 
 def calc_entropy(targets, target_name):
   """ Calculate the entropy for a sample
