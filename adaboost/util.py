@@ -43,7 +43,6 @@ def calc_split_attribute(S, feature_names, targets, target_name):
     for threshold in S[feature].unique():
       sv_less = S[S[feature] <= threshold]
       sv_great = S[S[feature] > threshold]
-      sv_size = sv_less.shape[0] / S_size
 
       sv_less_weight = sv_less["weight"].to_numpy().sum()
       sv_less_entropy = calc_entropy(targets.loc[sv_less.index], target_name)

@@ -15,9 +15,9 @@ class ID3Classifier:
     method sets the tree member of the ID3Classifier class.
     """
     self.tree = None
-    self.tree = self._train(examples, features, targets, target_name) 
+    self.tree = self._train(examples, features, targets, target_name, 1) 
 
-  def _train(self, examples, features, targets, target_name):
+  def _train(self, examples, features, targets, target_name, depth):
     """ Implementation of the ID3 decision tree
     induction algorithm used for classification.
     This is a recursive algorithm that choses the next
@@ -45,8 +45,9 @@ class ID3Classifier:
     # Note, the third
     # base case explained above is handled in the recursive
     # call section as we check for an empty new feature list
-    # before we even issue the recursive call.
-    if (len(features) == 0 or target_counts.size == 1):
+    # before we even issue the recursive call. Also adding a check
+    # here for if we've reached our max tree depth.
+    if (len(features) == 0 or target_counts.size == 1 or depth >= self.depth):
       # Return the target value of majority in current data set if
       # there are no features left to partition by, or return
       # the only remaining target value if there is only 1 remaining.
@@ -72,12 +73,12 @@ class ID3Classifier:
     if (false_branch.empty):
       dt.add_false(BinaryDecisionTree(target_name, majority_target))
     else:
-      dt.add_false(self._train(false_branch, pruned_features, targets.loc[false_branch.index], target_name))
+      dt.add_false(self._train(false_branch, pruned_features, targets.loc[false_branch.index], target_name, depth + 1))
 
     if (true_branch.empty):
       dt.add_true(BinaryDecisionTree(target_name, majority_target))
     else:
-      dt.add_true(self._train(true_branch, pruned_features, targets.loc[true_branch.index], target_name))
+      dt.add_true(self._train(true_branch, pruned_features, targets.loc[true_branch.index], target_name, depth + 1))
 
     return dt
 
