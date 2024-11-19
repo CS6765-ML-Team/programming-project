@@ -45,12 +45,12 @@ def calc_split_attribute(S, feature_names, targets, target_name):
       sv_great = S[S[feature] > threshold]
       sv_size = sv_less.shape[0] / S_size
 
-      # sv_less_weight = sv_less["weight"].to_numpy().sum()
+      sv_less_weight = sv_less["weight"].to_numpy().sum()
       sv_less_entropy = calc_entropy(targets.loc[sv_less.index], target_name)
-      # sv_great_weight = sv_great["weight"].to_numpy().sum()
+      sv_great_weight = sv_great["weight"].to_numpy().sum()
       sv_great_entropy = calc_entropy(targets.loc[sv_great.index], target_name)
 
-      info_gain = e - (sv_size * sv_less_entropy + (1 - sv_size) * sv_great_entropy)
+      info_gain = e - (((sv_less_weight / S_size) * sv_less_entropy) + ((sv_great_weight / S_size) * sv_great_entropy))
       if (info_gain >= feature_info_gain):
         feature_info_gain, split_value = info_gain, threshold 
 

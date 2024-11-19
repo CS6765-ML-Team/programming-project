@@ -50,8 +50,8 @@ class AdaBoost:
       # Determine the weight of this tree based on the total error of the tree    
       if (dt_error == 0):
         self.alphas[t] = 1
-      elif (dt_error >= 0.5):
-        break
+      #elif (dt_error >= 0.5):
+      #  break
       else:
         EPS = 1e-10 # Account for divide by zero
         self.alphas[t] = 0.5 * np.log((1 - dt_error) / (dt_error + EPS)) 
@@ -76,7 +76,7 @@ class AdaBoost:
     n_examples = examples.shape[0]
 
     # Populate a 2D array of all predictions made by each model for each example
-    predictions = np.array([['' for _ in range(n_examples)] for _ in range(self.T)])
+    predictions = np.array([[None for _ in range(n_examples)] for _ in range(self.T)])
     for t in range(self.T):
       predictions[t] = self.models[t].predict(examples)
 

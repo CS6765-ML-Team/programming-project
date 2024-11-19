@@ -29,7 +29,7 @@ if __name__ == '__main__':
   #   print(total[label].value_counts())
 
   # Split the data into training and testing sets (80% train, 20% test)
-  X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.8, random_state=42)
+  X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.2, random_state=42)
 
   # Instantiate a new AdaBoost classifier with 10 models
   ada = AdaBoost(10) 
