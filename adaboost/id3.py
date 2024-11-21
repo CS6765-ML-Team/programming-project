@@ -3,7 +3,19 @@ from tree import BinaryDecisionTree     # Tree implementation
 from util import calc_split_attribute   # Function for calculating information gain of attribute
 
 class ID3Classifier:
-  """
+  """ An implmentation of the Iterative Dichotomiser 3
+  (ID3) decision tree algorithm. Constructor parameters
+  include an optional depth paramter that controls the maximum
+  depth of generated decision trees (default = +infinity).
+  This ID3 implementation uses a weighted information gain calculation
+  to determine the best feature to split on, and the best value
+  of that feature to split on. The decision trees produced are 
+  binary decision trees, where each node posesses a split feature
+  and split feature value, and the two child branches are 
+  designated for examples with feature values less than or
+  equal to the split feature value (false branch), and
+  values greater than the split feature value (true branch).
+  This tree implementation is found in tree.py.
   """
   def __init__(self, depth=np.inf):
     self.depth = depth

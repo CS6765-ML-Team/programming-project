@@ -2,7 +2,14 @@ import numpy as np                      # Access to math operators
 from id3 import ID3Classifier           # ID3 Algorithm implementation
 
 class AdaBoost:
-  """
+  """ An implementation of the Adaptive Boost
+  (Adaboost) boosting classifier that uses
+  a custom implementation of the ID3 Decision Tree
+  algorithm as a weak base learner. Constructor 
+  parameters include T, the number of estimators
+  to use when training, and the optional depth parameter,
+  which controls the maximum depth of each decision
+  tree (default = +infinity).
   """
   def __init__(self, T, depth=np.inf):
     self.T = T

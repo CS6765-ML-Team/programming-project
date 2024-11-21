@@ -4,8 +4,8 @@ class BinaryDecisionTree:
     training algorithm. Each tree contains 4 parameters:
         - Feature Index:    The current feature index the tree splits on
         - Value:            The value of Feature the determins the split
-        - True Branch:      The branch when Feature >= Value
-        - False Branch:     The branch when Feature < Value
+        - True Branch:      The branch when Feature > Value
+        - False Branch:     The branch when Feature <= Value
     """
     def __init__(self, feature_idx, value):
         self.feature_idx = feature_idx
