@@ -4,8 +4,9 @@ from id3 import ID3Classifier           # ID3 Algorithm implementation
 class AdaBoost:
   """
   """
-  def __init__(self, T):
+  def __init__(self, T, depth=np.inf):
     self.T = T
+    self.depth = depth
     self.models = [None for _ in range(T)]
     self.alphas = [0.0 for _ in range(T)]
 
@@ -34,7 +35,7 @@ class AdaBoost:
     # tree (sum of weights of incorrectly classified examples)
     # and use the total error to assign a weight to
     # the decision tree.
-    self.models = [ID3Classifier() for _ in range(self.T)]
+    self.models = [ID3Classifier(self.depth) for _ in range(self.T)]
     for t in range(self.T):
       # Obtain a weak hypothesis using the ID3 base learner implementation
       self.models[t].train(examples, features, targets, target_name)
@@ -97,7 +98,7 @@ class AdaBoost:
         else:
           prediction_weights[pred] = self.alphas[j]
 
-      top_prediction = None
+      top_prediction = example_predictions[0] 
       top_weight = -1
       for pred, weight in prediction_weights.items():
         if weight >= top_weight:
@@ -106,32 +107,3 @@ class AdaBoost:
       true_predictions[i] = top_prediction
 
     return true_predictions
-  
-
-
-"""
-def adaboost_train(X_train, y_train, X_test, T):
-
-    # Accumulate list of feature weights
-    # weights_nparray = features["weight"].tolist()
-    # acc_weights = [sum(weights_nparray[:y]) for y in range(1, len(weights_nparray) + 1)]
-
-    # # Use the accumulated weights as a distribution to resample the features and targets
-    # old_features = features.copy(deep=True)
-    # old_targets = targets.copy(deep=True)
-    # resampled_indicies = []
-    # for i in range(n_examples):
-    #   x = random.random() + acc_weights[0]  # Add smallest weight so we never have zero matches
-    #   sample = [w[0] for w in zip(features.index.tolist(), acc_weights) if w[1] <= x][-1]
-    #   resampled_indicies.append(sample)
-
-    # # Build the re-sampled features and target dataframes 
-    # # in a way that re-indexes the re-sampled data
-    # features = pd.DataFrame(data=old_features.loc[resampled_indicies].to_numpy(), columns=np.append(feature_names, "weight"))
-    # targets = pd.DataFrame(data=old_targets.loc[resampled_indicies].to_numpy(), columns=old_targets.columns.values)
-    
-    # # Initialize all of the example weights in the newly
-    # # sampled data to the same value before
-    # # we continue training
-    # features["weight"] = [1/n_examples] * n_examples
-"""

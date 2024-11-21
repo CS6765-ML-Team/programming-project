@@ -11,9 +11,7 @@ if __name__ == '__main__':
 
   # Store the features and targets
   features = letter_recognition.data.features
-  feature_names = features.columns.values
   targets = letter_recognition.data.targets
-  target_names = targets.columns.values 
 
   # Store a combination of features and targets
   total = pd.DataFrame(data=letter_recognition.data.original, columns=letter_recognition.data.headers)
@@ -29,22 +27,40 @@ if __name__ == '__main__':
   #   print(total[label].value_counts())
 
   # Split the data into training and testing sets (80% train, 20% test)
-  X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.2, random_state=42)
+  # Tests Run:
+  #   - state: 42   accuracy: 87.65%
+  #   - state: 21   accuracy: 85.42%
+  #   - state: 99   accuracy: 86.88% 
+  #   - state: 67   accuracy: 84.70%
+  X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.2, random_state=67)
 
-  # Instantiate a new AdaBoost classifier with 10 models
-  ada = AdaBoost(10) 
+  # Optimal Parameters:
+  #   - Number of estimators: 12
+  #   - Depth of decision trees: number of features + 1
+  t = 12
+  d = len(features.columns) + 1
 
+  # Copy the dataframes into this iteration's datasets
+  training_examples = X_train.copy(deep=True)
+  training_targets = y_train.copy(deep=True)
+
+  # Test the AdaBoost algorithm for 1 to 100 estimators.
+  ada = AdaBoost(t, d) 
+
+  # Train the AdaBoost classifier and time how long it takes.
   start_time = time.time()
-  ada.train(X_train, y_train)
-  print(f"--- Model Trained on {len(X_train.index)} Examples in {time.time() - start_time} seconds ---")
+  ada.train(training_examples, training_targets)
+  train_time = time.time() - start_time
 
+  # Predict testing data
   y_pred = ada.predict(X_test)
 
-  # Calculate accuracy
   accuracy = accuracy_score(y_test, y_pred)
+  conf_matrix = confusion_matrix(y_test, y_pred)
+
+  # Print results to console
   print(f"Accuracy: {accuracy * 100:.2f}%")
  
   # Generate a confusion matrix
-  # conf_matrix = confusion_matrix(y_test, y_pred)
-  # print("Confusion Matrix:")
-  # print(conf_matrix)
+  print("Confusion Matrix:")
+  print(conf_matrix)

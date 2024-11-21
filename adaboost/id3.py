@@ -51,17 +51,20 @@ class ID3Classifier:
       # Return the target value of majority in current data set if
       # there are no features left to partition by, or return
       # the only remaining target value if there is only 1 remaining.
-      return BinaryDecisionTree(target_name, majority_target)
+      return BinaryDecisionTree(0, majority_target)
 
     # Determine the optimal feature and feature value to partition
     # the dataset into true and false branches
     split_feature, split_value = calc_split_attribute(examples, features, targets, target_name) 
+    # Determine the index of the split feature from the columns
+    # of the entire dataset, i.e., all features
+    split_feature_idx = examples.columns.get_loc(split_feature)
 
     # Remove the chosen best feature from the list of feature names
     pruned_features = np.delete(features, np.where(features == split_feature))
 
     # Create a new DecisionTree to be returned
-    dt = BinaryDecisionTree(split_feature, split_value)
+    dt = BinaryDecisionTree(split_feature_idx, split_value)
 
     # Create the true and false branches based on split feature
     false_branch = examples[examples[split_feature] <= split_value]
@@ -71,12 +74,12 @@ class ID3Classifier:
     # for base case first where there are no features left in these trees so we just
     # return the current target value of majority as a leaf
     if (false_branch.empty):
-      dt.add_false(BinaryDecisionTree(target_name, majority_target))
+      dt.add_false(BinaryDecisionTree(0, majority_target))
     else:
       dt.add_false(self._train(false_branch, pruned_features, targets.loc[false_branch.index], target_name, depth + 1))
 
     if (true_branch.empty):
-      dt.add_true(BinaryDecisionTree(target_name, majority_target))
+      dt.add_true(BinaryDecisionTree(0, majority_target))
     else:
       dt.add_true(self._train(true_branch, pruned_features, targets.loc[true_branch.index], target_name, depth + 1))
 
@@ -91,8 +94,8 @@ class ID3Classifier:
       print("Must train model using train() method first.")
       return []
 
-    predictions = []
-    for _, row in examples.iterrows():
-      predictions.append(self.tree.traverse(row))
+    predictions = [None for _ in range(examples.shape[0])]
+    for i, row in enumerate(examples.to_numpy()):
+      predictions[i] = self.tree.traverse(row) 
 
     return predictions

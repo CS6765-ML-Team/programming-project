@@ -2,13 +2,13 @@ class BinaryDecisionTree:
     """ BinaryDecisionTree represents a binary tree
     implementation used for the ID3 decision tree
     training algorithm. Each tree contains 4 parameters:
-        - Feature:      The current feature the tree splits on
-        - Value:        The value of Feature the determins the split
-        - True Branch:  The branch when Feature >= Value
-        - False Branch: The branch when Feature < Value
+        - Feature Index:    The current feature index the tree splits on
+        - Value:            The value of Feature the determins the split
+        - True Branch:      The branch when Feature >= Value
+        - False Branch:     The branch when Feature < Value
     """
-    def __init__(self, feature, value):
-        self.feature = feature
+    def __init__(self, feature_idx, value):
+        self.feature_idx = feature_idx
         self.value = value
         self.true_branch = None
         self.false_branch = None
@@ -23,18 +23,15 @@ class BinaryDecisionTree:
         if (self.true_branch is None and self.false_branch is None):
             return self.value
 
-        feature_value = data_row[self.feature]
+        feature_value = data_row[self.feature_idx]
         if (feature_value > self.value):
             return self.true_branch.traverse(data_row)
         else:
             return self.false_branch.traverse(data_row)
 
-    def __str__(self):
-        return f"{self.feature}: {self.value}\n\t\tFalse Branch: {self.false_branch}\n---------\n\t\tTrue Branch: {self.true_branch}\n"
-
-    def print_tree(self, level=0):
+    def print_tree(self, features, level=0):
         if (self.false_branch is not None):
             self.false_branch.print_tree(level + 1)
-        print(' ' * 4 * level + '->' + f"{self.feature}: {self.value}")
+        print(' ' * 4 * level + '->' + f"{features.columns[self.feature_idx]}: {self.value}")
         if (self.true_branch is not None):
             self.true_branch.print_tree(level + 1)
