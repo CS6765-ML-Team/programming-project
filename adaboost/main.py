@@ -1,10 +1,12 @@
-import pandas as pd                   # For data manipulation and analysis
+import pandas as pd               # For data manipulation and analysis
+import time                       # For execution timing
+import random                     # Random number generation
+
 from sklearn.metrics import accuracy_score, confusion_matrix  # For model evaluation
-from sklearn.model_selection import train_test_split  # For splitting the data
-from ucimlrepo import fetch_ucirepo   # Letter recognition data set
-import time                               # For execution timing
+from sklearn.model_selection import train_test_split          # For splitting the data
+from ucimlrepo import fetch_ucirepo                           # Letter recognition data set
+
 from adaboost import AdaBoost
-import random
 
 def adaboost_benchmark(features, targets, N=10):
   """ Benchmark the Adaboost implementation
@@ -69,11 +71,11 @@ if __name__ == '__main__':
   features = letter_recognition.data.features
   targets = letter_recognition.data.targets
 
-  benchmark_results = adaboost_benchmark(features, targets)
+  benchmark_results = adaboost_benchmark(features, targets, N=1)
   print(benchmark_results)
 
   # Save to csv
-  # benchmark_results.to_csv('results/benchmark.csv', index=False)
+  benchmark_results.to_csv('results/benchmark.csv', index=False)
 
   # Store a combination of features and targets
   # total = pd.DataFrame(data=letter_recognition.data.original, columns=letter_recognition.data.headers)
