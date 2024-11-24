@@ -1,4 +1,5 @@
 import numpy as np                      # For data calculation
+from itertools import starmap           # For quickly iterating over features
 from tree import BinaryDecisionTree     # Tree implementation
 
 class ID3Classifier:
@@ -20,15 +21,15 @@ class ID3Classifier:
     self.depth = depth
     self.tree = None
 
-  def train(self, examples, features, targets, target_name):
+  def train(self, examples, features, targets):
     """ Public method for training a decision tree using the 
     ID3 algorithm implemented in _train. This public facing
     method sets the tree member of the ID3Classifier class.
     """
     self.tree = None
-    self.tree = self._train(examples, features, targets, target_name, 1) 
+    self.tree = self._train(examples, features, targets, 1) 
 
-  def _train(self, examples, features, targets, target_name, depth):
+  def _train(self, examples, features, targets, depth):
     """ Implementation of the ID3 decision tree
     induction algorithm used for classification.
     This is a recursive algorithm that choses the next
@@ -66,7 +67,7 @@ class ID3Classifier:
 
     # Determine the optimal feature and feature value to partition
     # the dataset into true and false branches
-    split_feature, split_value = ID3Classifier._calc_split_attribute(examples, features, targets, target_name) 
+    split_feature, split_value = ID3Classifier._calc_split_attribute(examples, features, targets) 
     # Determine the index of the split feature from the columns
     # of the entire dataset, i.e., all features
     split_feature_idx = examples.columns.get_loc(split_feature)
@@ -87,12 +88,12 @@ class ID3Classifier:
     if (false_branch.empty):
       dt.add_false(BinaryDecisionTree(0, majority_target))
     else:
-      dt.add_false(self._train(false_branch, pruned_features, targets.loc[false_branch.index], target_name, depth + 1))
+      dt.add_false(self._train(false_branch, pruned_features, targets.loc[false_branch.index], depth + 1))
 
     if (true_branch.empty):
       dt.add_true(BinaryDecisionTree(0, majority_target))
     else:
-      dt.add_true(self._train(true_branch, pruned_features, targets.loc[true_branch.index], target_name, depth + 1))
+      dt.add_true(self._train(true_branch, pruned_features, targets.loc[true_branch.index], depth + 1))
 
     return dt
 
@@ -112,11 +113,14 @@ class ID3Classifier:
     return predictions
   
   @staticmethod
-  def _calc_entropy(targets, target_name):
+  def _calc_entropy(targets):
     """ Calculate the entropy for a sample
     of training examples based on Shanon's 
-    Entropy Model. 
+    Entropy Model. The first column in the passed
+    targets Dataframe is taken as the target
+    to calculate the entropy against.
     """
+    target_name = targets.columns.values[0]
     entropy = 0
     n_targets = targets.shape[0]
     for frequency in targets[target_name].value_counts():
@@ -126,7 +130,36 @@ class ID3Classifier:
     return entropy
 
   @staticmethod
-  def _calc_split_attribute(S, feature_names, targets, target_name):
+  def _calc_attribute_info_gain(examples, n_samples, targets, total_entropy, feature):
+    # Iterate through each unique value of this feature
+    # and calculate the information gain of having this unique
+    # value be the split value for this feature 
+    unique_values = examples[feature].unique()
+
+    # Calculate the less than or equal to and the greater than
+    # splits of the data set using the unique values for this feature.
+    # This creates an array of Dataframes of length len(unique_values)
+    less_subsets = [examples.loc[examples[feature] <= value] for value in unique_values] 
+    greater_subsets = [examples.loc[examples[feature] > value] for value in unique_values]
+
+    less_weights = np.array([subset["weight"].to_numpy().sum() / n_samples for subset in less_subsets])
+    greater_weights = np.array([subset["weight"].to_numpy().sum() / n_samples for subset in greater_subsets])
+
+    less_entropy = np.array([ID3Classifier._calc_entropy(targets.loc[subset.index]) for subset in less_subsets])
+    greater_entropy = np.array([ID3Classifier._calc_entropy(targets.loc[subset.index]) for subset in greater_subsets])
+
+    split_info_gain = np.add(less_weights * less_entropy, greater_weights * greater_entropy)
+
+    info_gains = [total_entropy - split_gains for split_gains in split_info_gain]
+
+    # Find the maximum info gain and its index
+    max_info_gain_idx = np.argmax(info_gains)
+    max_info_gain = info_gains[max_info_gain_idx]
+
+    return max_info_gain, unique_values[max_info_gain_idx], feature
+
+  @staticmethod
+  def _calc_split_attribute(S, feature_names, targets):
     """ Given the dataset S, determine which attribute
     of the dataset and value of that attribute is optimal 
     to partition the data set. The attribute and split value
@@ -138,35 +171,21 @@ class ID3Classifier:
     S_size = S.shape[0]
 
     # Calculate the entropy for the entire dataset
-    e = ID3Classifier._calc_entropy(targets, target_name)
+    e = ID3Classifier._calc_entropy(targets)
 
-    # Keep track of the highest information gain calculated
-    # as well as what feature that information gain was for
-    best_info_gain = -1 
-    best_feature = None
-    best_split_value = 0
+    # Build the argument list, which is a list of tuples
+    # where each tuple holds the 5 arguments to the function
+    n_features = len(feature_names)
+    arg_list = zip([S for _ in range(n_features)],
+                   [S_size for _ in range(n_features)],
+                   [targets for _ in range(n_features)],
+                   [e for _ in range(n_features)],
+                   feature_names)
+    
+    # Execute the multi-processing *map operation
+    attribute_split_info_gains = starmap(ID3Classifier._calc_attribute_info_gain, arg_list)
 
-    # Iterate through each feature of dataset S
-    for feature in feature_names:
-      # Iterate through each unique value of this feature
-      # and calculate the information gain of having this unique
-      # value be the split value for this feature 
-      split_value = 0 
-      feature_info_gain = -1 
-      for threshold in S[feature].unique():
-        sv_less = S[S[feature] <= threshold]
-        sv_great = S[S[feature] > threshold]
+    # Pull out the optimal split value and feature based on the maximum info gain
+    _, split_value, split_feature = max(list(attribute_split_info_gains), key=lambda item: item[0])
 
-        sv_less_weight = sv_less["weight"].to_numpy().sum()
-        sv_less_entropy = ID3Classifier._calc_entropy(targets.loc[sv_less.index], target_name)
-        sv_great_weight = sv_great["weight"].to_numpy().sum()
-        sv_great_entropy = ID3Classifier._calc_entropy(targets.loc[sv_great.index], target_name)
-
-        info_gain = e - (((sv_less_weight / S_size) * sv_less_entropy) + ((sv_great_weight / S_size) * sv_great_entropy))
-        if (info_gain >= feature_info_gain):
-          feature_info_gain, split_value = info_gain, threshold 
-
-      if (feature_info_gain >= best_info_gain):
-        best_info_gain, best_feature, best_split_value = feature_info_gain, feature, split_value
-
-    return best_feature, best_split_value
+    return split_feature, split_value

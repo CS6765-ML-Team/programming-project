@@ -121,7 +121,6 @@ def depth_benchmark(features, targets):
   for n in range(n_depths):
     # Depth of learned decision tree for current test
     depth = depths[n]
-    print(depth)
 
     # Copy the dataframes into this iteration's datasets
     training_examples = X_train.copy(deep=True)
@@ -217,7 +216,7 @@ if __name__ == '__main__':
   print(benchmark_results)
 
   # Save to csv
-  benchmark_results.to_csv('results/depth_benchmark_2.csv', index=False)
+  benchmark_results.to_csv('results/depth_benchmark_3.csv', index=False)
 
   # Store a combination of features and targets
   # total = pd.DataFrame(data=letter_recognition.data.original, columns=letter_recognition.data.headers)

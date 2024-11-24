@@ -45,7 +45,7 @@ class AdaBoost:
     self.models = [ID3Classifier(self.depth) for _ in range(self.T)]
     for t in range(self.T):
       # Obtain a weak hypothesis using the ID3 base learner implementation
-      self.models[t].train(examples, features, targets, target_name)
+      self.models[t].train(examples, features, targets)
 
       # Create an array of prediction results where 1 represents a correct
       # prediction and -1 represents an incorrect prediction
