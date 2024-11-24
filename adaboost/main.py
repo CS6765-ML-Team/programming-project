@@ -28,7 +28,7 @@ def estimator_benchmark(features, targets, T=50):
   targets = letter_recognition.data.targets
   
   # Depth of learned binary decision tree for each test
-  depth = len(features.columns) + 1 
+  depth = len(features.columns) 
 
   # Number of estimators to test during each session
   estimator_tests = range(1, T)
@@ -162,7 +162,7 @@ def adaboost_benchmark(features, targets, N=10):
   targets = letter_recognition.data.targets
 
   # Depth of learned binary decision tree for each test
-  depth = len(features.columns) + 1 
+  depth = len(features.columns) 
 
   # Number of estimators 
   t = 12
