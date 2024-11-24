@@ -211,62 +211,25 @@ if __name__ == '__main__':
   features = letter_recognition.data.features
   targets = letter_recognition.data.targets
 
-  # benchmark_results = adaboost_benchmark(features, targets, N=1)
-  benchmark_results = depth_benchmark(features, targets)
-  print(benchmark_results)
-
-  # Save to csv
-  benchmark_results.to_csv('results/depth_benchmark_3.csv', index=False)
-
   # Store a combination of features and targets
-  # total = pd.DataFrame(data=letter_recognition.data.original, columns=letter_recognition.data.headers)
+  total = pd.DataFrame(data=letter_recognition.data.original, columns=letter_recognition.data.headers)
 
   # Check for any missing values
-  # print(total.isnull().sum())
+  print(total.isnull().sum())
 
   # Get summary statistics of the data
-  # print(total.describe())
+  print(total.describe())
 
   # Check the distribution of target labels
-  # for label in targets.columns.values:
-  #   print(total[label].value_counts())
+  for label in targets.columns.values:
+    print(total[label].value_counts())
 
-  # Split the data into training and testing sets (80% train, 20% test)
-  # Tests Run:
-  #   - state: 42   accuracy: 87.65%
-  #   - state: 21   accuracy: 85.42%
-  #   - state: 99   accuracy: 86.88% 
-  #   - state: 67   accuracy: 84.70%
-  # X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.2, random_state=67)
+  # benchmark_results = adaboost_benchmark(features, targets)
+  # benchmark_results = depth_benchmark(features, targets)
+  # benchmark_results = estimator_benchmark(features, targets, 20)
+  # print(benchmark_results)
 
-  # # Optimal Parameters:
-  # #   - Number of estimators: 12
-  # #   - Depth of decision trees: number of features + 1
-  # t = 12
-  # d = len(features.columns) + 1
+  # Save to csv
+  # benchmark_results.to_csv('results/estimator_benchmark.csv', index=False)
 
-  # # Copy the dataframes into this iteration's datasets
-  # training_examples = X_train.copy(deep=True)
-  # training_targets = y_train.copy(deep=True)
-
-  # # Test the AdaBoost algorithm for 1 to 100 estimators.
-  # ada = AdaBoost(t, d) 
-
-  # # Train the AdaBoost classifier and time how long it takes.
-  # start_time = time.time()
-  # ada.train(training_examples, training_targets)
-  # train_time = time.time() - start_time
-
-  # # Predict testing data
-  # y_pred = ada.predict(X_test)
-
-  # accuracy = accuracy_score(y_test, y_pred)
-  # conf_matrix = confusion_matrix(y_test, y_pred)
-
-  # # Print results to console
-  # print(f"Accuracy: {accuracy * 100:.2f}%")
- 
-  # # Generate a confusion matrix
-  # print("Confusion Matrix:")
-  # print(conf_matrix)
 
