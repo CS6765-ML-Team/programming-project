@@ -2,6 +2,8 @@ import pandas as pd               # For data manipulation and analysis
 import time                       # For execution timing
 import random                     # Random number generation
 
+import matplotlib.pyplot as plt                               # For visualization
+import seaborn as sns                                         # Advanced visualizations
 from sklearn.metrics import accuracy_score, confusion_matrix  # For model evaluation
 from sklearn.model_selection import train_test_split          # For splitting the data
 from ucimlrepo import fetch_ucirepo                           # Letter recognition data set
@@ -144,7 +146,7 @@ def depth_benchmark(features, targets):
   return pd.DataFrame(results)
 
 
-def adaboost_benchmark(features, targets, N=10):
+def adaboost_benchmark(features, targets, N=10, display_confusion_matrix=False):
   """ Benchmark the Adaboost implementation
   found in Adaboost.py by running N training/testing
   sessions on the provided features and targets. 
@@ -165,7 +167,7 @@ def adaboost_benchmark(features, targets, N=10):
   depth = len(features.columns) 
 
   # Number of estimators 
-  t = 12
+  t = 14 
 
   # Map of returned data.
   results = {'State': random.sample(range(1, 2**30), N),
@@ -198,7 +200,16 @@ def adaboost_benchmark(features, targets, N=10):
     y_pred = ada.predict(X_test)
     results['Classify Time'][n] = time.time() - start_classify_time
 
-    results['Accuracy'][n] = accuracy_score(y_test, y_pred)
+    results['Accuracy'][n] = accuracy_score(y_test, y_pred) * 100.00
+
+    if (display_confusion_matrix):
+      conf_matrix = confusion_matrix(y_test, y_pred)
+      plt.figure(figsize=(6, 4))
+      sns.heatmap(conf_matrix, annot=True, cmap='Blues', fmt='d', cbar=False)
+      plt.title("Confusion Matrix Heatmap")
+      plt.xlabel("Predicted Labels")
+      plt.ylabel("True Labels")
+      plt.show()
 
   return pd.DataFrame(results)
 
@@ -224,10 +235,10 @@ if __name__ == '__main__':
   for label in targets.columns.values:
     print(total[label].value_counts())
 
-  # benchmark_results = adaboost_benchmark(features, targets)
+  benchmark_results = adaboost_benchmark(features, targets, N=1, display_confusion_matrix=True)
   # benchmark_results = depth_benchmark(features, targets)
   # benchmark_results = estimator_benchmark(features, targets, 20)
-  # print(benchmark_results)
+  print(benchmark_results)
 
   # Save to csv
   # benchmark_results.to_csv('results/estimator_benchmark.csv', index=False)
