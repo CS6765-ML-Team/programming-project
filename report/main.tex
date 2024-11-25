@@ -56,7 +56,7 @@
 \maketitle
 
 \begin{abstract}
-    TODO
+    In the field of Artificial Intelligence and Machine Learning, it can be very easy for the complexities of learning models to be obscured away behind the black boxes that are machine learning libraries. Despite the ease of use by which these libraries present, they do not always provide a complete understanding of how the learning is taking place. To truly grasp and take advantage of machine learning, one must understand the inner workings of the learning models being applied. This assignment saw students manually implement three machine learning models to truly test their understanding of these models and how they function. These models were: Adaboost with an ID3 weak base learner, an Artificial Neural Network with back-propagation, and Naïve Bayes. In addition to manually implementing these three learning models from scratch, two machine learning problems were solved using pre-existing machine learning libraries. These problems included developing a Deep Fully-Connected Feed-Forward Artificial Neural Network, and a Convolutional Neural Network to be trained and tested on the MNIST dataset of handwritten digits.
 \end{abstract}
 
 \newpage
@@ -124,7 +124,7 @@ Once the $T$ weak hypotheses have been trained and each has their own associated
 This section will outline all details related to this implementation of Adaboost and the ID3 algorithm.
 
 \subsubsection{Development Platform and Libraries}
-As was previously mentioned, all code written to implement the Adaboost and ID3 algorithms was written in Python 3. This code was written to run on a Windows operation system, but will run on any system that can run the Python programming language. All development was conducted through the Visual Studios Code text editor, and code versioning was controlled through Git to a remote repository hosted on GitHub. The Adaboost and ID3 algorithms were written completely from scratch using only Python's built-in functions, the \textit{Numpy} Python library for mathematical operations, and the \textit{Pandas} Python library for data manipulation and representation. The \textit{scikit-learn} maching learning Python library was used for pre-processing of training and testing data, as well as for evaluating the performance of the manually implemented algorithms. This machine learning library was not included or used in any of the Adaboost or ID3 algorithm implementations.
+As was previously mentioned, all code written to implement the Adaboost and ID3 algorithms was written in Python 3. This code was written to run on a Windows operation system, but will run on any system that can run the Python programming language. All development was conducted through the Visual Studios Code text editor, and code versioning was controlled through Git to a remote repository hosted on GitHub. The Adaboost and ID3 algorithms were written completely from scratch using only Python's built-in functions, the \textit{Numpy} Python library for mathematical operations, and the \textit{Pandas} Python library for data manipulation and representation. The \textit{scikit-learn} maching learning Python library was used for pre-processing of training and testing data, as well as for evaluating the performance of the manually implemented algorithms. This machine learning library was not included or used in any of the Adaboost or ID3 algorithm implementations. The \textit{matplotlib} and \textit{seaborn} Python libraries were used to provide statistical data visualizations for the algorithm's results.
 
 \subsubsection{Program Structure}
 Python classes were used to structure the various components of this Adaboost implementation. These classes included: \textit{AdaBoost} (adaboost.py), \textit{ID3Classifier} (id3.py), and \textit{BinaryDecisionTree} (tree.py). By following an object oriented approach, different instances of the learning algorithms could be instantiated with different hyper-parameters and then re-used when needed. This, in addition to allowing these classes to keep track of their own internal state while training, significantly cleaned up and optimized the code. For example, the \textit{AdaBoost} class has it's own internal member variables named \textit{models} and \textit{alphas} which store the trained weak hypotheses and their corresponding weights, respectively. This means that once the \textit{AdaBoost} models have been trained, these models and their weights can easily be accessed through these member variables, vastly reducing the amount of code required to keep track of this state. In addition to this, the \textit{ID3Classifier} class contains two private static methods used to calculate the entropy and information gain throughout its training process.
@@ -214,6 +214,59 @@ The total number of classes in this dataset is 26, representing the number of ca
 As previously mentioned, there are no missing values within the dataset used. As such, no pre-processing of the data to remove partial entries was required. The only pre-processing performed on the dataset was to split the data into testing and training datasets using the \textit{train\_test\_split()} function from the \textit{scikit-learn} machine learning library. A split of 80\%/20\% (16000/4000) was used for training and testing, respectively, as this was the split suggested by UC Irvine on the dataset's webpage. As such, in all results presented in the next sections, the Adaboost algorithm was trained on 16 000 randomly selected entries, and tested on the remaining 4000 entries of the dataset.
 
 \subsection{Experimental Results}
+The above discussed Adaboost algorithm with ID3 as a weak base learner implementation was tested extensively and the results of this testing can be seen in Table~\ref{tbl:adaboost-results}. As previously mentioned, these results were achieved by training the algorithm on 16 000 randomly sampled entries of the dataset, and tested on the remaining 4000 entries of the dataset. The seeds, or \textit{random\_states}, of the sampling is also reported in the table for reproducibility. The hyper-parameters were set to their previously mentioned optimal values of 16 for the maximum depth of a learned binary decision tree, and 14 for the number of weak hypotheses learned by the Adaboost algorithm.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{||c c c c c||} 
+        \hline
+        Test \# & Seed & Accuracy (\%)  & Training Time (s) & Classification Time (s) \\ [0.5ex] 
+        \hline\hline
+        1 & 500864380 & 85.33 & 509.20 & 0.0897 \\
+        \hline
+        2 & 434317629 & 85.45 & 498.24 & 0.0888 \\
+        \hline
+        3 & 81483430 & 84.40 & 489.30 & 0.0897 \\
+        \hline
+        4 & 794073002 & 86.28 & 492.81 & 0.0891 \\
+        \hline
+        5 & 278379451 & 84.10 & 492.79 & 0.0898 \\
+        \hline
+        6 & 1019885152 & 84.65 & 483.37 & 0.0877 \\
+        \hline
+        7 & 880373647 & 85.93 & 486.33 & 0.0875 \\
+        \hline
+        8 & 244411609 & 85.88 & 487.19 & 0.0906 \\
+        \hline
+        9 & 573119018 & 83.80 & 485.92 & 0.0893 \\ 
+        \hline
+        10 & 496202245 & 83.03 & 487.38 & 0.0896 \\
+        \hline
+        11 & 136944384 & 84.18 & 500.03 & 0.0905 \\
+        \hline
+        12 & 131276866 & 85.80 & 486.27 & 0.0868 \\
+        \hline
+        13 & 276617434 & 86.70 & 482.18 & 0.0886 \\
+        \hline
+        14 & 817708150 & 86.60 & 478.75 & 0.0892 \\
+        \hline
+        15 & 44078284 & 86.68 & 505.69 & 0.0908 \\ [1ex]
+        \hline
+    \end{tabular}
+    \caption{Results of training Adaboost implementation on 16 000 randomly sampled examples and classifying the remaining 4000 examples with maximum tree depth of 16 and 14 weak base hypotheses learned.}
+    \label{tbl:adaboost-results}
+\end{table}
+
+The mean classification accuracy of the results presented in Table~\ref{tbl:adaboost-results} is 85.254\%, with the mean training and classification times being 491.03 seconds and 0.08918 seconds, respectively. Despite not achieving 100\% accuracy, the Adaboost implementation is still a success in our opinion as it is a completely from scratch implementation. The lack of accuracy in classification may come from the weighted feature info gain calculation being employed, referenced in Equation~\ref{eq:weighted-info-gain}, to place more emphasis on previously incorrectly classified examples. As for the training time, ID3 is a greedy algorithm, as such it is expected to have a longer execution time. Much work was done in the ID3 implementation to ensure all math operations were vectorized within the Python programming language to minimize the amount of looping and memory copies required. No parallelization was employed as to not over complicate the implementation, yet the routine for determining the split feature can easily be parallelized as determining the split feature based on weighted info gain can be done independently of other features.
+
+The confusion matrix of the test with the highest accuracy, test 13 with seed 276617434, can be seen in Figure~\ref{fig:confusion-matrix}. The confusion matrix helps highlight the number of examples that were incorrectly classified, and what those incorrect classifications were compared to the correct classifications. As such, a strong diagonal of the matrix indicates high classification accuracy, as can be seen in Figure~\ref{fig:confusion-matrix}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.65]{images/confusion-matrix.png}
+    \caption{Confusion matrix of training/classification results with seed 276617434.}
+    \label{fig:confusion-matrix}
+\end{figure}
 
 \section{Conclusion}
 
