@@ -142,13 +142,12 @@ class ID3Classifier:
     less_subsets = [examples.loc[examples[feature] <= value] for value in unique_values] 
     greater_subsets = [examples.loc[examples[feature] > value] for value in unique_values]
 
-    less_weights = np.array([subset["weight"].to_numpy().sum() / n_samples for subset in less_subsets])
-    greater_weights = np.array([subset["weight"].to_numpy().sum() / n_samples for subset in greater_subsets])
+    # Calculate the entropy for each of the less than or equal to, and greater than, subsets 
+    # of the data set for all unique values of this feature.
+    less_entropy = np.array([(subset["weight"].to_numpy().sum() / n_samples) * ID3Classifier._calc_entropy(targets.loc[subset.index]) for subset in less_subsets])
+    greater_entropy = np.array([(subset["weight"].to_numpy().sum() / n_samples) * ID3Classifier._calc_entropy(targets.loc[subset.index]) for subset in greater_subsets])
 
-    less_entropy = np.array([ID3Classifier._calc_entropy(targets.loc[subset.index]) for subset in less_subsets])
-    greater_entropy = np.array([ID3Classifier._calc_entropy(targets.loc[subset.index]) for subset in greater_subsets])
-
-    split_info_gain = np.add(less_weights * less_entropy, greater_weights * greater_entropy)
+    split_info_gain = np.add(less_entropy, greater_entropy)
 
     info_gains = [total_entropy - split_gains for split_gains in split_info_gain]
 

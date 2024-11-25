@@ -203,9 +203,11 @@ def adaboost_benchmark(features, targets, N=10, display_confusion_matrix=False):
     results['Accuracy'][n] = accuracy_score(y_test, y_pred) * 100.00
 
     if (display_confusion_matrix):
-      conf_matrix = confusion_matrix(y_test, y_pred)
+      labels = targets["lettr"].unique()
+      conf_matrix = confusion_matrix(y_test, y_pred, labels=labels)
+      df_cm = pd.DataFrame(conf_matrix, index=labels, columns=labels)
       plt.figure(figsize=(6, 4))
-      sns.heatmap(conf_matrix, annot=True, cmap='Blues', fmt='d', cbar=False)
+      sns.heatmap(df_cm, annot=True, cmap='Blues', fmt='d', cbar=False)
       plt.title("Confusion Matrix Heatmap")
       plt.xlabel("Predicted Labels")
       plt.ylabel("True Labels")
@@ -235,12 +237,12 @@ if __name__ == '__main__':
   for label in targets.columns.values:
     print(total[label].value_counts())
 
-  benchmark_results = adaboost_benchmark(features, targets, N=15, display_confusion_matrix=False)
+  # benchmark_results = adaboost_benchmark(features, targets, N=1, display_confusion_matrix=True)
   # benchmark_results = depth_benchmark(features, targets)
-  # benchmark_results = estimator_benchmark(features, targets, 20)
+  benchmark_results = estimator_benchmark(features, targets, 20)
   print(benchmark_results)
 
   # Save to csv
-  benchmark_results.to_csv('results/benchmark.csv', index=False)
+  benchmark_results.to_csv('results/estimator_benchmark.csv', index=False)
 
 
