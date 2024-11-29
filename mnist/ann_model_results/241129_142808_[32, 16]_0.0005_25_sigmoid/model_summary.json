@@ -1,0 +1,23 @@
+Model: "sequential"
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ flatten (Flatten)           (None, 784)               0         
+                                                                 
+ dense (Dense)               (None, 32)                25120     
+                                                                 
+ batch_normalization (BatchN  (None, 32)               128       
+ ormalization)                                                   
+                                                                 
+ dense_1 (Dense)             (None, 16)                528       
+                                                                 
+ batch_normalization_1 (Batc  (None, 16)               64        
+ hNormalization)                                                 
+                                                                 
+ Output_layer (Dense)        (None, 10)                170       
+                                                                 
+=================================================================
+Total params: 26,010
+Trainable params: 25,914
+Non-trainable params: 96
+_________________________________________________________________

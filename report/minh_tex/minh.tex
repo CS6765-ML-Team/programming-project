@@ -1,0 +1,99 @@
+\documentclass[a4paper]{article}
+
+% Use the postscript times font!
+\usepackage{times}
+\usepackage{soul}
+\usepackage[hyphens]{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[small]{caption}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage[a4paper, portrait, margin=1in]{geometry}
+\urlstyle{same}
+
+\usepackage{parskip}
+
+% the following package is optional:
+%\usepackage{latexsym} 
+
+\title{CS6735 Programming Project Report}
+
+\makeatletter
+\renewcommand\@date{{%
+  \vspace{-\baselineskip}%
+  \large\centering
+  \begin{tabular}{@{}c@{}}
+    Ethan Garnier\textsuperscript{1} \\
+    \normalsize ethan.garnier78@unb.ca 
+  \end{tabular}%
+  \hspace{3mm}
+  \begin{tabular}{@{}c@{}}
+    Matthew Tidd\textsuperscript{2} \\
+    \normalsize mtidd2@unb.ca
+  \end{tabular}
+  \hspace{3mm}
+  \begin{tabular}{@{}c@{}}
+    Minh Nguyen\textsuperscript{2} \\
+    \normalsize mnguyen6@unb.ca
+  \end{tabular}
+  
+  \bigskip
+
+  \textsuperscript{1}Department of Electrical and Computer Engineering, UNB\par
+  \textsuperscript{2}Department of Mechanical Engineering, UNB
+
+  \bigskip
+
+  \today
+}}
+\makeatother
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    In the field of Artificial Intelligence and Machine Learning, it can be very easy for the complexities of learning models to be obscured away behind the black boxes that are machine learning libraries. Despite the ease of use by which these libraries present, they do not always provide a complete understanding of how the learning is taking place. To truly grasp and take advantage of machine learning, one must understand the inner workings of the learning models being applied. This assignment saw students manually implement three machine learning models to truly test their understanding of these models and how they function. These models were: Adaboost with an ID3 weak base learner, an Artificial Neural Network with back-propagation, and Naïve Bayes. In addition to manually implementing these three learning models from scratch, two machine learning problems were solved using pre-existing machine learning libraries. These problems included developing a Deep Fully-Connected Feed-Forward Artificial Neural Network, and a Convolutional Neural Network to be trained and tested on the MNIST dataset of handwritten digits.
+\end{abstract}
+
+\newpage
+
+\section{Introduction}
+
+\section{Naive Bayes for Car Evaluation}
+In this section of the report, the team implemented a Naive Bayes (NB) classifier from scratch and investigated the performance of the algorithm. In essence, NB classifiers are a machine learning model that learns the probabislitic distribution in the training data under the naive assumption that the data features are conditionally independent. Therefore, the algorithm is a simple implementation of Bayesian networks. This section starts with a review of the theory and mechanism of NB classifiers, followed by a description of the car evaluation dataset, NB classifier implementation, finally the results and discussion of results.
+
+\section{Naive Bayes Classifier Theory}
+
+Given a dataset that contains vectors of training instances, each having \textit{n} feature values $\vec{x}=(x_1, x_2, \cdots x_n)$ and a class value, an NB classifier is trained to classify a test example based on its feature values and the probability distribution in the training set. NB classifier operates on the basis of Bayes theorem, formulated as:
+
+\begin{equation}
+    p(class|\vec{x}) = \frac{p(class)p(\vec{x}|class)}{p(\vec{x})}
+\end{equation}
+
+where the left handside of the equation is the probability of an instance belonging to a class given its feature values 
+
+\section{Implementation of Naive Bayes Classifier}
+
+\subsection{Platform}
+
+Talk about the training setup (Python + Anaconda + GPU) and libraries used
+
+\subsection{Dataset Description}
+
+\subsection{}
+
+\section{Results and Discussion}
+
+
+
+
+\newpage
+
+% Bibliography/Reference Stuff
+\bibliographystyle{abbrv}
+\bibliography{main}
+\end{document}

@@ -1,0 +1,18 @@
+{
+    "parameters": {
+        "learning_rate": 0.001,
+        "batch_size": 32,
+        "epochs": 25,
+        "structure": "[64, 32, 16]",
+        "loss": "sparse_categorical_crossentropy",
+        "metrics": "accuracy",
+        "activation": "relu"
+    },
+    "results": {
+        "loss": 0.013519862666726112,
+        "accuracy": 0.9956250190734863,
+        "val_loss": 0.12484690546989441,
+        "val_accuracy": 0.9728333353996277,
+        "train_time": 119.1563880443573
+    }
+}
