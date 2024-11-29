@@ -7,6 +7,8 @@
 \usepackage[hidelinks]{hyperref}
 \usepackage[utf8]{inputenc}
 \usepackage[small]{caption}
+\usepackage{amsmath}
+\usepackage{amsfonts}
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{amsmath,amssymb}
@@ -261,12 +263,234 @@ The mean classification accuracy of the results presented in Table~\ref{tbl:adab
 
 The confusion matrix of the test with the highest accuracy, test 13 with seed 276617434, can be seen in Figure~\ref{fig:confusion-matrix}. The confusion matrix helps highlight the number of examples that were incorrectly classified, and what those incorrect classifications were compared to the correct classifications. As such, a strong diagonal of the matrix indicates high classification accuracy, as can be seen in Figure~\ref{fig:confusion-matrix}.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[scale=0.65]{images/confusion-matrix.png}
     \caption{Confusion matrix of training/classification results with seed 276617434.}
     \label{fig:confusion-matrix}
 \end{figure}
+
+
+\newpage
+
+\section{ANN with Backpropagation}
+
+An Artificial Neural Network with backpropagation was successfully implemented using the Python 3 programming language. The artificial neural network that was created featured a simplistic design, utilizing only one hidden layer while simultaneously yielding great results. This algorithm was trained on a dataset that consisted of features computed from digitized images of fine needle aspirate of breast mass, describing charactersitics of the cell nuclei present in the image. The objective was classification of cell mass as either benign or malignant.
+
+\subsection{Artificial Neural Networks}
+
+As mentioned, this section of the programming project saw the implementation of an artificial neural network from scratch. Artificial neural networks, or neural networks, are a machine learning technique that seek to mimic the biological neural networks found within human brains. A neural network consists of connected ``units", or nodes, that are called neurons. These neurons are designed such that they mimic the neurons found within a human brain, in the sense that they will not ``fire'', so to speak, if the input signal is not larger than a certain threshold. This thresholding is achieved through the use of an activation function, which ensures that important features that are interesting enough to be learned are actually learned by the network as they exceed the threshold. The output of a given neuron is therefore calculated by applying the activation function to the weighted sum of the inputs to that neuron. Neural networks are composed of three distinct layers, those being the input layer, the hidden layer, and the output layer. The input signal is first sent through the input layer, which takes in the data and sends it to the subsequent layers, known as the hidden layers. The hidden layers serve as an intermediary layer between the first layer and the last layer, the output layer. It is within these hidden layers that the input becomes further and further abstracted, and a new representation is learned that extracts the hidden relationship between the input features. 
+
+
+For this assignment, as mentioned, a neural network was created with three layers: one input, one hidden, and one output. Justification for the choice of this structure can be found within Section \ref{ANNhyperparameterselection}. As such, the general structure of the neural network implemented is given by Figure \ref{fig:annstructure}:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale = 0.5]{images/annstructure.png}
+    \caption{Structure of the ANN that was developed.}
+    \label{fig:annstructure}
+\end{figure}
+
+Where a vector of inputs $\overrightarrow{x}$ is fed into the first layer of the network, and this vector is then multiplied by the matrix of weights for the connections between the input layer and the hidden layer, $\mathbb W_1$. There is also a bias that gets added to this weighted summation, denoted by $\overrightarrow{b_1}$. This process results in what is known as the net, which is the weighted summation that is fed into the activation function of the first hidden layer. This is given by Equation \ref{eq:net1} below:
+
+\begin{equation}
+    \label{eq:net1}
+    \overrightarrow{net_{1}} = \mathbb W_{1} \times \overrightarrow{x} + \overrightarrow{b_1}
+\end{equation}
+
+Following the determination of $\overrightarrow{net_{1}}$, this value is then fed into the hidden layer and the activation function is applied, which is given below by Equation \ref{eq:h1}:
+
+\begin{equation}
+    \label{eq:h1}
+    \overrightarrow{h} = \sigma(\overrightarrow{net_{1}})
+\end{equation}
+
+Equation \ref{eq:h1} yields the output from the hidden layer, which is then multiplied by the weights between the hidden and output layer and added to another bias vector to get another net, shown below as:
+
+\begin{equation}
+    \label{eq:net2}
+    \overrightarrow{net_{2}} = \mathbb W_{2} \times \overrightarrow{h} + \overrightarrow{b_2}
+\end{equation}
+
+Finally, the output of the network is computed by applying the activation function to $\overrightarrow{net_{2}}$, as given by:
+
+\begin{equation}
+    \label{eq:o1}
+    \overrightarrow{o} = \sigma(\overrightarrow{net_{2}}) 
+\end{equation}
+
+Neural networks learn by continually updating their weights through a process known as backpropagation, which involves taking the gradient of the difference between your target value and output value, with respect to each individual weight matrix $\mathbb W_{i}$. To update the weights, we want to learn $\mathbb W$'s that minimize the square error function, given by:
+
+\begin{equation}
+    \label{eq:squarederrorfunction}
+    E[\mathbb W] = \frac{1}{2} \sum_{d \in D}(t_d - o_d)^2
+\end{equation}
+
+Where $d$ represents an example from the dataset $D$, $t_d$ is the target label for that example, and $o_d$ is the output of the network. By calculating the gradient of this error function, we get:
+
+\begin{equation}
+    \label{eq:sqegradient}
+    \nabla{E[\mathbb W]} = \left[ \frac{\partial{E}}{\partial{\mathbb W_o}}, \frac{\partial{E}}{\partial{\mathbb W_1}}, \ldots, \frac{\partial{E}}{\partial{\mathbb W_n}} \right]
+\end{equation}
+
+To train the network, we must update the weights according to the following equation:
+
+\begin{equation}
+    \label{eq:trainW}
+    \mathbb W_i = \mathbb W_i + \Delta{\mathbb W_i}
+\end{equation}
+
+Where the incremental change in weight, $\Delta{\mathbb W_i}$, is given by the following equation:
+
+\begin{equation}
+    \label{eq:deltaW}
+    \Delta{\mathbb W_i} = -\eta \frac{\partial{E}}{\partial{\mathbb W_i}}
+\end{equation}
+
+Where $\eta$ is the \textit{learning rate}, which determines the size of the step to be taken during the gradient descent algorithm. The value of $\frac{\partial{E}}{\partial{\mathbb W_i}}$ is given by the following derivation:
+
+\begin{gather}
+    \begin{aligned}
+        \frac{\partial{E}}{\partial{\mathbb W_i}} &= \frac{\partial}{\partial{\mathbb W_i}} \frac{1}{2} \sum_{d \in D}(t_d - o_d)^2 \\
+        &= \frac{1}{2}\sum_{d \in D}\frac{\partial}{\partial{\mathbb W_i}}(t_d - o_d)^2 \\
+        &= \sum_{d \in D}(t_d - o_d)\frac{\partial}{\partial{\mathbb W_i}}(t_d - o_d) \\
+        &= \sum_{d \in D}(t_d - o_d)\left[-\frac{\partial{o_d}}{\partial{\mathbb W_i}}\right] \\
+        &= -\sum_{d \in D}(t_d - o_d)\left[\frac{\partial{o_d}}{\partial{\mathbb W_i}}\right] \\
+        \therefore \frac{\partial{E}}{\partial{\mathbb W_i}} &= \sum_{d \in D}(o_d - t_d)\left[\frac{\partial{o_d}}{\partial{\mathbb W_i}}\right]
+    \end{aligned}
+\end{gather}
+
+Where the value of $\sum_{d \in D}(o_d - t_d)$ is equal to the gradient of the error with respect to the output value $o_d$, as evidenced by Equation \ref{eq:delEdelod}:
+
+\begin{gather}
+    \begin{aligned}
+        \label{eq:delEdelod}
+        \frac{\partial{E}}{\partial{o_d}} &= \sum_{d \in D}(o_d - t_d) \\
+        \frac{\partial}{\partial{o_d}}\frac{1}{2}\sum_{d \in D}(t_d - o_d)^2 &= \sum_{d \in D}(o_d - t_d) \\
+        \sum_{d \in D}(t_d - o_d)(-1) &= \sum_{d \in D}(o_d - t_d)\\
+        \therefore \sum_{d \in D}(o_d - t_d) &= \sum_{d \in D}(o_d - t_d)
+    \end{aligned}
+\end{gather}
+
+From this, it can be gathered that to update any $\mathbb W_i$, we can use the following equation:
+
+\begin{equation}
+    \label{eq:keyweightupdating}
+    \mathbb W_i = \mathbb W_i - \eta \left[ \frac{\partial{E}}{\partial{o_d}}\times\frac{\partial{o_d}}{\partial{\mathbb W_i}} \right]
+\end{equation}
+
+Meaning that for each layer, the value of $\frac{\partial{o_d}}{\partial{\mathbb W_i}}$ needs to be determined such that each weight matrix can be updated. For the second weight matrix, this derivation is given by Equation \ref{eq:w2update}. The $d$ subscript is dropped as it was assumed that stochastic gradient descent would be employed, which obviously is performed on each training example $d \in D$.
+
+\begin{gather}
+    \begin{aligned}
+        \label{eq:w2update}
+        \frac{\partial{o}}{\partial{\mathbb W_2}} &= \frac{\partial}{\partial{\mathbb W_2}}\sigma(\overrightarrow{net_2}) \\
+        &= \frac{\partial}{\partial{\mathbb W_2}}\sigma(\mathbb W_2 \sigma(\mathbb W_1 \overrightarrow{x})) \\
+        \therefore \frac{\partial{o}}{\partial{\mathbb W_2}} &= \sigma'(\overrightarrow{net_2})h
+    \end{aligned}
+\end{gather}
+
+Similarly, this process was repeated for $\mathbb W_1$:
+
+\begin{gather}
+    \begin{aligned}
+        \label{eq:w1update}
+        \frac{\partial{o}}{\partial{\mathbb W_1}} &= \frac{\partial}{\partial{\mathbb W_1}}\sigma(\overrightarrow{net_2}) \\
+        &= \frac{\partial}{\partial{\mathbb W_1}}\sigma(\mathbb W_2 \sigma(\mathbb W_1 \overrightarrow{x})) \\
+        &= \sigma'(\overrightarrow{net_2})\frac{d}{d{\mathbb W_1}}\left[ \mathbb W_2 \sigma(\mathbb W_1 \overrightarrow{x}) \right]\\
+        \therefore \frac{\partial{o}}{\partial{\mathbb W_1}} &= \sigma'(\overrightarrow{net_2})\mathbb W_2 \sigma'(\overrightarrow{net_1})\overrightarrow{x}
+    \end{aligned}
+\end{gather}
+
+The question therefore arose, how will the bias be updated? It was determined that the bias would be updating using a similar approach to Equation \ref{eq:trainW}, where the bias updating equation is given below as:
+
+\begin{equation}
+    \label{eq:trainBias}
+    b_i = b_i - \eta \frac{\partial{E}}{\partial{b_i}}
+\end{equation}
+
+Where the partial derivative of error with respect to the bias value $b_i$ is given by:
+
+\begin{gather}
+    \begin{aligned}
+        \label{eq:biasderivation}
+        \frac{\partial{E}}{\partial{b_i}} &= \frac{\partial}{\partial{b_i}}\left[ \frac{1}{2} \sum_{d \in D}(t_d - o_d)^2 \right] \\
+        &= \frac{1}{2}\sum_{d \in D} \frac{\partial}{\partial{b_i}}(t_d - o_d)^2 \\
+        &= \sum_{d \in D}\frac{\partial}{\partial{b_i}}(t_d - o_d) \\
+        &= \sum_{d \in D}(t_d - o_d)\frac{\partial}{\partial{b_i}}(-o_d) \\
+        \therefore \frac{\partial{E}}{\partial{b_i}} &= \sum_{d \in D}(o_d - t_d)\frac{\partial{o_d}}{\partial{b_i}}
+    \end{aligned}
+\end{gather}
+
+Where the value of $\sum_{d \in D}$ is known by Equation \ref{eq:delEdelod}, which implies that the partial derivative of error with respect to bias is equal to:
+
+\begin{equation}
+    \label{eq:delEdelbias}
+    \frac{\partial{E}}{\partial{b_i}} = \frac{\partial{E}}{\partial{o_d}} \times \frac{\partial{o_d}}{\partial{b_i}}
+\end{equation}
+
+The expanded equation of the output from our network, with biases included, is given below within Equation \ref{eq:outputwithbias}. The biases were initially neglected when determining the weight matrices as they are not functions of the weight, and therefore were dropped when the partial derivative of error with respect to the weight matrices was performed. 
+
+\begin{equation}
+    \label{eq:outputwithbias}
+    \overrightarrow{o} = \sigma(\mathbb W_2 \sigma(\mathbb W_1 \overrightarrow{x} + \overrightarrow{b_1}) + \overrightarrow{b_2})
+\end{equation}
+
+Therefore, we just need to determine the value of $\frac{\partial{o_d}}{\partial{b_i}}$ for each layer. For $b_2$, this is done as follows:
+
+\begin{gather}
+    \begin{aligned}
+        \frac{\partial{o_d}}{\partial{b_2}} &= \frac{\partial}{\partial{b_2}}\sigma(\overrightarrow{net_2} + \overrightarrow{b_2}) \\
+        \frac{\partial{o_d}}{\partial{b_2}} &=\sigma'(\overrightarrow{net_2})
+    \end{aligned}
+\end{gather}
+
+For $b_1$, this is done as follows:
+
+\begin{gather}
+    \begin{aligned}
+        \frac{\partial{o_d}}{\partial{b_1}} &= \frac{\partial}{\partial{b_1}} \sigma(\mathbb W_2 \sigma(\mathbb W_1 \overrightarrow{x} + \overrightarrow{b_1}) + \overrightarrow{b_2})\\
+        \frac{\partial{o_d}}{\partial{b_1}} &= \sigma'(\overrightarrow{net_2})\mathbb W_2 \sigma'(\overrightarrow{net_1})
+    \end{aligned}
+\end{gather}
+
+The general workflow for utilizing the neural network is as follows:
+
+\begin{enumerate}
+    \item A neural network object is instantiated from a class, specifying the input size, the hidden layer size, and output size.
+    \item This network is then trained, using a training function that is contained within the object. This training procedure calculates a forward pass first by passing the input vector through the network, which yields an output. This output, as well as the target values from the input vector and a learning rate are passed through a backward pass, which updates the weights using the backpropagation equations determined above.
+    \item Once the network has been trained, it can be tested by passing it features and labels, where it calculates the accuracy of the model based on how many it correctly classifies.
+\end{enumerate}
+
+With all of the pertinent equations for the backpropagation algorithm determined, as well as the workflow, the focus then turned towards the actual implementation of the neural network through code for performing classification on the given dataset.
+
+\subsection{Implementation Details}
+
+This section outlines all details related to the implementation of the neural network, including the development platform and libraries used, the programmatic structure, the data structures used, the choice of hyperparameters, the details about the dataset, the pre-processing performed, as well as the design of the implementation. Experimental results are also examined. 
+
+\subsubsection{Development Platform \& Libraries Used}
+
+As was previously mentioned, all code written to implement the neural network with backpropagation was written in Python 3. The code was written on a Windows operating system, and was not tested on other operating systems, but it is assumed that it will run on any system that can run the Python programming language. The development of this algorithm was done using Microsoft's Visual Studio Code. The environment was configured to run Jupyter Notebook .ipynb files, which due to their ability to run code one cell at a time, are favoured for machine learning development. The Python 3 kernel that was utilized within this .ipynb environment was Python 3.12.5. Code versioning was controlled through Git utilizing a remote repository hosted on GitHub. The neural network itself, as well as the backpropagation algorithm, were written completely from scratch using Python's built-in functionalities as well as the \textit{Numpy} Python library for mathematical operations. The \textit{Pandas} Python library was utilized for data manipulation and exploratory analysis, and the \textit{scikit-learn} machine learning Python library was used to apply pre-processing to the data, as well as performing the train/test split. It must be noted that this machine learning library was not used for anything other than splitting data and applying standardization. It was not incorporated within the actual neural network class, and did not contribute to the development of the neural network other than being a tool for data separation and scaling. Finally, the \textit{matplotlib} and \textit{seaborn} Python libraries were utilized for visualization of both training and testing results. 
+
+\subsubsection{Program Structure}
+
+% talk about object oriented approach, maybe given example of the class, workflow of the document starting from loading data to testing.
+\subsubsection{Data Structures Used}
+% talk about pandas and numpy data structures used and how they were utilized.
+
+\subsubsection{Hyperparameter Selection}\label{ANNhyperparameterselection}
+
+% only real hyperparameters used were the epochs, learning rate, and the number of hidden neurons in the first layer. talk about them.
+
+% justify why only 1 hidden layer was chosen
+
+\subsection{Dataset Details}
+
+\subsection{Data Pre-processing}
+
+\subsection{Design of Implementation}
+
+\subsection{Experimental Results}
 
 \section{Conclusion}
 
