@@ -19,6 +19,8 @@ def define_seq_model(name, input_shape, n_layers, n_filters, kernel_size, pool_s
   cnn = models.Sequential(name=str(name))
 
   n_filters_2 = 2*n_filters
+  
+  # Dropout and batch normalization layers.
 
   # Define 2*n_layers + 1 layers by defining
   # a convolutional layer and pooling layer 
@@ -87,7 +89,8 @@ if __name__ == '__main__':
   x_trainval, x_test = x_trainval / 255.0, x_test / 255.0
 
   # Define a dictionary of test parameters to test different CNN 
-  # structures and shapes.
+  # structures and shapes. This set of parameters will 
+  # modulate the number of filters for each model.
   n_tests = 5
   params = {
     "test_id": [i for i in range(n_tests)],
@@ -99,8 +102,6 @@ if __name__ == '__main__':
     "use_max_pool": [True for _ in range(n_tests)]
   }
 
-  # print(params)
-
   # Define a dictionary to store test results
   results = {
      "test_id": [i for i in range(n_tests)],
@@ -108,41 +109,139 @@ if __name__ == '__main__':
   }
 
   # Run n_tests with the parameters defined above
-  for i in range(n_tests):
-      cnn = define_seq_model(
-        name=f'CNN{i}',
-        input_shape=params["input_shape"][i],
-        n_layers=params["n_layers"][i],
-        n_filters=params["n_filters"][i],
-        kernel_size=params["kernel_size"][i],
-        pool_size=params["pool_size"][i],
-        use_max_pool=params["use_max_pool"][i]
-      )
-      cnn.summary()
+  # for i in range(n_tests):
+  #     # Clear the Keras internal state before continuing
+  #     backend.clear_session(free_memory=True)
+      
+  #     # Create the model
+  #     cnn = define_seq_model(
+  #       name=f'CNN{i}',
+  #       input_shape=params["input_shape"][i],
+  #       n_layers=params["n_layers"][i],
+  #       n_filters=params["n_filters"][i],
+  #       kernel_size=params["kernel_size"][i],
+  #       pool_size=params["pool_size"][i],
+  #       use_max_pool=params["use_max_pool"][i]
+  #     )
+  #     cnn.summary()
 
-      # Clear the Keras internal state before continuing
-      backend.clear_session(free_memory=True)
+  #     # Compile the model
+  #     cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-      # Compile the model
-      cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+  #     # Train the model
+  #     history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=32, validation_data=(x_test, y_test), verbose=0)
 
-      # Train the model
-      history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=32, validation_data=(x_test, y_test), verbose=0)
+  #     # Store results
+  #     results["history"][i] = history.history 
 
-      # Store results
-      results["history"][i] = history.history 
+  # # Display all of the results from above
+  # for i in range(n_tests):
+  #   # plot training and validation history:
+  #   history = results["history"][i]
+  #   plt.plot(history['accuracy'], label='Training Accuracy')
+  #   plt.plot(history['val_accuracy'], label='Validation Accuracy')
+  #   plt.title(f'Test: {results["test_id"][i]}')
+  #   plt.xlabel('Epoch')
+  #   plt.ylabel('Accuracy')
+  #   plt.ylim([0.85, 1])
+  #   plt.legend(loc='lower right')
+  #   plt.show()
 
 
+  # Perform tests that use the same model with different training 
+  # parameters and structures. The following will be tested:
+  #   - The number of filters
+  #   - Learning rate using SGD as an optimizer
+  #   - Batch sizes
+  filters = [16, 32, 63]
+  filters_results = [None for _ in range(len(filters))]
+  for idx, f in enumerate(filters):
+    backend.clear_session()
+    cnn = define_seq_model(
+      name=f'CNN_LR',
+      input_shape=(28, 28, 1),
+      n_layers=3,
+      n_filters=f,
+      kernel_size=(3, 3),
+      pool_size=(2, 2),
+      use_max_pool=True
+    )
+    cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=512, validation_data=(x_test, y_test), verbose=0)
+    filters_results[idx] = history
 
-  # Display all of the results from above
-  for i in range(n_tests):
-    # plot training and validation history:
-    history = results["history"][i]
-    plt.plot(history['accuracy'], label='Training Accuracy')
-    plt.plot(history['val_accuracy'], label='Validation Accuracy')
-    plt.title(f'Test: {results["test_id"][i]}')
+  # Learning rate using SGD as an optimizer tests.
+  learning_rates = [0.1, 0.01, 0.001]
+  learning_rates_results = [None for _ in range(len(learning_rates))]
+  for idx, lr in enumerate(learning_rates):
+    backend.clear_session()
+    cnn = define_seq_model(
+      name=f'CNN_LR',
+      input_shape=(28, 28, 1),
+      n_layers=3,
+      n_filters=32,
+      kernel_size=(3, 3),
+      pool_size=(2, 2),
+      use_max_pool=True
+    )
+    opt = SGD(learning_rate=lr, momentum=0.9)
+    cnn.compile(optimizer=opt, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=512, validation_data=(x_test, y_test), verbose=0)
+    learning_rates_results[idx] = history
+
+  # Batch size tests.
+  batch_sizes = [128, 256, 512]
+  batch_sizes_results = [None for _ in range(len(batch_sizes))]
+  for idx, bs in enumerate(batch_sizes):
+    backend.clear_session()
+    cnn = define_seq_model(
+      name=f'CNN_BS',
+      input_shape=(28, 28, 1),
+      n_layers=3,
+      n_filters=32,
+      kernel_size=(3, 3),
+      pool_size=(2, 2),
+      use_max_pool=True
+    )
+    cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=bs, validation_data=(x_test, y_test), verbose=0)
+    batch_sizes_results[idx] = history
+
+  # Plot the results from the above tests 
+  plt.figure(figsize=(15, 15))
+  
+  # plot filters 
+  for i in range(3):
+    plt.subplot(3, 3, i+1)
+    plt.plot(filters_results[i].history['accuracy'], label='Training Accuracy')
+    plt.plot(filters_results[i].history['val_accuracy'], label = 'Validation Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
-    plt.ylim([0.85, 1])
+    plt.title(f'Number of Filters: {filters[i]}')
     plt.legend(loc='lower right')
-    plt.show()
+    plt.grid(True)
+    
+  # plot learning rate:
+  for i in range(3):
+    plt.subplot(2, 3, i+4)
+    plt.plot(learning_rates_results[i].history['accuracy'], label='Training Accuracy')
+    plt.plot(learning_rates_results[i].history['val_accuracy'], label = 'Validation Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.title(f'Learning Rate: {learning_rates[i]}')
+    plt.legend(loc='lower right')
+    plt.grid(True)
+
+  # plot batch size:
+  for i in range(3):
+    plt.subplot(2, 3, i+7)
+    plt.plot(batch_sizes_results[i].history['accuracy'], label='Training Accuracy')
+    plt.plot(batch_sizes_results[i].history['val_accuracy'], label = 'Validation Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.title(f'Batch Size: {batch_sizes[i]}')
+    plt.legend(loc='lower right')
+    plt.grid(True)
+
+  plt.tight_layout()
+  plt.show()
