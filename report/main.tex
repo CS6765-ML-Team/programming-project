@@ -2,7 +2,7 @@
 
 % Use the postscript times font!
 \usepackage{times}
-\usepackage{soul}
+\usepackage{soul, color}
 \usepackage[hyphens]{url}
 \usepackage[hidelinks]{hyperref}
 \usepackage[utf8]{inputenc}
@@ -466,29 +466,127 @@ With all of the pertinent equations for the backpropagation algorithm determined
 
 \subsection{Implementation Details}
 
-This section outlines all details related to the implementation of the neural network, including the development platform and libraries used, the programmatic structure, the data structures used, the choice of hyperparameters, the details about the dataset, the pre-processing performed, as well as the design of the implementation. Experimental results are also examined. 
+This section outlines all details related to the implementation of the neural network, including the development platform and libraries used, the programmatic structure, the data structures used, and the choice of hyperparameters.
 
 \subsubsection{Development Platform \& Libraries Used}
 
-As was previously mentioned, all code written to implement the neural network with backpropagation was written in Python 3. The code was written on a Windows operating system, and was not tested on other operating systems, but it is assumed that it will run on any system that can run the Python programming language. The development of this algorithm was done using Microsoft's Visual Studio Code. The environment was configured to run Jupyter Notebook .ipynb files, which due to their ability to run code one cell at a time, are favoured for machine learning development. The Python 3 kernel that was utilized within this .ipynb environment was Python 3.12.5. Code versioning was controlled through Git utilizing a remote repository hosted on GitHub. The neural network itself, as well as the backpropagation algorithm, were written completely from scratch using Python's built-in functionalities as well as the \textit{Numpy} Python library for mathematical operations. The \textit{Pandas} Python library was utilized for data manipulation and exploratory analysis, and the \textit{scikit-learn} machine learning Python library was used to apply pre-processing to the data, as well as performing the train/test split. It must be noted that this machine learning library was not used for anything other than splitting data and applying standardization. It was not incorporated within the actual neural network class, and did not contribute to the development of the neural network other than being a tool for data separation and scaling. Finally, the \textit{matplotlib} and \textit{seaborn} Python libraries were utilized for visualization of both training and testing results. 
+As was previously mentioned, all code written to implement the neural network with backpropagation was written in Python 3. The code was written on a Windows operating system, and was not tested on other operating systems, but it is assumed that it will run on any system that can run the Python programming language. The development of this algorithm was done using Microsoft's Visual Studio Code. The environment was configured to run Jupyter Notebook .ipynb files, which due to their ability to run code one cell at a time, are favoured for machine learning development. The Python 3 kernel that was utilized within this .ipynb environment was Python 3.12.5. Code versioning was controlled through Git utilizing a remote repository hosted on GitHub. The neural network itself, as well as the backpropagation algorithm, were written completely from scratch using Python's built-in functionalities as well as the \textit{Numpy} Python library for mathematical operations. The \textit{Pandas} Python library was utilized for data manipulation and exploratory analysis, and the \textit{scikit-learn} machine learning Python library was used to apply pre-processing to the data, as well as performing the train/test split. It must be noted that this machine learning library was not used for anything other than splitting data and applying standardization. It was not incorporated within the actual neural network class, and did not contribute to the development of the neural network other than being a tool for data separation and scaling. The \textit{matplotlib} and \textit{seaborn} Python libraries were utilized for visualization of both training and testing results, and the \textit{csv} python package was used to save initial weights when a good run occurred and load them to initialize the network. Finally the UC Irvine Machine Learning Python package \textit{ucimlrepo} was used to fetch the dataset, which was hosted on their website. 
 
 \subsubsection{Program Structure}
 
-% talk about object oriented approach, maybe given example of the class, workflow of the document starting from loading data to testing.
+The neural network code was implemented using a .ipynb file within VS Code, as mentioned previously. This meant that the code could be partitioned into sections, and each section must be run sequentially for the code to function. The sections are as follows:
+
+\begin{enumerate}
+    \item Importing Packages
+    \item Loading the Dataset
+    \item Examining the Dataset Properties
+    \item Dataset Pre-Processing
+    \item Function Definition
+    \item Training \& Testing the Model
+\end{enumerate}
+
+The general workflow of the program is as follows. Firstly, the relevant packages necessary to utilize the code are imported. Following this, the dataset is fetched from the UC Irvine Machine Learning repository. An exploratory analysis is performed on the data, which gets the total number of instances, the number of features, the number of unique target variables, and the names of each feature. Following this, the dataset is pre-processed, where it is examined for null values and standardized, and the labels are binary encoded from categorical values. Several functions are defined, as well as the main neural network class. A sigmoid function and its derivative were defined, as well as a ReLu function and its derivative. A binary cross entropy loss function was defined since the classification task is binary in nature. Following this, the neural network class was defined.
+
+As previously mentioned, an object-oriented approach was implemented for the neural network architecture. This allowed training, testing, and instantiating the network to be done utilizing functions inherent to the class. The class contains a constructor that takes the number of input neurons, the number of hidden neurons, and the expected output size. Within this constructor, weights are randomly initialized from a normal distribution. A feedforward function was defined that takes in the vector of inputs, and ensures that this vector is a column vector. Following this, the net and activated net are calculated for each layer, and the output is returned. A backpropagation function was defined that performs the backpropagation procedure for every weight and bias value, in accordance with the equations derived in Section \ref{ANNtheory}.
+
+The neural network class also contains training and testing functions. The training function takes in the training x and y values, as well as the validation x and y values, a number of epochs, and a learning rate. This training function utilizes every feature and computes the forward pass and back propagates for every example, for every epoch. In this regard, the training process utilizes stochastic gradient descent. The average binary cross entropy across all training examples per epoch is calculated as a loss metric, and a similar process occurs for validation data. This function returns the training loss history and the validation loss history. 
+
+The testing function effectively computes the forward pass, and extracts a class value from the sigmoid layer result, and if this predicted value is the same as the target, it increments the number of correct predictions. Accuracy is calculated as the number of correct predictions divided by the number of testing values examined. With the pertinent functions defined, a network is instantiated from the class, and it is trained using the training and validation data. Following this, the training and validation loss is plotted with respect to epochs, and the network is tested. A confusion matrix is generated to visualize the efficacy of the model. This entire process can be run by selecting ``run all" within the .ipynb file.
+
+
 \subsubsection{Data Structures Used}
-% talk about pandas and numpy data structures used and how they were utilized.
+
+When the data is initially fetched from the remote repo, it is imported as a special data structure called \textit{ucimlrepo.dotdict.dotdict}. This data type seems to be a dictionary of Pandas data frames because the feature and target values are stored within Pandas data frames. As mentioned previously, Pandas data frames were used extensively throughout this project due to their ease of manipulation and representation. This data frame structure allowed for exploratory analysis to be performed on the feature data, and the dataset could be examined in terms of how many instances there were, the number of features, the number of unique target variables, and the name of the features. A Pandas data frame also allows for using the \textit{.head()} handle to examine the first five rows of data, which allowed for quick visualization as the data was manipulated.
+
+Numpy arrays were utilized within the forward and backward pass operations due to their ease of mathematical computation and speed of computation compared to Pandas data frames. These arrays were also utilized to store the weights, biases, and activated nets of the network due to the mathematical operations to be performed using them. Data was fed into the network by extracting each row of the data frame and converting it to a Numpy column vector. Finally, lists were utilized to store the training and validation loss history, as well as the correct predictions and target values used in formulating the confusion matrix.
 
 \subsubsection{Hyperparameter Selection}\label{ANNhyperparameterselection}
 
-% only real hyperparameters used were the epochs, learning rate, and the number of hidden neurons in the first layer. talk about them.
+As was mentioned, the network designed had three layers: an input layer, a singular hidden layer, and an output layer. It was decided that the network would have one hidden layer for ease of formulation, and because of the simplicity of the binary classification task to be performed. Having one hidden layer made deriving the backpropagation equations simpler, as only four equations had to be determined: two for weights and two for biases. The network was able to extract the required relationships for correctly classifying a cell mass as benign of malignant at just one layer. As such, it was deemed that a single hidden layer was enough. It was decided that the activation function to be used within the hidden layer was to be a ReLu function, and the activation function to be used at the output was a sigmoid. The ReLu function was chosen to potentially combat any problems related to updating the weights, and the probabilistic sigmoid function was chosen because the classification task to be performed was binary, and the sigmoid function is capable of outputting within a range between 0 and 1. 
 
-% justify why only 1 hidden layer was chosen
+Therefore, the hyperparameters explored were the number of epochs, the learning rate, and the number of neurons within the hidden layer. 10 hyperparameter combinations were explored, and the average accuracy after 5 runs was recorded for each combination. This process was done to determine which hyperparameter combination had a higher accuracy on average, as that would lead to the best model performance. All of these tests were performed by randomly sampling the weights from a normal distribution, which had the downside of a fluctuating accuracy that could perform very poorly if the initial weights used for gradient descent were poor. This process then allowed for determining a good set of initial weights and biases, which were then flattened and stored into a CSV that is now loaded every time the model is ran. This hyperparameter analysis was therefore utilized to determine the best combination of hyperparameters and the best initial weights to be used. Weights and biases are not hyperparameters, but the combination of hyperparameters that produced the best accuracy was then examined further to determine the best initial weights. The results of this hyperparameter analysis are shown below within Table \ref{tbl:hyperparametertesting}.
+\newpage
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{||c c c c c||} 
+        \hline
+        Test \# & Epochs & $\eta$ & \# Hidden Neurons & Average Accuracy (\%) \\ [0.5ex] 
+        \hline\hline
+        1 & 1000 & 0.0001 & 30 & 91.99 \\
+        \hline
+        2 & 1000 & 0.00025 & 30 & 94.65 \\
+        \hline
+        3 & 1000 & 0.0005 & 30 & 93.72 \\
+        \hline
+        4 & 1000 & 0.001 & 30 & 96.28 \\
+        \hline
+        5 & 1500 & 0.0001 & 30 & 93.67 \\
+        \hline
+        6 & 1500 & 0.00025 & 30 & 96.05 \\
+        \hline
+        7 & 1500 & 0.0005 & 30 & 95.81 \\
+        \hline
+        8 & 1500 & 0.001 & 30 & 95.35 \\
+        \hline
+        9 & 1000 & 0.001 & 15 & 96.28 \\ 
+        \hline
+        10 & 1000 & 0.001 & 45 & 94.88 \\
+        \hline
+    \end{tabular}
+    \caption{Average accuracy after 5 trials for each hyperparameter combination explored.}
+    \label{tbl:hyperparametertesting}
+\end{table}
+
+The highest average accuracy after 5 runs was exhibited by Test 4, which was trained at 1000 epochs, a learning rate of 0.001, and had 30 hidden nodes. It was generally observed that as the number of hidden nodes increased, the accuracy fell. Lower numbers of hidden nodes had sporadic accuracy that varied greatly, with outliers that were omitted from the average accuracy calculation. This combination of hyperparameters was capable of producing an accuracy that was as high as 98.837\%, the highest accuracy that was exhibited. The initial weights and biases from this 98.837\% test run were saved as a CSV, and the neural network class was updated to include an option to utilize the saved weights. If the user does not want to load the weights, the weights and biases are randomly sampled.
 
 \subsection{Dataset Details}
 
+The dataset used was from the UC-Irvine Machine Learning Repository and was donated by the University of Wisconsin-Madison in 1995. It is considered a multivariate dataset, consisting of several breast mass features that were computed from digitized images of fine needle aspirate. These features describe the characteristics of the cell nuclei present within a given image. 10 real-valued features are of importance for this dataset, those being:
+
+\begin{enumerate}
+    \item radius (mean distances from the center to points on the perimeter)
+    \item texture (standard deviation of gray-scale values)
+    \item perimeter of the cell mass
+    \item area of the cell mass
+    \item smoothness (local variation in radius lengths)
+    \item compactness (measured by dividing the squared perimeter by the area, and subtracting 1)
+    \item concavity (severity of concave portions of the contour)
+    \item concave points (number of concave portions of the contour)
+    \item symmetry of the cell mass
+    \item fractal dimension (statistical metric for complexity, measured using the ``coastline approximation" - 1)
+\end{enumerate}
+
+For each of these real-valued features, there are 3 versions. These versions represent the mean, standard deviation, and worst-case value of each feature. In total, there are 30 features in this dataset. The target variable within this dataset is a diagnosis, either benign or malignant, which are represented categorically as either a B or an M, respectively. There were 569 examples within this dataset. The dataset was loaded using the UCI-ML \textit{fetchrepo} command and was subsequently ready for processing. 
+
 \subsection{Data Pre-processing}
 
+As mentioned, the dataset was loaded using the \textit{fetch\_ucirepo} command from the UCI-ML Python package. This command fetched the dataset from the UCI website, utilizing its intrinsic dataset ID, which was 17. This data was saved into a variable called \textit{breast}, as a unique class from the UCI-ML package, called \textit{ucimlrepo.dotdict.dotdict}, which is seemingly a dictionary-based class. This data was then split into features and target labels, by calling either \textit{.data.features} or \textit{.data.targets}, respectively. The feature values were saved into a Pandas data frame called \textit{breast\_x}, whereas the target values were saved into a Pandas data frame called \textit{breast\_y}. Following the importing and analysis of the Wisconsin Breast Cancer dataset, there arose a need to pre-process the data, as is the case with most machine learning applications. The pre-processing that was performed was an inquiry into the existence of null values, standardization of the values such that their values fell within a common range, and the categorical labels were encoded into binary 0 or 1, where 0 represents benign, and 1 represents malignant. 
+
+Null values were examined using the \textit{.isnull()} handle for Pandas data frames, combined with the \textit{.values.any()} handle from Python. This returned either True for null values, or False if no null values existed. If any null values were found within the dataset, the \textit{.dropna()} handle for Pandas data frames was used to remove all null values. This process was repeated for both the features and target values. Following this, the feature value was standardized. This was performed as the features of the input dataset had vast differences between their ranges, since different units were used for different features, as some measurements pertained to distances whereas some measurements pertained to areas or dimensionless concepts such as texture. The \textit{StandardScaler()} function from \textit{sklearn} was utilized to standardize the feature data. Finally, the categorical variables were encoded by indexing the ``Diagnosis" column of the target data frame, and mapping the value to 1 if the row value was ``M", and 0 if else. This effectively encoded the categorical data into a binary encoding suitable for use in a neural network. Following this, the dataset was split into 70\% training and 30\% testing/validation, which was then split using a 50-50 split. The entirety of this process can be seen within Appendix \hl{INSERT APPENDIX REF}.
+
 \subsection{Experimental Results}
+
+After detailing the theoretical background for the ANN structure, the libraries, platform, and data structures used, as well as the process of determining hyperparameters and analyzing the data set, it was thus time to test the dataset. Utilizing the hyperparameters and initialized weights determined in Section \ref{ANNhyperparameterselection}, the model was trained on the training data and the loss for both training and validation was visualized. Following this, the model was tested against the test dataset and a confusion matrix was generated to visualize its efficacy. To evaluate the model, the code was ran 10 times and the average accuracy was calculated. This meant that 10 models were generated with initialized weights, utilizing the same hyperparameters, and tested against a test set that was unique to that run. The average accuracy of the model after experimental evaluation was 95.56\%, with the highest measured accuracy being 98.837\%, and the lowest accuracy being 91.86\%. The training results and testing confusion matrix of the highest run are shown within Figures \ref{fig:anntrain} and \ref{fig:anncm}, respectively. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{images/ANNtrain.png}
+    \caption{Training results of the best run for testing the ANN.}
+    \label{fig:anntrain}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/ANNcm.png}
+    \caption{Confusion matrix results of the best run for testing the ANN.}
+    \label{fig:anncm}
+\end{figure}
+\newpage
+
+Overall, we are satisfied with the performance of the neural network. The developers of the dataset report an average accuracy of 92.308\% utilizing a neural network for classification, and for this neural network implementation developed from scratch, we are more than happy to find that we have exceeded this value. Loading the initialized weights and biases helped tremendously in the accuracy of the model by removing the possibility of severely low weights. Before initializing the weights from a set of pre-determined weights, there were instances where the test accuracy would be exceedingly low, as low as 65\% due to poor random sampling of initial weights. This would cause the training loss to never come down and approach a value close to zero, and as such the model performed quite poorly. By initializing the weights to a good initial guess, even when the model performed poorly it only reached a low accuracy of 91.86\%, far better than 65\%. The accuracy fluctuates around $\sim$ 95\% currently, and the performance varies due to the random nature of training using backpropagation and stochastic gradient descent. Because the training data is also randomized when it is split, some training runs might see examples with easy-to-extract relationships initially, whereas others might have closely related values that are not easy to determine.
+
+This model also has its performance capped due to only having 1 hidden layer, and might even realize higher levels of accuracy with a deeper network, but the average accuracy for this model was deemed to be sufficient for this application. As seen within Figure \ref{fig:anntrain} the model does not seem to be overfitting, as evidenced by the validation loss that steadily plateaus instead of increasing. The confusion matrix for the best test, as shown in Figure \ref{fig:anncm}, showcases that even for a partially imbalanced test set, the model is still able to realize high performances. Future work for this model could entail utilizing a deeper network, or processes such as dropout, regularization, or the use of batches.
 
 \section{Conclusion}
 
