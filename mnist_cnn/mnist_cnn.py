@@ -57,10 +57,12 @@ if __name__ == '__main__':
   test_labels_path = join(base_path, 't10k-labels-idx1-ubyte/t10k-labels-idx1-ubyte')
 
   # Load MINST dataset
-  mnist_dataloader = MnistDataloader(train_images_path, 
-                                    train_labels_path, 
-                                    test_images_path, 
-                                    test_labels_path)
+  mnist_dataloader = MnistDataloader(
+    train_images_path=train_images_path, 
+    train_labels_path=train_labels_path, 
+    test_images_path=test_images_path, 
+    test_labels_path=test_labels_path
+  )
 
   (x_trainval, y_trainval), (x_test, y_test) = mnist_dataloader.load_data()
 
@@ -88,72 +90,12 @@ if __name__ == '__main__':
   # Scale values to within normalized range
   x_trainval, x_test = x_trainval / 255.0, x_test / 255.0
 
-  # Define a dictionary of test parameters to test different CNN 
-  # structures and shapes. This set of parameters will 
-  # modulate the number of filters for each model.
-  n_tests = 5
-  params = {
-    "test_id": [i for i in range(n_tests)],
-    "input_shape": [(28, 28, 1) for _ in range(n_tests)],
-    "n_layers": [3 for _ in range(n_tests)],
-    "n_filters": [2**(i+1) for i in range(n_tests)],
-    "kernel_size": [(3, 3) for _ in range(n_tests)],
-    "pool_size": [(2, 2) for _ in range(n_tests)],
-    "use_max_pool": [True for _ in range(n_tests)]
-  }
-
-  # Define a dictionary to store test results
-  results = {
-     "test_id": [i for i in range(n_tests)],
-     "history": [None for _ in range(n_tests)]
-  }
-
-  # Run n_tests with the parameters defined above
-  # for i in range(n_tests):
-  #     # Clear the Keras internal state before continuing
-  #     backend.clear_session(free_memory=True)
-      
-  #     # Create the model
-  #     cnn = define_seq_model(
-  #       name=f'CNN{i}',
-  #       input_shape=params["input_shape"][i],
-  #       n_layers=params["n_layers"][i],
-  #       n_filters=params["n_filters"][i],
-  #       kernel_size=params["kernel_size"][i],
-  #       pool_size=params["pool_size"][i],
-  #       use_max_pool=params["use_max_pool"][i]
-  #     )
-  #     cnn.summary()
-
-  #     # Compile the model
-  #     cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-
-  #     # Train the model
-  #     history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=32, validation_data=(x_test, y_test), verbose=0)
-
-  #     # Store results
-  #     results["history"][i] = history.history 
-
-  # # Display all of the results from above
-  # for i in range(n_tests):
-  #   # plot training and validation history:
-  #   history = results["history"][i]
-  #   plt.plot(history['accuracy'], label='Training Accuracy')
-  #   plt.plot(history['val_accuracy'], label='Validation Accuracy')
-  #   plt.title(f'Test: {results["test_id"][i]}')
-  #   plt.xlabel('Epoch')
-  #   plt.ylabel('Accuracy')
-  #   plt.ylim([0.85, 1])
-  #   plt.legend(loc='lower right')
-  #   plt.show()
-
-
   # Perform tests that use the same model with different training 
   # parameters and structures. The following will be tested:
   #   - The number of filters
   #   - Learning rate using SGD as an optimizer
   #   - Batch sizes
-  filters = [16, 32, 63]
+  filters = [16, 32, 64]
   filters_results = [None for _ in range(len(filters))]
   for idx, f in enumerate(filters):
     backend.clear_session()
@@ -223,7 +165,7 @@ if __name__ == '__main__':
     
   # plot learning rate:
   for i in range(3):
-    plt.subplot(2, 3, i+4)
+    plt.subplot(3, 3, i+4)
     plt.plot(learning_rates_results[i].history['accuracy'], label='Training Accuracy')
     plt.plot(learning_rates_results[i].history['val_accuracy'], label = 'Validation Accuracy')
     plt.xlabel('Epoch')
@@ -234,7 +176,7 @@ if __name__ == '__main__':
 
   # plot batch size:
   for i in range(3):
-    plt.subplot(2, 3, i+7)
+    plt.subplot(3, 3, i+7)
     plt.plot(batch_sizes_results[i].history['accuracy'], label='Training Accuracy')
     plt.plot(batch_sizes_results[i].history['val_accuracy'], label = 'Validation Accuracy')
     plt.xlabel('Epoch')
