@@ -11,33 +11,38 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 from mnist_data_loader import MnistDataloader
 
-def make_model(name, cnn_layers_number):
+def define_seq_model(name, input_shape, n_layers, n_filters, kernel_size, pool_size, use_max_pool=True):
   """ Create the CNN model with provided
   name and number of layers.
   """
-  name = str(name)
+  # Instantiate a sequential model:
+  cnn = models.Sequential(name=str(name))
 
-  # instantiate model:
-  cnn = models.Sequential(name=name)
+  n_filters_2 = 2*n_filters
 
-  # our convolutional layer has 32 filters and a kernel size of 3x3
-  # the input shape must be 28x28x1, as we have 28x28 pixel images one channel
-  # max pooling is used to reduce dimensionality
-  # this process is repeated for cnn_layers_number times
+  # Define 2*n_layers + 1 layers by defining
+  # a convolutional layer and pooling layer 
+  # n_layers times, in addition to a single
+  # Input layer. The parameters of these layers,
+  # the input shape, number of filters, kernel size,
+  # pool size, and whether to use max or average pooling,
+  # can all be configured through the parameters of this function.
+  cnn.add(layers.Input(shape=input_shape))
+  cnn.add(layers.Conv2D(filters=n_filters, kernel_size=kernel_size, activation='relu', name='Conv0'))
+  pool_layer = layers.MaxPooling2D(pool_size, name='MaxPool0') if use_max_pool else layers.AveragePooling2D(pool_size, name='AvgPool0')
+  cnn.add(pool_layer)
+  for i in range(n_layers-1):
+    cnn.add(layers.Conv2D(filters=n_filters_2, kernel_size=kernel_size, activation='relu', name=f'Conv{i+1}'))
+    pool_layer = layers.MaxPooling2D(pool_size, name=f'MaxPool{i+1}') if use_max_pool else layers.AveragePooling2D(pool_size, name=f'AvgPool{i+1}')
+    cnn.add(pool_layer)
 
-  for i in range(cnn_layers_number):
-    if (i == 0):
-      cnn.add(layers.Conv2D(32,(3,3), activation = 'relu', input_shape = (28,28,1), name = f'Conv{i+1}'))
-      cnn.add(layers.MaxPooling2D((2,2), name = f'MaxPool{i+1}'))
-    else:
-      cnn.add(layers.Conv2D(64,(3,3), activation = 'relu', name = f'Conv{i+1}'))
-      cnn.add(layers.MaxPooling2D((2,2), name = f'MaxPool{i+1}'))
+  # Need to add the fully connected layers so that 
+  # the feature vector we extract can be used 
+  # to classify images into categories
 
-  # need to add the fully connected layers so that the feature vector we extract can be used to classify images into categories
-
-  cnn.add(layers.Flatten(name = 'Flattening'))                          # convert to vector for FCN
-  cnn.add(layers.Dense(100, activation = 'relu', name = 'Dense'))       # fully connected dense layer for classification
-  cnn.add(layers.Dense(10, activation = 'softmax', name = 'Softmax'))   # using softmax to convert from logits to probability
+  cnn.add(layers.Flatten(name='Flattening'))                      # convert to vector for FCN
+  cnn.add(layers.Dense(100, activation='relu', name='Dense'))     # fully connected dense layer for classification
+  cnn.add(layers.Dense(10, activation='softmax', name='Softmax')) # using softmax to convert from logits to probability
 
   return cnn
 
@@ -84,11 +89,19 @@ if __name__ == '__main__':
   # Scale values to within normalized range
   x_trainval, x_test = x_trainval / 255.0, x_test / 255.0
 
-  cnn = make_model('CNN1', 3)
+  cnn = define_seq_model(
+    name="CNN1",
+    input_shape=(28, 28, 1),
+    n_layers=3,
+    n_filters=32,
+    kernel_size=(3, 3),
+    pool_size=(2, 2),
+    use_max_pool=True
+  )
   cnn.summary()
 
   # First compile the model
-  backend.clear_session()
+  backend.clear_session(free_memory=True)
   cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
   # Train the model
