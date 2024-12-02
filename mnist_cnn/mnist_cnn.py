@@ -68,50 +68,81 @@ if __name__ == '__main__':
   x_test_dim = x_test.shape
   y_test_dim = y_test.shape
 
-  NUM_CLASS = len(np.unique(y_trainval))
-  print(f"There are {NUM_CLASS} unique classes")
-
+  print(f"There are {len(np.unique(y_trainval))} unique classes")
   print(f"There are {x_trainval_dim[0]} samples in the training dataset, each of size {x_trainval_dim[1], x_trainval_dim[2]}\n"
         f"There are {x_test_dim[0]} samples in the testing dataset ")
-
   print(f"The training label set has dimension of {y_trainval_dim}")
 
   # Randomly show some images
-  for i in range(9):
-      index = np.random.randint(0, x_trainval_dim[0])
-      plt.subplot(3, 3, i+1)
-      plt.title(str(y_trainval[index]))
-      plt.imshow(x_trainval[index], cmap='gray')
-      plt.axis('off')
+  # for i in range(9):
+  #     index = np.random.randint(0, x_trainval_dim[0])
+  #     plt.subplot(3, 3, i+1)
+  #     plt.title(str(y_trainval[index]))
+  #     plt.imshow(x_trainval[index], cmap='gray')
+  #     plt.axis('off')
 
-  plt.show()
+  # plt.show()
 
   # Scale values to within normalized range
   x_trainval, x_test = x_trainval / 255.0, x_test / 255.0
 
-  cnn = define_seq_model(
-    name="CNN1",
-    input_shape=(28, 28, 1),
-    n_layers=3,
-    n_filters=32,
-    kernel_size=(3, 3),
-    pool_size=(2, 2),
-    use_max_pool=True
-  )
-  cnn.summary()
+  # Define a dictionary of test parameters to test different CNN 
+  # structures and shapes.
+  n_tests = 5
+  params = {
+    "test_id": [i for i in range(n_tests)],
+    "input_shape": [(28, 28, 1) for _ in range(n_tests)],
+    "n_layers": [3 for _ in range(n_tests)],
+    "n_filters": [2**(i+1) for i in range(n_tests)],
+    "kernel_size": [(3, 3) for _ in range(n_tests)],
+    "pool_size": [(2, 2) for _ in range(n_tests)],
+    "use_max_pool": [True for _ in range(n_tests)]
+  }
 
-  # First compile the model
-  backend.clear_session(free_memory=True)
-  cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+  # print(params)
 
-  # Train the model
-  history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=32, validation_data=(x_test, y_test), verbose=0)
+  # Define a dictionary to store test results
+  results = {
+     "test_id": [i for i in range(n_tests)],
+     "history": [None for _ in range(n_tests)]
+  }
 
-  # plot training and validation history:
-  plt.plot(history.history['accuracy'], label='Training Accuracy')
-  plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
-  plt.xlabel('Epoch')
-  plt.ylabel('Accuracy')
-  plt.ylim([0.85, 1])
-  plt.legend(loc='lower right')
-  plt.show()
+  # Run n_tests with the parameters defined above
+  for i in range(n_tests):
+      cnn = define_seq_model(
+        name=f'CNN{i}',
+        input_shape=params["input_shape"][i],
+        n_layers=params["n_layers"][i],
+        n_filters=params["n_filters"][i],
+        kernel_size=params["kernel_size"][i],
+        pool_size=params["pool_size"][i],
+        use_max_pool=params["use_max_pool"][i]
+      )
+      cnn.summary()
+
+      # Clear the Keras internal state before continuing
+      backend.clear_session(free_memory=True)
+
+      # Compile the model
+      cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+      # Train the model
+      history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=32, validation_data=(x_test, y_test), verbose=0)
+
+      # Store results
+      results["history"][i] = history.history 
+
+
+
+  # Display all of the results from above
+  for i in range(n_tests):
+    # plot training and validation history:
+    history = results["history"][i]
+    plt.plot(history['accuracy'], label='Training Accuracy')
+    plt.plot(history['val_accuracy'], label='Validation Accuracy')
+    plt.title(f'Test: {results["test_id"][i]}')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.ylim([0.85, 1])
+    plt.legend(loc='lower right')
+    plt.show()
