@@ -712,6 +712,7 @@ print(f"validation data has form: {x_val.shape}, labels are: {y_val.shape}")
 print(f"test data has form: {x_test.shape}, labels are: {y_test.shape}")
 \end{lstlisting}
 
+\newpage
 \textbf{Function Definition:}
 \begin{lstlisting}[basicstyle= \scriptsize]
 # define useful functions:
@@ -738,7 +739,7 @@ def binary_crossentropy_loss(target, output):
     loss = - (target * np.log(output) + (1 - target) * np.log(1 - output))  # BCE formula
     return loss    
 \end{lstlisting}
-\newpage
+
 \textbf{Neural Network Class Definition:}
 
 \begin{lstlisting}[basicstyle= \scriptsize]
