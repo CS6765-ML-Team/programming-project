@@ -13,8 +13,10 @@
 \usepackage{subcaption}
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
+\usepackage{listings}
 \usepackage[a4paper, portrait, margin=1in]{geometry}
 \urlstyle{same}
+\usepackage{listings}
 
 \usepackage{parskip}
 
@@ -604,6 +606,361 @@ This model also has its performance capped due to only having 1 hidden layer, an
 
 \newpage
 \section{Neural Network Code}
+\textbf{Importing Packages:}
+\begin{lstlisting}
+# import packages:
+from ucimlrepo import fetch_ucirepo                   # used to fetch dataset
+import numpy as np                                    # used for math operations
+import pandas as pd                                   # used to manipulate data
+from sklearn.model_selection import train_test_split  # used to split the data
+from sklearn.metrics import confusion_matrix          # used to make cm
+from sklearn.preprocessing import StandardScaler      # used to standardize the data
+import csv                                            # used to load CSVs
+
+import seaborn as sns                 # used for visualization of confusion matrix
+import matplotlib.pyplot as plt       # used for visualization of training loss
+\end{lstlisting} 
+
+\textbf{Loading the Dataset:}
+\begin{lstlisting}
+# because the dataset is from the UCI ML repo, we can use their functions to fetch from their website:
+breast_data = fetch_ucirepo(id = 17)
+
+# can now access the data:
+breast_x = breast_data.data.features    # extract the features from the dict into a pandas data frame
+breast_y = breast_data.data.targets     # extract the labels from the dict into a pandas data frame
+\end{lstlisting}
+
+\textbf{Examining Dataset Properties:}
+\begin{lstlisting}
+# get the total number of instances:
+print(f"there are {breast_x.shape[0]} examples in the dataset")
+
+# get number of features:
+print(f"there are {breast_x.shape[1]} distinct features to train on")
+
+# get the number of unique target variables:
+print(f"the available diagnoses are: {breast_y['Diagnosis'].unique()}")
+
+# get the names of the features:
+print(f"the available features are: \n")
+for col in breast_x.columns:    # for every column in the data frame, 
+    print(col)                  # print the column    
+\end{lstlisting}
+
+\textbf{Dataset Pre-Processing:}
+\begin{lstlisting}
+# check for null values in the features:
+null = breast_x.isnull().values.any()   
+
+# if any null values exist, drop them, else pass
+if null == True:
+    breast_x = breast_x.dropna() 
+    print(f'null values removed from features')
+else:
+    print(f'no null values detected in features')
+
+# check for null values in the labels, same process as above
+null = breast_y.isnull().values.any()
+if null == True:
+    breast_y = breast_y.dropna()
+    print(f'null values removed from labels')
+else:
+    print(f'no null values detected in labels')
+    
+# standardize values by defining a scaler and fitting data to scaler:
+scaler = StandardScaler()
+x_scaled = pd.DataFrame(scaler.fit_transform(breast_x))
+print('features scaled')
+
+# encode benign to 0, and malignant to 1
+breast_y =  pd.DataFrame(breast_y['Diagnosis'].map(lambda row: 1 if row == 'M' else 0))
+print('labels encoded: M = 1, B = 0')
+breast_y.head()
+
+# partition data -> want 70% train, 15% validation, 15% testing
+x_train, dummy_x, y_train, dummy_y = train_test_split(x_scaled, breast_y, train_size = 0.7, test_size = 0.3)
+x_val, x_test, y_val, y_test = train_test_split(dummy_x, dummy_y, train_size = 0.5, test_size = 0.5)
+
+print(f"training data has form: {x_train.shape}, labels are: {y_train.shape}")
+print(f"validation data has form: {x_val.shape}, labels are: {y_val.shape}")
+print(f"test data has form: {x_test.shape}, labels are: {y_test.shape}")
+\end{lstlisting}
+
+\textbf{Function Definition:}
+\begin{lstlisting}
+# define useful functions:
+
+# logistic sigmoid function
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+# derivative of the sigmoid function
+def sigmoid_derivative(x):
+    return sigmoid(x) * (1 - sigmoid(x))
+
+# rectified linear unit (basically a straight line)
+def relu(x):
+    return np.maximum(0, x)
+
+# derivative function of relu (accepts np.arrays)
+def relu_derivative(x):
+    return (x > 0).astype(float)
+
+# binary cross entropy -> for binary classification between 0 & 1
+def binary_crossentropy_loss(target, output):
+    output = np.clip(output, 1e-10, 1 - 1e-10)                              # clip to prevent log 0
+    loss = - (target * np.log(output) + (1 - target) * np.log(1 - output))  # BCE formula
+    return loss    
+\end{lstlisting}
+\newpage
+\textbf{Neural Network Class Definition:}
+
+\begin{lstlisting}
+# create neural network class:
+"""
+this class accepts:
+
+input_size: number of input neurons
+hidden_size: number of hidden neurons
+output_size: expected number of output neurons
+load: whether or not to load initialized weights
+
+"""
+class NeuralNetwork:
+    # constructor:
+    def __init__(self, input_size, hidden_size, output_size, load):
+        # assign function inputs as instance variables:
+        self.input_size = input_size        # assign input neurons
+        self.hidden_size = hidden_size      # assign hidden neurons
+        self.output_size = output_size      # assign output neurons
+
+        # if the user wants to load the pre-initialized weights and biases:
+        if load == True:
+            # open the CSV and read it:
+            with open('initial_weights.csv', 'r') as f:
+                reader = csv.reader(f)
+
+                # for every value in each row, return as float to np.array:
+                w1_flat = np.array([float(val) for val in next(reader)])
+                b1_flat = np.array([float(val) for val in next(reader)])
+                w2_flat = np.array([float(val) for val in next(reader)])
+                b2_flat = np.array([float(val) for val in next(reader)])
+
+                # ensure that weights are in the correct dimensions:
+                self.w1 = w1_flat.reshape(hidden_size, input_size)
+                self.b1 = b1_flat.reshape(hidden_size, 1)
+                self.w2 = w2_flat.reshape(output_size, hidden_size)
+                self.b2 = b2_flat.reshape(output_size, 1)
+
+                # print to user that it was a success:
+                print('weights loaded')
+                print("w1 shape:", self.w1.shape, 'w1 type:', type(self.w1))
+                print("b1 shape:", self.b1.shape, 'b1 type:', type(self.b1))
+                print("w2 shape:", self.w2.shape, 'w2 type:', type(self.w2))
+                print("b2 shape:", self.b2.shape, 'b2 type:', type(self.b2))
+
+        # if not, randomly initialize weights and biases for the layers:
+        else:
+
+            # from input to hidden:
+            self.w1 = np.random.randn(hidden_size, input_size)
+            self.b1 = np.random.randn(hidden_size, 1)
+
+            # from hidden to output:
+            self.w2 = np.random.randn(output_size, hidden_size)
+            self.b2 = np.random.randn(output_size, 1)
+
+            # print to user that it was a success:
+            print('weights randomly initialized')
+            print("w1 shape:", self.w1.shape, 'w1 type:', type(self.w1))
+            print("b1 shape:", self.b1.shape, 'b1 type:', type(self.b1))
+            print("w2 shape:", self.w2.shape, 'w2 type:', type(self.w2))
+            print("b2 shape:", self.b2.shape, 'b2 type:', type(self.b2))
+
+
+    # feedforward function:
+    def forward_pass(self, x):
+        # make sure x is a column vector:
+        x = x.reshape((self.input_size, 1))
+
+        # from input to hidden:
+        self.net1 = np.dot(self.w1, x) + self.b1    # calculate net1
+        self.h1 = relu(self.net1)                   # calculate output of hidden layer
+
+        # from hidden to output:
+        self.net2 = np.dot(self.w2, self.h1) + self.b2  # calculate net2
+        self.o = sigmoid(self.net2)                     # calculate output of network
+
+        return self.o       # return value to user
+    
+    # backpropagation:
+    def backward_pass(self, x, y, learning_rate):
+        # make sure x is a column vector:
+        x = x.reshape((self.input_size, 1))
+
+        # get o - t:
+        o_error = self.o - y
+
+        # get gradients for weights and biases at the output layer:
+        de_dw2 = np.dot((o_error * sigmoid_derivative(self.net2)), self.h1.T)   # this is the partial derivative of E wrt. W2
+        de_db2 = o_error * sigmoid_derivative(self.net2)                        # this is the partial derivative of E wrt. B2
+
+        # get gradients for weights and biases at the input layer:
+
+        # this is an intermediary value because I was getting lost in the matrix dimensions
+        delta_1 = np.dot(self.w2.T, o_error * sigmoid_derivative(self.net2)) * relu_derivative(self.net1)  
+        de_dw1 = np.dot(delta_1, x.T)   # this is the partial derivative of E wrt. W1
+        de_db1 = delta_1                # this is the partial derivative of E wrt. B1
+
+        # update weights and biases:
+        self.w1 -= learning_rate  * de_dw1  # update w1
+        self.b1 -= learning_rate  * de_db1  # update b1
+        self.w2 -= learning_rate  * de_dw2  # update w2
+        self.b2 -= learning_rate  * de_db2  # update b2
+
+    # training:
+    def train(self, x_train, y_train, x_val, y_val, epochs, learning_rate):
+        # used in the plotting:
+        self.epochs = epochs
+        
+        # initialize lists for appending train and val history to:
+        train_loss_history = []
+        val_loss_history = []
+
+        # for every epoch:
+        for epoch in range(epochs):
+            total_train_loss = 0    # reset train loss for new epoch
+            total_val_loss = 0      # reset val loss for new epoch
+
+            # training loop:
+            for i in range(x_train.shape[0]):
+                # extract example:
+                x = x_train.iloc[i].values
+
+                # get target for that example:
+                target = y_train.iloc[i].values
+
+                # compute forward pass:
+                output = self.forward_pass(x)
+
+                # backpropagate:
+                self.backward_pass(x, target, learning_rate)
+
+                # get loss:
+                loss = binary_crossentropy_loss(target, output)
+                total_train_loss += loss    # add to total loss  
+
+            # get average BCE for train for that epoch:
+            average_train_loss_per_epoch = total_train_loss / x_train.shape[0]
+            train_loss_history.append(average_train_loss_per_epoch)
+
+            # validation loop:
+            for i in range(x_val.shape[0]):
+                # extract example:
+                x = x_val.iloc[i].values
+
+                # get target for that example:
+                target = y_val.iloc[i].values
+
+                # compute forward pass:
+                output = self.forward_pass(x)
+
+                # get loss:
+                loss = binary_crossentropy_loss(target, output)
+                total_val_loss += loss    # add to total loss 
+            
+            # get average BCE for val:
+            average_val_loss_per_epoch = total_val_loss / x_val.shape[0]
+            val_loss_history.append(average_val_loss_per_epoch)
+
+            # print values to user:
+            print(f"epoch: {epoch + 1}/{epochs} 
+                    | train loss was: {round(float(average_train_loss_per_epoch), 6)} 
+                    | val loss was: {round(float(average_val_loss_per_epoch), 6)}")  
+
+        return np.array(train_loss_history).reshape(-1, 1), np.array(val_loss_history).reshape(-1, 1)
+
+    # testing:
+    def test(self, x_test, y_test):
+        # need to get the output for each value of x_test, compare against y_test:
+        correct_predictions = 0
+
+        # initialize lists for appending values to:
+        targets = []
+        predictions = []
+
+        for i in range(x_test.shape[0]):
+            # extract example:
+            x = x_test.iloc[i].values
+
+            # extract target:
+            target = y_test.iloc[i].values
+
+            # compute forward pass:
+            output = self.forward_pass(x)
+
+            # get class value from sigmoid value if over threshold:
+            prediction = 1 if output >= 0.5 else 0
+
+            print(f"predicted: {prediction} | true: {target}")
+
+            # append to lists, these are used for confusion matrix:
+            predictions.append(prediction)
+            targets.append(target)
+
+            # if correct, add to successes:
+            if prediction == target:
+                correct_predictions += 1
+
+        # print accuracy:
+        accuracy = round((correct_predictions / x_test.shape[0]) * 100, 3)
+        print(f"accuracy of model is: {accuracy}")
+
+        return predictions, targets, accuracy   
+\end{lstlisting}
+
+\textbf{Training the Model:}
+
+\begin{lstlisting}
+# instantiate a network:
+nn = NeuralNetwork(input_size = 30, hidden_size = 15, output_size = 1, load = True)
+
+# run the training with the hyperparameters you want, return losses for plotting:
+train_loss_history, val_loss_history = nn.train(x_train, y_train, x_val, y_val, epochs = 1000, learning_rate = 0.001)
+
+# plotting stuff:
+epochs = np.arange(1, nn.epochs + 1, 1).reshape(-1,1)
+
+# plot training & validation loss:
+fig = plt.figure(figsize = (12,6))
+plt.plot(epochs, train_loss_history, label = 'training')
+plt.plot(epochs, val_loss_history, label = 'validation')
+plt.title('loss vs. epochs')
+plt.ylabel('average binary crossentropy loss per sample')
+plt.xlabel('epochs')
+plt.legend()
+plt.xlim([1, nn.epochs])
+plt.grid('both')
+plt.show()
+\end{lstlisting}
+
+\newpage
+\textbf{Testing the Model:}
+\begin{lstlisting}
+# take the model that is already trained and use it to predict the class of tumour based on data:
+predictions, targets, accuracy = nn.test(x_test, y_test)
+
+# generate a confusion matrix:
+cm = confusion_matrix(targets, predictions)
+
+# plot the confusion matrix:
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Benign', 'Malignant'], yticklabels=['Benign', 'Malignant'])
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+plt.show()
+\end{lstlisting}
 
 \newpage
 \section{Naive Bayes Code}
