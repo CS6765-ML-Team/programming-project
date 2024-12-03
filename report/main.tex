@@ -17,6 +17,31 @@
 \usepackage[a4paper, portrait, margin=1in]{geometry}
 \urlstyle{same}
 \usepackage{listings}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+\lstset{language=Python}
 
 \usepackage{parskip}
 
@@ -607,7 +632,7 @@ This model also has its performance capped due to only having 1 hidden layer, an
 \newpage
 \section{Neural Network Code}
 \textbf{Importing Packages:}
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle= \scriptsize]
 # import packages:
 from ucimlrepo import fetch_ucirepo                   # used to fetch dataset
 import numpy as np                                    # used for math operations
@@ -622,7 +647,7 @@ import matplotlib.pyplot as plt       # used for visualization of training loss
 \end{lstlisting} 
 
 \textbf{Loading the Dataset:}
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle= \scriptsize]
 # because the dataset is from the UCI ML repo, we can use their functions to fetch from their website:
 breast_data = fetch_ucirepo(id = 17)
 
@@ -632,7 +657,7 @@ breast_y = breast_data.data.targets     # extract the labels from the dict into 
 \end{lstlisting}
 
 \textbf{Examining Dataset Properties:}
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle= \scriptsize]
 # get the total number of instances:
 print(f"there are {breast_x.shape[0]} examples in the dataset")
 
@@ -649,7 +674,7 @@ for col in breast_x.columns:    # for every column in the data frame,
 \end{lstlisting}
 
 \textbf{Dataset Pre-Processing:}
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle= \scriptsize]
 # check for null values in the features:
 null = breast_x.isnull().values.any()   
 
@@ -688,7 +713,7 @@ print(f"test data has form: {x_test.shape}, labels are: {y_test.shape}")
 \end{lstlisting}
 
 \textbf{Function Definition:}
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle= \scriptsize]
 # define useful functions:
 
 # logistic sigmoid function
@@ -716,7 +741,7 @@ def binary_crossentropy_loss(target, output):
 \newpage
 \textbf{Neural Network Class Definition:}
 
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle= \scriptsize]
 # create neural network class:
 """
 this class accepts:
@@ -922,7 +947,7 @@ class NeuralNetwork:
 
 \textbf{Training the Model:}
 
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle= \scriptsize]
 # instantiate a network:
 nn = NeuralNetwork(input_size = 30, hidden_size = 15, output_size = 1, load = True)
 
@@ -947,7 +972,7 @@ plt.show()
 
 \newpage
 \textbf{Testing the Model:}
-\begin{lstlisting}
+\begin{lstlisting}[basicstyle= \scriptsize]
 # take the model that is already trained and use it to predict the class of tumour based on data:
 predictions, targets, accuracy = nn.test(x_test, y_test)
 
