@@ -1,13 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import cv2
-import tensorflow as tf
 
 from os.path import join
 from keras import models, layers, backend
 from keras.api.optimizers import SGD
-from sklearn.utils import shuffle
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 from mnist_data_loader import MnistDataloader
 
@@ -126,6 +122,38 @@ if __name__ == '__main__':
   # Scale values to within normalized range
   x_trainval, x_test = x_trainval / 255.0, x_test / 255.0
 
+  # Perform a control test where we use the following default
+  # CNN structure parameters:
+  #   - Number of layers: 3
+  #   - Number of filters: 32
+  #   - Size of filters: (3, 3)
+  #   - No Drop-Out layers
+  #   - No Batch Normalization layers
+  #   - Max Pooling
+  #   - Pooling size: (2, 2)
+  backend.clear_session()
+  control_cnn = define_seq_model(
+    name=f'CNN_CTRL',
+    input_shape=(28, 28, 1),
+    n_layers=3,
+    n_filters=32,
+    kernel_size=(3, 3),
+    pool_size=(2, 2),
+  )
+  control_cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+  control_history = control_cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=512, validation_data=(x_test, y_test), verbose=0)
+
+  # Plot the control CNN
+  plt.plot(control_history.history['accuracy'], label='Training Accuracy')
+  plt.plot(control_history.history['val_accuracy'], label='Validation Accuracy')
+  plt.xlabel('Epoch')
+  plt.ylabel('Accuracy')
+  plt.ylim([0.8, 1])
+  plt.legend(loc='lower right')
+  plt.grid(True)
+  plt.tight_layout()
+  plt.show()
+
   # Perform tests that use different model structures:
   #   - Different number of filters
   #   - Different number of layers
@@ -139,7 +167,7 @@ if __name__ == '__main__':
   for idx, f in enumerate(filters):
     backend.clear_session()
     cnn = define_seq_model(
-      name=f'CNN_FI',
+      name=f'CNN_FI{idx}',
       input_shape=(28, 28, 1),
       n_layers=3,
       n_filters=f,
@@ -156,7 +184,7 @@ if __name__ == '__main__':
   for idx, l in enumerate(n_layers):
     backend.clear_session()
     cnn = define_seq_model(
-      name=f'CNN_LY',
+      name=f'CNN_LY{idx}',
       input_shape=(28, 28, 1),
       n_layers=l,
       n_filters=32,
@@ -166,6 +194,34 @@ if __name__ == '__main__':
     cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=512, validation_data=(x_test, y_test), verbose=0)
     layers_results[idx] = history
+  
+  # Plot result of changing the number of filters 
+  for i in range(3):
+    plt.subplot(2, 3, i+1)
+    plt.plot(filters_results[i].history['accuracy'], label='Training Accuracy')
+    plt.plot(filters_results[i].history['val_accuracy'], label='Validation Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.title(f'Number of Filters: {filters[i]}')
+    plt.legend(loc='lower right')
+    plt.grid(True)
+  
+  # Plot result of changing the number of layers 
+  for i in range(3):
+    plt.subplot(2, 3, i+4)
+    plt.plot(layers_results[i].history['accuracy'], label='Training Accuracy')
+    plt.plot(layers_results[i].history['val_accuracy'], label='Validation Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.title(f'Number of Layers: {n_layers[i]}')
+    plt.legend(loc='lower right')
+    plt.grid(True)
+
+  # Show the above plots
+  plt.tight_layout()
+  plt.show()
+
+  #######
 
   # Addition of Dropout layers with varying dropout rates
   dropout_rates = [0.1, 0.2, 0.5]
@@ -173,7 +229,7 @@ if __name__ == '__main__':
   for idx, rate in enumerate(dropout_rates):
     backend.clear_session()
     cnn = define_seq_model(
-      name=f'CNN_DO',
+      name=f'CNN_DO{idx}',
       input_shape=(28, 28, 1),
       n_layers=3,
       n_filters=32,
@@ -185,32 +241,19 @@ if __name__ == '__main__':
     cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=512, validation_data=(x_test, y_test), verbose=0)
     dropout_rates_results[idx] = history
-    
-  # Plot result of changing the number of filters 
-  for i in range(3):
-    plt.subplot(3, 3, i+1)
-    plt.plot(filters_results[i].history['accuracy'], label='Training Accuracy')
-    plt.plot(filters_results[i].history['val_accuracy'], label='Validation Accuracy')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.title(f'Number of Filters: {filters[i]}')
-    plt.legend(loc='lower right')
-    plt.grid(True)
-  
-  # Plot result of changing the number of layers 
-  for i in range(3):
-    plt.subplot(3, 3, i+4)
-    plt.plot(layers_results[i].history['accuracy'], label='Training Accuracy')
-    plt.plot(layers_results[i].history['val_accuracy'], label='Validation Accuracy')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.title(f'Number of Layers: {n_layers[i]}')
-    plt.legend(loc='lower right')
-    plt.grid(True)
 
-  # Plot result of adding Dropout layers with different dropout rates 
+  # Plot result of adding Dropout layers with different dropout rates, compared
+  # to the control CNN that was tested with no dropout layers
+  plt.subplot(2, 2, 1)
+  plt.plot(control_history.history['accuracy'], label='Training Accuracy')
+  plt.plot(control_history.history['val_accuracy'], label='Validation Accuracy')
+  plt.xlabel('Epoch')
+  plt.ylabel('Accuracy')
+  plt.title('No Drop Out')
+  plt.legend(loc='lower right')
+  plt.grid(True)
   for i in range(3):
-    plt.subplot(3, 3, i+7)
+    plt.subplot(2, 2, i+2)
     plt.plot(dropout_rates_results[i].history['accuracy'], label='Training Accuracy')
     plt.plot(dropout_rates_results[i].history['val_accuracy'], label='Validation Accuracy')
     plt.xlabel('Epoch')
@@ -219,9 +262,90 @@ if __name__ == '__main__':
     plt.legend(loc='lower right')
     plt.grid(True)
 
-  # Show the above plots
+  # Show the above plot
+  plt.tight_layout()
   plt.show()
+
+  #######
+
+  # Addition of Batch Normalization Layers 
+  backend.clear_session()
+  batch_norm_cnn = define_seq_model(
+    name=f'CNN_NORM',
+    input_shape=(28, 28, 1),
+    n_layers=3,
+    n_filters=32,
+    kernel_size=(3, 3),
+    pool_size=(2, 2),
+    use_batch_norm=True
+  )
+  batch_norm_cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+  batch_norm_history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=512, validation_data=(x_test, y_test), verbose=0)
     
+  # Plot result of adding Batch Normalization layers, compared
+  # to the control CNN that was tested with no Batch Normalization.
+  plt.subplot(2, 1, 1)
+  plt.plot(control_history.history['accuracy'], label='Training Accuracy')
+  plt.plot(control_history.history['val_accuracy'], label='Validation Accuracy')
+  plt.xlabel('Epoch')
+  plt.ylabel('Accuracy')
+  plt.title('No Batch Normalization')
+  plt.legend(loc='lower right')
+  plt.grid(True)
+
+  plt.subplot(2, 1, 2)
+  plt.plot(batch_norm_history.history['accuracy'], label='Training Accuracy')
+  plt.plot(batch_norm_history.history['val_accuracy'], label='Validation Accuracy')
+  plt.xlabel('Epoch')
+  plt.ylabel('Accuracy')
+  plt.title('With Batch Normalization')
+  plt.legend(loc='lower right')
+  plt.grid(True)
+
+  # Show the above plot
+  plt.tight_layout()
+  plt.show()
+
+  #######
+
+  # Compare using Max Pooling to using Avg Pooling. Only need to calculate
+  # Average Pooling model here since control model uses Max Pooling.
+  backend.clear_session()
+  avg_pool_cnn = define_seq_model(
+    name=f'CNN_AVG',
+    input_shape=(28, 28, 1),
+    n_layers=3,
+    n_filters=32,
+    kernel_size=(3, 3),
+    pool_size=(2, 2),
+    use_max_pool=False
+  )
+  avg_pool_cnn.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+  avg_pool_history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=512, validation_data=(x_test, y_test), verbose=0)
+
+  # Plot the results of using Max vs. Average pooling
+  plt.subplot(2, 1, 1)
+  plt.plot(control_history.history['accuracy'], label='Training Accuracy')
+  plt.plot(control_history.history['val_accuracy'], label='Validation Accuracy')
+  plt.xlabel('Epoch')
+  plt.ylabel('Accuracy')
+  plt.title('Max Pooling')
+  plt.legend(loc='lower right')
+  plt.grid(True)
+
+  plt.subplot(2, 1, 2)
+  plt.plot(avg_pool_history.history['accuracy'], label='Training Accuracy')
+  plt.plot(avg_pool_history.history['val_accuracy'], label='Validation Accuracy')
+  plt.xlabel('Epoch')
+  plt.ylabel('Accuracy')
+  plt.title('Average Pooling')
+  plt.legend(loc='lower right')
+  plt.grid(True)
+
+  # Show the above plot
+  plt.tight_layout()
+  plt.show()
+
   # Perform tests that use the same model with different training 
   # parameters and structures. The following will be tested:
   #   - Learning rate using SGD as an optimizer
