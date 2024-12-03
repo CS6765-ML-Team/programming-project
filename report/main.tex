@@ -904,11 +904,122 @@ The accuracy was 87.86\% for the model with the 1.25 weighting factor and it was
 
 It was found that by increasing this weighting factor to 1.25 and 1.5 achieve better F1-score for the \lstinline{acc} class and the minority classes. However, from the confusion matrix of these classifiers, more unacc instances were classified as acceptable. This was reflected in the decrease in the recall metric of the \lstinline{unacc} class. Depending on the severity of this misclassification in the real-world scenario (i.e., passing an unacceptable car with low safety and high buying price as acceptable), this improvement is not desireable.
 
+\section{Convolutional Neural Network}
+A convolutional neural network (CNN) was successfully created using existing machine learning libraries to train on and classify handwritten digits using the MNIST dataset. The structure and several training parameters of this CNN were varied to evaluate the effect these parameters have on the performance of the model. This CNN was implemented using the \textit{Tensorflow} Python library, alongside its high-level API \textit{Keras}. These libraries were chosen based on their ease-of-use for implementing a CNN that can easily have its structure re-arranged in code. 
+
+\subsection{Dataset Details}
+The dataset of handwritten digits used to train and test the CNN was provided by MNIST and contained 60000 training examples and 10000 test examples. The examples were already split as described when acquired. Figure~\ref{fig:mnist-examples} contains 9 images randomly chosen from the 60000 examples and demonstrates what the CNN will be learning on and trying to classify.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/mnist-examples.png}
+    \caption{Nine randomly chosen examples from the MNIST handwritten digit dataset.}
+    \label{fig:mnist-examples}
+\end{figure}
+
+Among the provided dataset were 10 unique classes, the digits ranging from 0 to 9. The distribution of these classes among the training dataset can be seen in Figure~\ref{fig:mnist-class-dist}. Due to the nearly uniform distribution shown in Figure~\ref{fig:mnist-class-dist}, no pre-processing of the data was performed.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/mnist-class-dist.png}
+    \caption{Distribution of classes within the MNIST handwritten digit dataset.}
+    \label{fig:mnist-class-dist}
+\end{figure}
+
+\subsection{Testing Different CNN Structures}
+
+As was previously mentioned, several aspects of the structure of the CNN were varied and tested to evaluate their effect on the performance of the model. The following structural components of the CNN were varied and compared:
+\begin{enumerate}
+    \item The number of filters of each convolutional layer in the CNN.
+    \item The number of layers in the CNN.
+    \item The addition of a drop-out layer in the CNN, tested with different drop-out rates.
+    \item The addition of batch-normalization layers after each convolutional layer in the CNN.
+    \item Using average pooling layers vs. max pooling layers. 
+\end{enumerate}
+In addition to this, several results of the above modifications to the structure of the CNN were compared to a control CNN model with the following default structural attributes:
+\begin{itemize}
+    \item Number of layers: 3
+    \item Number of filters: 32
+    \item No drop-out layers.
+    \item No batch normalization layers.
+    \item Use of max pooling for pooling layers.
+\end{itemize}
+The performance curve of this control CNN model can be seen in Figure~\ref{fig:control-cnn}. Please note that the number of layers referenced above represents the number of convolutional and pooling layer pairs, and does not include the fully-connected feed-forward network used for classification after these layers.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/control-cnn.png}
+    \caption{Performance of control CNN with default structure.}
+    \label{fig:control-cnn}
+\end{figure}
+
+\subsubsection{Number of Layers and Filters}
+
+The results of training the CNN model with 1, 2, and 3 layers, as well as training the model with 16, 32, and 64 filters, can be seen in Figure~\ref{fig:layers-filters}. The results in Figure~\ref{fig:layers-filters} demonstrates how increasing the number of filters can actually lead to over-fitting in the CNN. The maximum training and validation accuracy after 10 epochs for the 16 filter and 32 filter models stay relatively close together. However, for the 64 filter case, the accuracies actually diverge with the validation accuracy being less than the training accuracy. Conversely, Figure~\ref{fig:layers-filters} also demonstrates how increasing the number of layers in the CNN model actually reduces the effect of over-fitting.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.45]{images/n-layers-n-filters-cnn.png}
+    \caption{Performance of training the CNN model with different number of layers and filters.}
+    \label{fig:layers-filters}
+\end{figure}
+
+\subsubsection{Addition of Drop-Out Layers}
+
+The results of training the CNN model with the addition of drop-out layers with varying drop-out rates after each convolutional layer can be seen in Figure~\ref{fig:drop-out}. These models were trained with 3 total convolutional and pooling layer pairs, thus 3 total drop-out layers. As expected, the results shown in Figure~\ref{fig:drop-out} demonstrate reduced overfitting of the model as the drop-out rate increases, at the cost of training accuracy. It's clear from the results of the control model in Figure~\ref{fig:control-cnn} that over-fitting isn't a particularly big problem for our model, as such the use of drop-out layers is not necessary. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/drop-out-cnn.png}
+    \caption{Performance of training the CNN model with drop-out layers of varying drop-out rates.}
+    \label{fig:drop-out}
+\end{figure}
+
+\subsubsection{Addition of Batch Normalization Layers}
+
+The results of training the CNN model with the addition of batch normalization layers after each convolutional layer can be seen in Figure~\ref{fig:batch-norm}. These results clearly demonstrate how batch normalization can be used as an effective regularizer. The maximum training and validation accuracies after 10 epochs diverge considerably when batch normalization is used, with the validation accuracy being the strongest, compared to the control model. This shows reduced over-fitting in the model.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/batch-norm-cnn.png}
+    \caption{Performance of training the CNN model with batch normalization layers.}
+    \label{fig:batch-norm}
+\end{figure}
+
+\subsubsection{Max Pooling vs. Average Pooling}
+
+The results of training the CNN model with both max pooling and average pooling layers can be seen in Figure~\ref{fig:pooling}. Pooling layers directly follow convolutional layers to down-sample the feature map output from these layers. How they accomplish this is either through a max operation or average operation over a defined window of the feature map output from the convolutional layer. From Figure~\ref{fig:pooling} it can be seen that using average pooling significantly reduces the training accuracy of the model, however the validation accuracy stays consistent with the model that used max pooling. It appears that due to the simplicity of this task, the difference between using max pooling vs. average pooling is not as significant. However, this may not be the case in other problems that require training a CNN model.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.5]{images/max-avg-pooling-cnn.png}
+    \caption{Performance of training the CNN model with both max pooling and average pooling layers.}
+    \label{fig:pooling}
+\end{figure}
+
+\subsection{Testing Different Training Parameters}
+In addition to experimenting on the structure of the CNN model to evaluate its performance, two training parameters were also varied to evaluate their effect on the performance of the model. These training parameters were:
+\begin{enumerate}
+    \item The learning rate of the model using a stochastic gradient descent optimizer.
+    \item The batch size, or the number of samples per gradient update.
+\end{enumerate}
+The result of varying these trainig parameters on the performance of a CNN with 3 layers can be seen in Figure~\ref{fig:training-params}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.4]{images/learning-rate-batch-size-cnn.png}
+    \caption{Performance of training the CNN model with varying learning rates and batch sizes.}
+    \label{fig:training-params}
+\end{figure}
+
+The learning rate parameter influences how drastically the model weights will change on each weight update. As a result, a smaller learning rate causes model convergence to take longer, as is evident in Figure~\ref{fig:training-params} where the learning rate is set to 0.001. However, this can be a good thing as it allows for more stable results and reduces over-fitting as it gives the model more chances to explore the feature space. The results for the model with the smallest learning rate in Figure~\ref{fig:training-params} show this with the validation accuracy being greater than the training accuracy, at the cost of a smaller validation accuracy compared to the other models. The batch size parameter affects the number of training examples used per gradient update when training the model. Hence, mini-batch gradient descent is being used. The batch size will directly influence the speed of model training, as well as the performance of the trained model. A larger batch size will result in the gradient being calculated fewer times, potentially providing a speedup to the training process. In addition to this, a larger batch size can reduce over-fitting as the noise introduced into the gradient from outliers in the training data is averaged over a larger number of samples, as demonstrated in Figure~\ref{fig:training-params} for the model trained with a batch size of 512.
+
 \newpage
 \section{Conclusion}
 
 \newpage
 % Bibliography/Reference Stuff
+\nocite{*}
 \bibliographystyle{abbrv}
 \bibliography{main}
 
