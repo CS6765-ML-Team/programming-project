@@ -90,6 +90,18 @@ if __name__ == '__main__':
 
   (x_trainval, y_trainval), (x_test, y_test) = mnist_dataloader.load_data()
 
+
+  # # Create a histogram
+  # plt.hist(y_trainval, np.arange(11) - 0.5)
+  # plt.xticks(np.unique(y_trainval))
+
+  # # Add title and labels
+  # plt.xlabel('Classes')
+  # plt.ylabel('Number of Occurences in Dataset')
+
+  # # Display the plot
+  # plt.show()
+
   x_trainval_dim = x_trainval.shape
   y_trainval_dim = y_trainval.shape
 
