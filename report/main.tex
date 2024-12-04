@@ -1765,6 +1765,641 @@ print("\nClassification Report:\n", report)
 
 \newpage
 \section{ANN Code - Using Libraries}
+\textbf{GPU Hardware Check}
+\begin{lstlisting}
+import tensorflow as tf
+
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+    try:
+    # Currently, memory growth needs to be the same across GPUs
+    for gpu in gpus:
+        tf.config.experimental.set_memory_growth(gpu, True)
+    logical_gpus = tf.config.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+    except RuntimeError as e:
+    # Memory growth must be set before GPUs have been initialized
+    print(e)
+\end{lstlisting}
+
+\textbf{Data Import and Discovery}
+\begin{lstlisting}
+    import numpy as np # linear algebra
+import struct
+from array import array
+from os.path import join
+import kagglehub
+
+
+# Download latest version
+dataset_path = kagglehub.dataset_download("hojjatk/mnist-dataset")
+
+print("Path to dataset files:", dataset_path)
+
+
+# MNIST Data Loader Class
+
+class MnistDataloader(object):
+    def __init__(self, training_images_filepath,training_labels_filepath,
+                 test_images_filepath, test_labels_filepath):
+        self.training_images_filepath = training_images_filepath
+        self.training_labels_filepath = training_labels_filepath
+        self.test_images_filepath = test_images_filepath
+        self.test_labels_filepath = test_labels_filepath
+    
+    # Function to read the labels and load
+    def read_images_labels(self, images_filepath, labels_filepath):        
+        labels = []
+        with open(labels_filepath, 'rb') as file:
+            magic, size = struct.unpack(">II", file.read(8))
+            if magic != 2049:
+                raise ValueError('Magic number mismatch, expected 2049, got {}'.format(magic))
+            labels = array("B", file.read())        
+        
+        with open(images_filepath, 'rb') as file:
+            magic, size, rows, cols = struct.unpack(">IIII", file.read(16))
+            if magic != 2051:
+                raise ValueError('Magic number mismatch, expected 2051, got {}'.format(magic))
+            image_data = array("B", file.read())        
+        images = []
+        for i in range(size):
+            images.append([0] * rows * cols)
+        for i in range(size):
+            img = np.array(image_data[i * rows * cols:(i + 1) * rows * cols])
+            img = img.reshape(28, 28)
+            images[i][:] = img            
+        
+        return np.array(images), np.array(labels)
+            
+    def load_data(self):
+        x_train, y_train = self.read_images_labels(self.training_images_filepath, self.training_labels_filepath)
+        x_test, y_test = self.read_images_labels(self.test_images_filepath, self.test_labels_filepath)
+        return (x_train, y_train),(x_test, y_test)
+        
+        
+# Data Visualization
+%matplotlib inline
+import random
+import matplotlib.pyplot as plt
+
+# Set file paths based on added MNIST Datasets
+base_path = 'data'
+training_images_filepath = join(base_path, 'train-images-idx3-ubyte/train-images-idx3-ubyte')
+training_labels_filepath = join(base_path, 'train-labels-idx1-ubyte/train-labels-idx1-ubyte')
+test_images_filepath = join(base_path, 't10k-images-idx3-ubyte/t10k-images-idx3-ubyte')
+test_labels_filepath = join(base_path, 't10k-labels-idx1-ubyte/t10k-labels-idx1-ubyte')
+
+# Helper function to show a list of images with their relating titles
+def show_images(images, title_texts):
+    cols = 5
+    rows = int(len(images)/cols)
+    plt.figure(figsize=(cols*4,rows*4))
+    
+    for index, x in enumerate(zip(images, title_texts)):        
+        image = x[0]        
+        title_text = x[1]
+        plt.subplot(rows, cols, index+1)        
+        plt.imshow(image, cmap=plt.cm.gray)
+        if (title_text != ''):
+            plt.title(title_text, fontsize = 15);        
+
+
+# Load MINST dataset
+mnist_dataloader = MnistDataloader(training_images_filepath, training_labels_filepath, test_images_filepath, test_labels_filepath)
+(x_trainval, y_trainval), (x_test, y_test) = mnist_dataloader.load_data()
+
+
+# Show some random training and test images 
+images_2_show = []
+titles_2_show = []
+for i in range(0, 10):
+    r = random.randint(1, 60000)
+    images_2_show.append(x_trainval[r])
+    titles_2_show.append('training image [' + str(r) + '] = ' + str(y_trainval[r]))    
+
+for i in range(0, 5):
+    r = random.randint(1, 10000)
+    images_2_show.append(x_test[r])        
+    titles_2_show.append('test image [' + str(r) + '] = ' + str(y_test[r]))    
+
+show_images(images_2_show, titles_2_show)
+\end{lstlisting}
+
+Exploring input data dimension
+
+\begin{lstlisting}
+x_trainval_dim = x_trainval.shape
+y_trainval_dim = y_trainval.shape
+
+x_test_dim = x_test.shape
+y_test_dim = y_test.shape
+
+print(f"There are {x_trainval_dim[0]} samples in the training dataset, each of size {x_trainval_dim[1],x_trainval_dim[2]} \n"
+        f"There are {x_test_dim[0]} samples in the testing dataset ")
+
+print(f"The training label set has dimension of {y_trainval_dim}")
+
+NUM_CLASS = len(np.unique(y_trainval))
+\end{lstlisting}
+
+Data splitting into train-test set
+
+\begin{lstlisting}
+from sklearn.model_selection import train_test_split
+
+x_train, x_val, y_train, y_val = train_test_split(x_trainval,
+                                                    y_trainval,
+                                                    test_size=0.2,
+                                                    random_state=12)
+
+x_train_dim = np.shape(x_train)
+y_train_dim = np.shape(y_train)
+
+x_val_dim = np.shape(x_val)
+y_val_dim = np.shape(y_val)
+
+print("After the train-validation data split")
+
+print(f"There are {x_train_dim[0]} samples in the training dataset, each of size {x_train_dim[1:]}. \n"
+        f"There are {x_val_dim[0]} samples in the validation dataset.\n"
+        f"There are {x_test_dim[0]} samples in the testing dataset.")
+
+print(f"The training label set has dimension of {y_train_dim}")
+
+# The input shape to the NN is the number of pixels in an MNIST image (28x28=784 input)
+INPUT_SHAPE = x_train_dim[1:]
+\end{lstlisting}
+
+Data generator class to load the data to the model in batches
+\begin{lstlisting}
+from tensorflow.keras.utils import Sequence
+
+class DataGenerator(Sequence):
+    def __init__(self, x_set, y_set, batch_size):
+        self.x, self.y = x_set, y_set
+        self.batch_size = batch_size
+
+    def __len__(self):
+        return int(np.ceil(len(self.x) / float(self.batch_size)))
+
+    def __getitem__(self, idx):
+        batch_x = self.x[idx * self.batch_size:(idx + 1) * self.batch_size]
+        batch_y = self.y[idx * self.batch_size:(idx + 1) * self.batch_size]
+        return batch_x, batch_y
+
+
+BATCH_SIZE = 32
+
+# These generator objects will generate BATCH_SIZE samples at a time from the specified nparray
+train_gen = DataGenerator(x_train,y_train,BATCH_SIZE)
+val_gen = DataGenerator(x_val,y_val,BATCH_SIZE)
+test_gen = DataGenerator(x_test,y_test,BATCH_SIZE)
+\end{lstlisting}
+
+\textbf{ANN Model Construction Function}
+
+\begin{lstlisting}
+import tensorflow as tf                                 # General machine learning functionalities                    
+from tensorflow import keras
+from tensorflow.keras import layers
+import numpy as np
+
+def build_ann_model(layer_widths, 
+                    input_shape, 
+                    activation='relu', 
+                    loss='sparse_categorical_crossentropy', 
+                    metrics='accuracy', 
+                    learning_rate=0.001):
+    """
+    Creates a Keras Sequential model based on the specified architecture.
+
+    Args:
+        layer_widths (list): A list where each element is the number of nodes in a layer.
+        input_shape (tuple): Shape of the input data (e.g., (num_features,)).
+        activation (str): Activation function to use in the hidden layers.
+        learning_rate (float): Learning rate for the optimizer.
+
+    Returns:
+        model (Sequential): A compiled Keras Sequential model.
+    """
+    model = keras.Sequential()
+
+    # Add additional hidden layers based on layer_widths
+    model.add(layers.Flatten(input_shape=input_shape))
+    for i,width in enumerate(layer_widths):
+        model.add(layers.Dense(width, activation=activation))
+        model.add(layers.BatchNormalization())
+
+    # Add the output layer with width = number of class and softmax activation
+    model.add(layers.Dense(NUM_CLASS, activation='softmax', name = "Output_layer"))
+
+    # Compile the model with the provided or default learning rate, loss functions, and metrics
+    model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate), 
+                  loss=loss, 
+                  metrics=metrics)
+    
+    return model
+\end{lstlisting}
+
+\textbf{Testing with one ANN model construction}
+\begin{lstlisting}
+LAYER_WIDTHS = [64,32]
+LAYER_DEPTH = len(LAYER_WIDTHS)
+LEARNING_RATE = 0.001
+EPOCH = 5
+ACTIVATION = 'relu'
+LOSS = 'sparse_categorical_crossentropy'
+METRICS = 'accuracy'
+
+tf.keras.backend.clear_session()
+model = build_ann_model(layer_widths=LAYER_WIDTHS,
+                        input_shape=INPUT_SHAPE+(1,),
+                        activation=ACTIVATION,
+                        loss=LOSS,
+                        metrics=METRICS,
+                        learning_rate=LEARNING_RATE)
+
+model.summary()
+\end{lstlisting}
+
+Model experimentation training
+
+\begin{lstlisting}
+from time import time
+
+train_start = time()
+history = model.fit(train_gen,
+                    batch_size=BATCH_SIZE,
+                    validation_data=val_gen,
+                    epochs = EPOCH)
+train_end = time()
+
+TRAIN_TIME = train_end - train_start
+\end{lstlisting}
+
+A model directory was created to store the training hyperparameters and training results.
+
+\begin{lstlisting}
+import os                                               # For saving models and training results
+from datetime import datetime                           # For creating the directory of each training run
+import json                                             # For storing training parameters during each run
+
+# Generate a timestamped directory for the training run
+timestamp = datetime.now().strftime("%y%m%d_%H%M%S")
+BASE_DIR = os.getcwd()
+OUTPUT_DIR = os.path.join(BASE_DIR,f"ann_model_results/{timestamp}_{LAYER_DEPTH}_{LEARNING_RATE}_{EPOCH}")
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+from contextlib import redirect_stdout
+
+# Save the model in H5DF format
+MODEL_PATH = os.path.join(OUTPUT_DIR,"model.h5")
+model.save(MODEL_PATH)
+print(f"Model saved as {MODEL_PATH}")
+
+# Save the model structure
+model_path = os.path.join(OUTPUT_DIR, "model_summary.json")
+with open(model_path, 'w') as f:
+    with redirect_stdout(f):
+        model.summary()
+
+# Save the training parameters
+training_params = {
+    "learning_rate": LEARNING_RATE,
+    "batch_size": BATCH_SIZE,
+    "epochs": EPOCH,
+    "structure": str(LAYER_WIDTHS),
+    "loss": LOSS,
+    "metrics": METRICS,
+    "activation": 'relu'
+}
+
+# Store the final training results
+training_results = {}
+for i in history.history.keys():
+    training_results[i] = history.history[i][-1]
+training_results['train_time'] = TRAIN_TIME
+# Save the training parameters and training results in the directory
+params_path = os.path.join(OUTPUT_DIR, "params_results.json")
+with open(params_path, "w") as f:
+    json.dump({"parameters": training_params, "results": training_results}, f, indent=4)
+print(f"Training parameters and results saved at {params_path}")
+\end{lstlisting}
+
+Helper function to plot the training and validation loss and accuracy, as well as saving the plots to a save directory
+
+\begin{lstlisting}
+def plot_performance(history, training_params=None, save_dir=None):
+    # Determine whether history is keras history or a dictionary to appropriately extract the history data
+    if isinstance(history, keras.callbacks.History):
+        history_data = history.history        # Extract the history dictionary
+    else:
+        history_data = history                # Assume it's already a dictionary
+
+    metric_list = list(history_data.keys())     # Extract the list of history keys
+    half_length = len(metric_list) // 2         # The index where the validation metrics start
+
+    metric2txt_dict = {'accuracy': 'Accuracy',
+                       'loss': 'Sparse Caregorical Crossentropy Loss'}
+
+    fig = plt.figure(figsize=(half_length * 5,5))
+
+    for index, metric in enumerate(metric_list[:half_length]):
+        metric_train = metric
+        metric_val = metric_list[index+half_length]
+
+        ax = fig.add_subplot(1,half_length,index+1)
+        ylim_acc = [0, max(max(history_data[metric_train]),max(history_data[metric_val]))]
+        ax.plot(history_data[metric_train], label = metric_train)
+        ax.plot(history_data[metric_val], label = metric_val)
+        ax.set_ylim(ylim_acc)
+        # plt.ylabel(metric_train)
+        ax.set_xlabel('Epoch')
+        ax.legend(loc='best')
+        ax.set_title(f'{metric2txt_dict[metric_train]}')
+
+        ax.grid(which='major', color='black', linestyle='--', linewidth=0.5)
+        ax.minorticks_on()  # Turn on the minor ticks
+        ax.grid(which='minor', color='gray', linestyle=':', linewidth=0.5)
+        
+    if training_params:
+        fig.suptitle(f"{training_params['structure']} model, lr={training_params['learning_rate']}, "
+                    f"{training_params['epochs']} epochs, {training_params['activation']} activation")
+
+    plt.tight_layout()
+    
+    # Save the plots if a directory is provided
+    if save_dir:
+        os.makedirs(save_dir, exist_ok=True)  # Create the directory if it doesn't exist
+        plot_path = os.path.join(save_dir, "performance_plot.png")
+        plt.savefig(plot_path)
+        print(f"Performance plot saved at {plot_path}")
+
+plot_performance(history)
+\end{lstlisting}
+
+\textbf{Grid Search Model Training}
+
+Grid setup
+\begin{lstlisting}
+LAYER_WIDTHS = [[64,32],[32,16],[64,32,16],[32,16,8]]               # Architectures to be experimented with
+LAYER_DEPTH = [len(i) for i in LAYER_WIDTHS]                        # Depth of each architecture
+LEARNING_RATE = [0.001, 0.0005, 0.0001]
+EPOCH = [10,25,50]
+ACTIVATION = ['relu','sigmoid']
+LOSS = 'sparse_categorical_crossentropy'
+METRICS = 'accuracy'
+\end{lstlisting}
+
+Experiment Setup
+\begin{lstlisting}
+for layer_width in LAYER_WIDTHS:
+    for lr in LEARNING_RATE:
+        for epoch in EPOCH:
+            for activation in ACTIVATION:
+
+                # Create the directory for this 
+                timestamp = datetime.now().strftime("%y%m%d_%H%M%S")
+                BASE_DIR = os.getcwd()
+                OUTPUT_DIR = os.path.join(BASE_DIR,f"ann_model_results/{timestamp}_{str(layer_width)}_{lr}_{epoch}_{activation}")
+                os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+                # Build the model
+                tf.keras.backend.clear_session()
+                model = build_ann_model(layer_widths=layer_width,
+                                        input_shape=INPUT_SHAPE+(1,),
+                                        activation=activation,
+                                        loss=LOSS,
+                                        metrics=METRICS,
+                                        learning_rate=lr)
+                
+                # Save the training parameters
+                training_params = {
+                    "learning_rate": lr,
+                    "batch_size": BATCH_SIZE,
+                    "epochs": epoch,
+                    "structure": str(layer_width),
+                    "loss": LOSS,
+                    "metrics": METRICS,
+                    "activation": activation
+                }
+
+                # Save the model structure/summary
+                MODEL_SUMMARY_PATH = os.path.join(OUTPUT_DIR, "model_summary.json")
+                with open(MODEL_SUMMARY_PATH, 'w') as f:
+                    with redirect_stdout(f):
+                        model.summary()
+
+                # Train the model and record the training time
+                train_start = time()
+                history = model.fit(train_gen,
+                                    batch_size=BATCH_SIZE,
+                                    validation_data=val_gen,
+                                    epochs = epoch)
+                train_end = time()
+                TRAIN_TIME = train_end - train_start
+
+                # Save the model in H5DF format
+                MODEL_PATH = os.path.join(OUTPUT_DIR,"model.h5")
+                model.save(MODEL_PATH)
+                print(f"Model saved as {MODEL_PATH}")
+
+                # Store the final training results
+                training_results = {}
+                for i in history.history.keys():
+                    training_results[i] = history.history[i][-1]
+                training_results['train_time'] = TRAIN_TIME
+                
+                # Save the training parameters and training results in the directory
+                params_path = os.path.join(OUTPUT_DIR, "params_results.json")
+                with open(params_path, "w") as f:
+                    json.dump({"parameters": training_params, "results": training_results}, f, indent=4)
+                print(f"Training parameters and results saved at {params_path}")
+
+                # Plot and save the training performance of the model
+                plot_performance(history,training_params=training_params,save_dir=OUTPUT_DIR)
+\end{lstlisting}
+
+\textbf{Model Performance Visualization}
+
+The code block belows extracts the hyperparameters and training results from the params_result.json file and store is in a \lstinline{results_df} data frame
+
+\begin{lstlisting}
+import pandas as pd
+
+MODEL_RESULT_DIR = os.path.join(BASE_DIR,"ann_model_results")
+
+# Empty list to store directory of data
+results = []
+
+for folder in os.listdir(MODEL_RESULT_DIR):
+    folder_path = os.path.join(MODEL_RESULT_DIR, folder)
+    
+    # Check if it's a directory
+    if os.path.isdir(folder_path):
+        # Path to the params_results.json file
+        params_file = os.path.join(folder_path, "params_results.json")
+
+        # Check if the params_results.json file exists
+        if os.path.exists(params_file):
+            with open(params_file, "r") as f:
+                # Parse the JSON file
+                data = json.load(f)
+
+
+                # Flatten the JSON structure
+                extracted_data = {
+                    # Extract the hyperparameter data
+                    "structure": data["parameters"]["structure"],
+                    "learning_rate": data["parameters"]["learning_rate"],
+                    "epochs": data["parameters"]["epochs"],
+                    "activation_function": data["parameters"]["activation"],
+                    
+                    # Extract the training results
+                    "train_loss": data["results"]["loss"],
+                    "train_accuracy": data["results"]["accuracy"],
+                    "val_loss": data["results"]["val_loss"],
+                    "val_accuracy": data["results"]["val_accuracy"],
+                }
+
+                # Add the extracted data to the results list
+                results.append(extracted_data)
+
+results_df = pd.DataFrame(results)
+
+# Save the consolidated data to a CSV file
+results_df.to_csv("consolidated_results.csv", index=False)
+\end{lstlisting}
+
+The top 10 parameter configurations that returned the highest validation accuracy are
+
+\begin{lstlisting}
+    results_df.sort_values(by='val_accuracy',ascending=False).head(10)
+\end{lstlisting}
+
+The top 10 parameter configurations that returned the highest training accuracy are
+\begin{lstlisting}
+    results_df.sort_values(by='train_accuracy',ascending=False).head(10)
+\end{lstlisting}
+
+Boxplots of model performance accross different model structures
+\begin{lstlisting}
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Group data by the model structure
+grouped = results_df.groupby("structure")
+
+# Set up a figure with two subplots (one on top of the other)
+fig, axes = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
+
+# Top plot: Training Accuracy
+sns.boxplot(x="structure", y="train_accuracy", data=results_df, ax=axes[0])
+axes[0].set_title("Training Accuracy vs Model Structure", fontsize=14)
+axes[0].set_ylabel("Training Accuracy", fontsize=12)
+axes[0].grid(axis='y', linestyle='--', alpha=0.7)
+
+# Bottom plot: Validation Accuracy
+sns.boxplot(x="structure", y="val_accuracy", data=results_df, ax=axes[1])
+axes[1].set_title("Validation Accuracy vs Model Structure", fontsize=14)
+axes[1].set_xlabel("Model Structure", fontsize=12)
+axes[1].set_ylabel("Validation Accuracy", fontsize=12)
+axes[1].grid(axis='y', linestyle='--', alpha=0.7)
+
+# Adjust spacing between plots
+plt.tight_layout()
+
+# Show the plots
+plt.show()
+\end{lstlisting}
+
+
+Boxplots of model performance accross different learning rates
+\begin{lstlisting}
+# Group data by learning rates
+grouped = results_df.groupby("learning_rate")
+
+# Set up a figure with two subplots (one on top of the other)
+fig, axes = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
+
+# Top plot: Training Accuracy
+sns.boxplot(x="learning_rate", y="train_accuracy", data=results_df, ax=axes[0])
+axes[0].set_title("Training Accuracy vs Learning Rate", fontsize=16)
+axes[0].set_ylabel("Training Accuracy", fontsize=12)
+axes[0].grid(axis='y', linestyle='--', alpha=0.7)
+
+# Bottom plot: Validation Accuracy
+sns.boxplot(x="learning_rate", y="val_accuracy", data=results_df, ax=axes[1])
+axes[1].set_title("Validation Accuracy vs Learning Rate", fontsize=14)
+axes[1].set_xlabel("Learning Rate", fontsize=12)
+axes[1].set_ylabel("Validation Accuracy", fontsize=12)
+axes[1].grid(axis='y', linestyle='--', alpha=0.7)
+
+# Adjust spacing between plots
+plt.tight_layout()
+
+# Show the plots
+plt.show()
+\end{lstlisting}
+
+
+Boxplots of model performance accross different epochs
+\begin{lstlisting}
+# Group data by epoch number
+grouped = results_df.groupby("epochs")
+
+# Set up a figure with two subplots (one on top of the other)
+fig, axes = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
+
+# Top plot: Training Accuracy
+sns.boxplot(x="epochs", y="train_accuracy", data=results_df, ax=axes[0])
+axes[0].set_title("Training Accuracy vs Epoch Size", fontsize=16)
+axes[0].set_ylabel("Training Accuracy", fontsize=12)
+axes[0].grid(axis='y', linestyle='--', alpha=0.7)
+
+# Bottom plot: Validation Accuracy
+sns.boxplot(x="epochs", y="val_accuracy", data=results_df, ax=axes[1])
+axes[1].set_title("Validation Accuracy vs Epoch Size", fontsize=14)
+axes[1].set_xlabel("Epochs", fontsize=12)
+axes[1].set_ylabel("Validation Accuracy", fontsize=12)
+axes[1].grid(axis='y', linestyle='--', alpha=0.7)
+
+# Adjust spacing between plots
+plt.tight_layout()
+
+# Show the plots
+plt.show()
+\end{lstlisting}
+
+
+Boxplots of model performance accross different activation functions
+\begin{lstlisting}
+# Group data by activation functions
+grouped = results_df.groupby("activation_function")
+
+# Set up a figure with two subplots (one on top of the other)
+fig, axes = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
+
+# Top plot: Training Accuracy
+sns.boxplot(x="activation_function", y="train_accuracy", data=results_df, ax=axes[0])
+axes[0].set_title("Training Accuracy vs Activation Function", fontsize=16)
+axes[0].set_ylabel("Training Accuracy", fontsize=12)
+axes[0].grid(axis='y', linestyle='--', alpha=0.7)
+
+# Bottom plot: Validation Accuracy
+sns.boxplot(x="activation_function", y="val_accuracy", data=results_df, ax=axes[1])
+axes[1].set_title("Validation Accuracy vs Activation Function", fontsize=14)
+axes[1].set_xlabel("Activation Function", fontsize=12)
+axes[1].set_ylabel("Validation Accuracy", fontsize=12)
+axes[1].grid(axis='y', linestyle='--', alpha=0.7)
+
+# Adjust spacing between plots
+plt.tight_layout()
+
+# Show the plots
+plt.show()
+\end{lstlisting}
 
 \newpage
 \section{CNN Code - Using Libraries}
