@@ -237,12 +237,12 @@ if __name__ == '__main__':
   for label in targets.columns.values:
     print(total[label].value_counts())
 
-  # benchmark_results = adaboost_benchmark(features, targets, N=1, display_confusion_matrix=True)
+  benchmark_results = adaboost_benchmark(features, targets, N=1, display_confusion_matrix=True)
   # benchmark_results = depth_benchmark(features, targets)
-  benchmark_results = estimator_benchmark(features, targets, 20)
+  # benchmark_results = estimator_benchmark(features, targets, 20)
   print(benchmark_results)
 
   # Save to csv
-  benchmark_results.to_csv('results/estimator_benchmark.csv', index=False)
+  benchmark_results.to_csv('benchmark.csv', index=False)
 
 

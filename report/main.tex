@@ -97,7 +97,7 @@
 \section{Introduction}
 
 \section{Adaboost with ID3 Base Learner}
-The Adaptive Boosting (Adaboost) classification algorithm was successfully implemented using the Python 3 programming language. The version of Adaboost implemented used the Iterative Dichotomiser 3 (ID3) decision tree learning algorithm as a weak learner. This algorithm was trained on a dataset of English alphabet character image features and used to identify letters of the alphabet based on these features, i.e., letter recognition.
+The Adaptive Boosting (Adaboost) classification algorithm was successfully implemented using the Python 3 programming language. The version of Adaboost implemented used the Iterative Dichotomiser 3 (ID3) decision tree learning algorithm as a weak learner. This algorithm was trained on a dataset of English alphabet character image features and used to identify letters of the alphabet based on these features, i.e., letter recognition. The code for this algorithm can be found in~\ref{section:adaboost-code}
 
 \subsection{Adaboost}
 Adaboost is a boosted classifier that uses multiple weak hypotheses to build a single, strong hypothesis to be used for classification. These weak hypotheses are initially learned through a weak base learner algorithm, with the performance of these weak hypotheses dictating their weight in the final, strong hypothesis. To accomplish this, Adaboost first assigns an initial weight of $1/N$ to every training example, where $N$ is the number of training examples. Upon training of a weak hypothesis, Adaboost sums the weight of all misclassified examples against the trained weak hypothesis.  This sum, called the $error$ or $\epsilon$, is used to calculate the weight, or $\alpha$, for the given weak hypothesis according to Equation~\ref{eq:weak-h-alpha}.
@@ -309,6 +309,7 @@ The confusion matrix of the test with the highest accuracy, test 13 with seed 27
 An Artificial Neural Network with backpropagation was successfully implemented using the Python 3 programming language. The artificial neural network that was created featured a simplistic design, utilizing only one hidden layer while simultaneously yielding great results. This algorithm was trained on a dataset that consisted of features computed from digitized images of fine needle aspirate of breast mass, describing charactersitics of the cell nuclei present in the image. The objective was classification of cell mass as either benign or malignant.
 
 \subsection{Artificial Neural Networks}
+\label{ANNTheory}
 
 As mentioned, this section of the programming project saw the implementation of an artificial neural network from scratch. Artificial neural networks, or neural networks, are a machine learning technique that seek to mimic the biological neural networks found within human brains. A neural network consists of connected ``units", or nodes, that are called neurons. These neurons are designed such that they mimic the neurons found within a human brain, in the sense that they will not ``fire'', so to speak, if the input signal is not larger than a certain threshold. This thresholding is achieved through the use of an activation function, which ensures that important features that are interesting enough to be learned are actually learned by the network as they exceed the threshold. The output of a given neuron is therefore calculated by applying the activation function to the weighted sum of the inputs to that neuron. Neural networks are composed of three distinct layers, those being the input layer, the hidden layer, and the output layer. The input signal is first sent through the input layer, which takes in the data and sends it to the subsequent layers, known as the hidden layers. The hidden layers serve as an intermediary layer between the first layer and the last layer, the output layer. It is within these hidden layers that the input becomes further and further abstracted, and a new representation is learned that extracts the hidden relationship between the input features. 
 
@@ -518,7 +519,7 @@ The neural network code was implemented using a .ipynb file within VS Code, as m
 
 The general workflow of the program is as follows. Firstly, the relevant packages necessary to utilize the code are imported. Following this, the dataset is fetched from the UC Irvine Machine Learning repository. An exploratory analysis is performed on the data, which gets the total number of instances, the number of features, the number of unique target variables, and the names of each feature. Following this, the dataset is pre-processed, where it is examined for null values and standardized, and the labels are binary encoded from categorical values. Several functions are defined, as well as the main neural network class. A sigmoid function and its derivative were defined, as well as a ReLu function and its derivative. A binary cross entropy loss function was defined since the classification task is binary in nature. Following this, the neural network class was defined.
 
-As previously mentioned, an object-oriented approach was implemented for the neural network architecture. This allowed training, testing, and instantiating the network to be done utilizing functions inherent to the class. The class contains a constructor that takes the number of input neurons, the number of hidden neurons, and the expected output size. Within this constructor, weights are randomly initialized from a normal distribution. A feedforward function was defined that takes in the vector of inputs, and ensures that this vector is a column vector. Following this, the net and activated net are calculated for each layer, and the output is returned. A backpropagation function was defined that performs the backpropagation procedure for every weight and bias value, in accordance with the equations derived in Section \ref{ANNtheory}.
+As previously mentioned, an object-oriented approach was implemented for the neural network architecture. This allowed training, testing, and instantiating the network to be done utilizing functions inherent to the class. The class contains a constructor that takes the number of input neurons, the number of hidden neurons, and the expected output size. Within this constructor, weights are randomly initialized from a normal distribution. A feedforward function was defined that takes in the vector of inputs, and ensures that this vector is a column vector. Following this, the net and activated net are calculated for each layer, and the output is returned. A backpropagation function was defined that performs the backpropagation procedure for every weight and bias value, in accordance with the equations derived in Section~\ref{ANNTheory}.
 
 The neural network class also contains training and testing functions. The training function takes in the training x and y values, as well as the validation x and y values, a number of epochs, and a learning rate. This training function utilizes every feature and computes the forward pass and back propagates for every example, for every epoch. In this regard, the training process utilizes stochastic gradient descent. The average binary cross entropy across all training examples per epoch is calculated as a loss metric, and a similar process occurs for validation data. This function returns the training loss history and the validation loss history. 
 
@@ -1071,7 +1072,7 @@ The construction of the FNN models followed a typical workflow of data import an
 
 \newpage
 
-\subsection{Convolutional Neural Network}
+\section{Convolutional Neural Network}
 A convolutional neural network (CNN) was successfully created using existing machine learning libraries to train on and classify handwritten digits using the MNIST dataset. The structure and several training parameters of this CNN were varied to evaluate the effect these parameters have on the performance of the model. This CNN was implemented using the \textit{TensorFlow} Python library, alongside its high-level API \textit{Keras}. These libraries were chosen based on their ease-of-use for implementing a CNN that can easily have its structure re-arranged in code. 
 
 \subsection{Testing Different CNN Structures}
@@ -1175,7 +1176,612 @@ The learning rate parameter influences how drastically the model weights will ch
 \setcounter{section}{0} % Reset section counter
 
 \newpage
-\section{Adaboost w/ ID3 Code}
+\section{Adaboost with ID3 Base Learner Code}
+\label{section:adaboost-code}
+\textbf{tree.py}
+\begin{lstlisting}[basicstyle= \scriptsize]
+class BinaryDecisionTree:
+    """ BinaryDecisionTree represents a binary tree
+    implementation used for the ID3 decision tree
+    training algorithm. Each tree contains 4 parameters:
+        - Feature Index:    The current feature index the tree splits on
+        - Value:            The value of Feature the determins the split
+        - True Branch:      The branch when Feature > Value
+        - False Branch:     The branch when Feature <= Value
+    """
+    def __init__(self, feature_idx, value):
+        self.feature_idx = feature_idx
+        self.value = value
+        self.true_branch = None
+        self.false_branch = None
+
+    def add_true(self, branch):
+        self.true_branch = branch
+
+    def add_false(self, branch):
+        self.false_branch = branch
+
+    def traverse(self, data_row):
+        if (self.true_branch is None and self.false_branch is None):
+            return self.value
+
+        feature_value = data_row[self.feature_idx]
+        if (feature_value > self.value):
+            return self.true_branch.traverse(data_row)
+        else:
+            return self.false_branch.traverse(data_row)
+
+    def print_tree(self, features, level=0):
+        if (self.false_branch is not None):
+            self.false_branch.print_tree(level + 1)
+        print(' ' * 4 * level + '->' + f"{features.columns[self.feature_idx]}: {self.value}")
+        if (self.true_branch is not None):
+            self.true_branch.print_tree(level + 1)
+\end{lstlisting}
+
+\textbf{id3.py}
+\begin{lstlisting}[basicstyle= \scriptsize]
+import numpy as np                      # For data calculation
+from itertools import starmap           # For quickly iterating over features
+from tree import BinaryDecisionTree     # Tree implementation
+
+class ID3Classifier:
+  """ An implmentation of the Iterative Dichotomiser 3
+  (ID3) decision tree algorithm. Constructor parameters
+  include an optional depth paramter that controls the maximum
+  depth of generated decision trees (default = +infinity).
+  This ID3 implementation uses a weighted information gain calculation
+  to determine the best feature to split on, and the best value
+  of that feature to split on. The decision trees produced are 
+  binary decision trees, where each node posesses a split feature
+  and split feature value, and the two child branches are 
+  designated for examples with feature values less than or
+  equal to the split feature value (false branch), and
+  values greater than the split feature value (true branch).
+  This tree implementation is found in tree.py.
+  """
+  def __init__(self, depth=np.inf):
+    self.depth = depth
+    self.tree = None
+
+  def train(self, examples, features, targets):
+    """ Public method for training a decision tree using the 
+    ID3 algorithm implemented in _train. This public facing
+    method sets the tree member of the ID3Classifier class.
+    """
+    self.tree = None
+    self.tree = self._train(examples, features, targets, 1) 
+
+  def _train(self, examples, features, targets, depth):
+    """ Implementation of the ID3 decision tree
+    induction algorithm used for classification.
+    This is a recursive algorithm that choses the next
+    feature to evaluate based on each feature's descriminatory
+    power, or which feature will result in the most information
+    gain about the data. This will continue until 1 of the 3
+    following base cases is met:
+      1.  Every training instance remaining has the same
+          target feature value. In this case, return the
+          target feature value. This enables ID3 to return
+          the shortest (shallowest) possible trees.
+
+      2.  There are no descriptive features remaining
+          to divide the data based on. In this case, select
+          the target feature value of majority in the data.
+
+      3.  There are no training instances remaining in the
+          data set. In this case, take the target feature value
+          of majority in the parent (caller). This demonstrates
+          the generalization power of ID3.
+    """
+    target_counts = targets.value_counts()
+    majority_target = target_counts.index.to_numpy()[0][0]
+
+    # Note, the third
+    # base case explained above is handled in the recursive
+    # call section as we check for an empty new feature list
+    # before we even issue the recursive call. Also adding a check
+    # here for if we've reached our max tree depth.
+    if (len(features) == 0 or target_counts.size == 1 or depth >= self.depth):
+      # Return the target value of majority in current data set if
+      # there are no features left to partition by, or return
+      # the only remaining target value if there is only 1 remaining.
+      return BinaryDecisionTree(0, majority_target)
+
+    # Determine the optimal feature and feature value to partition
+    # the dataset into true and false branches
+    split_feature, split_value = ID3Classifier._calc_split_attribute(examples, features, targets) 
+    # Determine the index of the split feature from the columns
+    # of the entire dataset, i.e., all features
+    split_feature_idx = examples.columns.get_loc(split_feature)
+
+    # Remove the chosen best feature from the list of feature names
+    pruned_features = np.delete(features, np.where(features == split_feature))
+
+    # Create a new DecisionTree to be returned
+    dt = BinaryDecisionTree(split_feature_idx, split_value)
+
+    # Create the true and false branches based on split feature
+    false_branch = examples[examples[split_feature] <= split_value]
+    true_branch = examples[examples[split_feature] > split_value]
+
+    # Spawn recursive calls for true and false branches of decision tree, checking
+    # for base case first where there are no features left in these trees so we just
+    # return the current target value of majority as a leaf
+    if (false_branch.empty):
+      dt.add_false(BinaryDecisionTree(0, majority_target))
+    else:
+      dt.add_false(self._train(false_branch, pruned_features, targets.loc[false_branch.index], depth + 1))
+
+    if (true_branch.empty):
+      dt.add_true(BinaryDecisionTree(0, majority_target))
+    else:
+      dt.add_true(self._train(true_branch, pruned_features, targets.loc[true_branch.index], depth + 1))
+
+    return dt
+
+
+  def predict(self, examples):
+    """ Predict the target values given testing examples
+    and a tree that has already been trained by the train method.
+    """
+    if (self.tree is None):
+      print("Must train model using train() method first.")
+      return []
+
+    predictions = [None for _ in range(examples.shape[0])]
+    for i, row in enumerate(examples.to_numpy()):
+      predictions[i] = self.tree.traverse(row) 
+
+    return predictions
+  
+  @staticmethod
+  def _calc_entropy(targets):
+    """ Calculate the entropy for a sample
+    of training examples based on Shanon's 
+    Entropy Model. The first column in the passed
+    targets Dataframe is taken as the target
+    to calculate the entropy against.
+    """
+    target_name = targets.columns.values[0]
+    entropy = 0
+    n_targets = targets.shape[0]
+    for frequency in targets[target_name].value_counts():
+      probability = frequency / n_targets 
+      entropy -= probability * np.log2(probability)
+
+    return entropy
+
+  @staticmethod
+  def _calc_attribute_info_gain(examples, n_samples, targets, total_entropy, feature):
+    # Iterate through each unique value of this feature
+    # and calculate the information gain of having this unique
+    # value be the split value for this feature 
+    unique_values = examples[feature].unique()
+
+    # Calculate the less than or equal to and the greater than
+    # splits of the data set using the unique values for this feature.
+    # This creates an array of Dataframes of length len(unique_values)
+    less_subsets = [examples.loc[examples[feature] <= value] for value in unique_values] 
+    greater_subsets = [examples.loc[examples[feature] > value] for value in unique_values]
+
+    # Calculate the entropy for each of the less than or equal to, and greater than, subsets 
+    # of the data set for all unique values of this feature.
+    less_entropy = np.array([(subset["weight"].to_numpy().sum() / n_samples) * ID3Classifier._calc_entropy(targets.loc[subset.index]) for subset in less_subsets])
+    greater_entropy = np.array([(subset["weight"].to_numpy().sum() / n_samples) * ID3Classifier._calc_entropy(targets.loc[subset.index]) for subset in greater_subsets])
+
+    split_info_gain = np.add(less_entropy, greater_entropy)
+
+    info_gains = [total_entropy - split_gains for split_gains in split_info_gain]
+
+    # Find the maximum info gain and its index
+    max_info_gain_idx = np.argmax(info_gains)
+    max_info_gain = info_gains[max_info_gain_idx]
+
+    return max_info_gain, unique_values[max_info_gain_idx], feature
+
+  @staticmethod
+  def _calc_split_attribute(S, feature_names, targets):
+    """ Given the dataset S, determine which attribute
+    of the dataset and value of that attribute is optimal 
+    to partition the data set. The attribute and split value
+    is calculated based on the information gain of splitting
+    each unique value for a given attribute and taking the 
+    largest gain.
+    """
+    # The number of entries in dataset S
+    S_size = S.shape[0]
+
+    # Calculate the entropy for the entire dataset
+    e = ID3Classifier._calc_entropy(targets)
+
+    # Build the argument list, which is a list of tuples
+    # where each tuple holds the 5 arguments to the function
+    n_features = len(feature_names)
+    arg_list = zip([S for _ in range(n_features)],
+                   [S_size for _ in range(n_features)],
+                   [targets for _ in range(n_features)],
+                   [e for _ in range(n_features)],
+                   feature_names)
+    
+    # Execute the multi-processing *map operation
+    attribute_split_info_gains = starmap(ID3Classifier._calc_attribute_info_gain, arg_list)
+
+    # Pull out the optimal split value and feature based on the maximum info gain
+    _, split_value, split_feature = max(list(attribute_split_info_gains), key=lambda item: item[0])
+
+    return split_feature, split_value
+\end{lstlisting}
+
+\textbf{adaboost.py}
+\begin{lstlisting}[basicstyle= \scriptsize]
+import numpy as np                      # Access to math operators
+from id3 import ID3Classifier           # ID3 Algorithm implementation
+
+class AdaBoost:
+  """ An implementation of the Adaptive Boost
+  (Adaboost) boosting classifier that uses
+  a custom implementation of the ID3 Decision Tree
+  algorithm as a weak base learner. Constructor 
+  parameters include T, the number of estimators
+  to use when training, and the optional depth parameter,
+  which controls the maximum depth of each decision
+  tree (default = +infinity).
+  """
+  def __init__(self, T, depth=np.inf):
+    self.T = T
+    self.depth = depth
+    self.models = [None for _ in range(T)]
+    self.alphas = [0.0 for _ in range(T)]
+
+  def train(self, examples, targets):
+    """ Use the AdaBoost ensemble learning method
+    with ID3 as a base learner to learn a strong 
+    hypothesis for the provided data set X_train.
+    """
+    # How many training examples we are training on
+    n_examples = examples.shape[0]
+
+    # Extract the name of the target value we 
+    # are trying to classify in y_train
+    target_name = targets.columns.values[0]
+
+    # Before we add the weight column, extract the 
+    # names of each feature in X_train
+    features = examples.columns.values
+
+    # Assign an initial weight to all training examples
+    examples["weight"] = [1/n_examples] * n_examples
+
+    # We now have to train T different decision trees 
+    # using the provided data. After each tree is trained,
+    # we must determine the total error of that decision 
+    # tree (sum of weights of incorrectly classified examples)
+    # and use the total error to assign a weight to
+    # the decision tree.
+    self.models = [ID3Classifier(self.depth) for _ in range(self.T)]
+    for t in range(self.T):
+      # Obtain a weak hypothesis using the ID3 base learner implementation
+      self.models[t].train(examples, features, targets)
+
+      # Create an array of prediction results where 1 represents a correct
+      # prediction and -1 represents an incorrect prediction
+      prediction_booleans = self.models[t].predict(examples) == targets[target_name]
+      prediction_results = [1 if pred else -1 for pred in prediction_booleans.values]
+
+      # Calculate the error from the incorrect predictions
+      dt_error = examples.loc[prediction_booleans[prediction_booleans == False].index]["weight"].to_numpy().sum()
+
+      # Determine the weight of this tree based on the total error of the tree    
+      if (dt_error == 0):
+        self.alphas[t] = 1
+      #elif (dt_error >= 0.5):
+      #  break
+      else:
+        EPS = 1e-10 # Account for divide by zero
+        self.alphas[t] = 0.5 * np.log((1 - dt_error) / (dt_error + EPS)) 
+
+      # Update example weights based on if they were correctly
+      # or incorrectly classified with following formulas:
+      #   (correctly classified): example weight * e^(-tree weight) 
+      #   (incorrectly classified): example weight * e^(tree weight)
+      # we levereage the prediction_results array here since it contains
+      # 1 for each correct classification and -1 for each incorrect classification
+      examples["weight"] *= np.exp(-self.alphas[t] * np.array(prediction_results))
+
+      # Normalize the new sample weights so they add to 1
+      examples["weight"] /= examples["weight"].to_numpy().sum()
+
+  def predict(self, examples):
+    """ Use list of weak hypothesis and alphas trained
+    with the train method to build a strong hypothesis 
+    for each training example providede. The classification
+    of each provided training example is returned in an array.
+    """
+    n_examples = examples.shape[0]
+
+    # Populate a 2D array of all predictions made by each model for each example
+    predictions = np.array([[None for _ in range(n_examples)] for _ in range(self.T)])
+    for t in range(self.T):
+      predictions[t] = self.models[t].predict(examples)
+
+    # If only 1 tree was trained, just return the predictions
+    if (self.T == 1):
+      return predictions[0]
+
+    # Iterate through each prediction and compare them to
+    # predictions made by other trees based off weight
+    # to determine the 'true' prediction
+    true_predictions = ['' for _ in range(n_examples)]
+    for i in range(n_examples):
+      example_predictions = predictions[:, i]
+      prediction_weights = {} 
+      for j, pred in enumerate(example_predictions):
+        if pred in prediction_weights:
+          prediction_weights[pred] += self.alphas[j]
+        else:
+          prediction_weights[pred] = self.alphas[j]
+
+      top_prediction = example_predictions[0] 
+      top_weight = -1
+      for pred, weight in prediction_weights.items():
+        if weight >= top_weight:
+          top_weight, top_prediction = weight, pred
+
+      true_predictions[i] = top_prediction
+
+    return true_predictions
+\end{lstlisting}
+
+\textbf{main.py}
+\begin{lstlisting}[basicstyle= \scriptsize]
+import pandas as pd               # For data manipulation and analysis
+import time                       # For execution timing
+import random                     # Random number generation
+
+import matplotlib.pyplot as plt                               # For visualization
+import seaborn as sns                                         # Advanced visualizations
+from sklearn.metrics import accuracy_score, confusion_matrix  # For model evaluation
+from sklearn.model_selection import train_test_split          # For splitting the data
+from ucimlrepo import fetch_ucirepo                           # Letter recognition data set
+
+from adaboost import AdaBoost
+
+def estimator_benchmark(features, targets, T=50):
+  """ Benchmark the Adaboost implementation
+  found in Adaboost.py by running training/testing
+  sessions on the provided features and targets but
+  varying the number of estimators, or weak hypotheses
+  learned by the Adaboost algorithm during each session.
+  Returns a Dataframe containing the following:
+    - Test data 'random state' integer (for reproducibility).
+    - Accuracy of training.
+    - Depth of learned tree.
+    - Number of estimators
+    - Time taken training model.
+    - Time taken classifying.
+  """
+  # Fetch the dataset and sort into features/targets.
+  letter_recognition = fetch_ucirepo(id=59) 
+  features = letter_recognition.data.features
+  targets = letter_recognition.data.targets
+  
+  # Depth of learned binary decision tree for each test
+  depth = len(features.columns) 
+
+  # Number of estimators to test during each session
+  estimator_tests = range(1, T)
+  n_estimator_tests = len(estimator_tests)
+
+  # Choose a random state to split the data on
+  state = random.randint(1, 2**30)
+
+  # Map of returned data.
+  results = {'State': [state for _ in range(n_estimator_tests)],
+             'Accuracy': [0.0 for _ in range(n_estimator_tests)],
+             'Depth': [depth for _ in range(n_estimator_tests)],
+             'Estimators': estimator_tests,
+             'Train Time': [0.0 for _ in range(n_estimator_tests)],
+             'Classify Time': [0.0 for _ in range(n_estimator_tests)]
+             }
+  
+  # Split using a random state.
+  X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.2, random_state=state)
+
+  # Perform n tests.
+  for n in range(n_estimator_tests):
+    # Number of estimators to use for current test
+    estimators = estimator_tests[n]
+
+    # Copy the dataframes into this iteration's datasets
+    training_examples = X_train.copy(deep=True)
+    training_targets = y_train.copy(deep=True)
+
+    # Test the AdaBoost algorithm for 1 to 100 estimators.
+    ada = AdaBoost(estimators, depth) 
+
+    # Train the AdaBoost classifier and time how long it takes.
+    start_train_time = time.time()
+    ada.train(training_examples, training_targets)
+    results['Train Time'][n] = time.time() - start_train_time 
+
+    # Predict testing data
+    start_classify_time = time.time()
+    y_pred = ada.predict(X_test)
+    results['Classify Time'][n] = time.time() - start_classify_time
+
+    results['Accuracy'][n] = accuracy_score(y_test, y_pred)
+
+  return pd.DataFrame(results)
+
+
+
+def depth_benchmark(features, targets):
+  """ Benchmark the Adaboost implementation
+  found in Adaboost.py by running training/testing
+  sessions on the provided features and targets but
+  varying the depth of the learned trees on each session.
+  Returns a Dataframe containing the following:
+    - Test data 'random state' integer (for reproducibility).
+    - Accuracy of training.
+    - Depth of learned tree.
+    - Number of estimators
+    - Time taken training model.
+    - Time taken classifying.
+  """
+  # Fetch the dataset and sort into features/targets.
+  letter_recognition = fetch_ucirepo(id=59) 
+  features = letter_recognition.data.features
+  targets = letter_recognition.data.targets
+
+  # Test from depth 1 to the number of features + 5
+  depths = range(1, len(features.columns) + 5)
+  n_depths = len(depths)
+
+  # Choose a randome state to split the data on
+  state = random.randint(1, 2**30)
+
+  # The number of estimators for training
+  t = 1 
+
+  # Map of returned data.
+  results = {'State': [state for _ in range(n_depths)],
+             'Accuracy': [0.0 for _ in range(n_depths)],
+             'Depth': depths,
+             'Estimators': [t for _ in range(n_depths)],
+             'Train Time': [0.0 for _ in range(n_depths)],
+             'Classify Time': [0.0 for _ in range(n_depths)]
+             }
+  
+  # Split using a random state.
+  X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.2, random_state=state)
+
+  # Perform n tests.
+  for n in range(n_depths):
+    # Depth of learned decision tree for current test
+    depth = depths[n]
+
+    # Copy the dataframes into this iteration's datasets
+    training_examples = X_train.copy(deep=True)
+    training_targets = y_train.copy(deep=True)
+
+    # Test the AdaBoost algorithm for 1 to 100 estimators.
+    ada = AdaBoost(t, depth) 
+
+    # Train the AdaBoost classifier and time how long it takes.
+    start_train_time = time.time()
+    ada.train(training_examples, training_targets)
+    results['Train Time'][n] = time.time() - start_train_time 
+
+    # Predict testing data
+    start_classify_time = time.time()
+    y_pred = ada.predict(X_test)
+    results['Classify Time'][n] = time.time() - start_classify_time
+
+    results['Accuracy'][n] = accuracy_score(y_test, y_pred)
+
+  return pd.DataFrame(results)
+
+
+def adaboost_benchmark(features, targets, N=10, display_confusion_matrix=False):
+  """ Benchmark the Adaboost implementation
+  found in Adaboost.py by running N training/testing
+  sessions on the provided features and targets. 
+  Returns a Dataframe containing the following:
+    - Test data 'random_state' integer (for reproducibility).
+    - Accuracy of training.
+    - Depth of learned tree.
+    - Number of estimators
+    - Time taken training model.
+    - Time taken classifying.
+  """
+  # Fetch the dataset and sort into features/targets.
+  letter_recognition = fetch_ucirepo(id=59) 
+  features = letter_recognition.data.features
+  targets = letter_recognition.data.targets
+
+  # Depth of learned binary decision tree for each test
+  depth = len(features.columns) 
+
+  # Number of estimators 
+  t = 14 
+
+  # Map of returned data.
+  results = {'State': random.sample(range(1, 2**30), N),
+             'Accuracy': [0.0 for _ in range(N)],
+             'Depth': [depth for _ in range(N)],
+             'Estimators': [t for _ in range(N)],
+             'Train Time': [0.0 for _ in range(N)],
+             'Classify Time': [0.0 for _ in range(N)]
+             }
+  
+  # Perform n tests.
+  for n in range(N):
+    # Split using a random state.
+    X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.2, random_state=results['State'][n])
+
+    # Copy the dataframes into this iteration's datasets
+    training_examples = X_train.copy(deep=True)
+    training_targets = y_train.copy(deep=True)
+
+    # Test the AdaBoost algorithm for 1 to 100 estimators.
+    ada = AdaBoost(t, depth) 
+
+    # Train the AdaBoost classifier and time how long it takes.
+    start_train_time = time.time()
+    ada.train(training_examples, training_targets)
+    results['Train Time'][n] = time.time() - start_train_time 
+
+    # Predict testing data
+    start_classify_time = time.time()
+    y_pred = ada.predict(X_test)
+    results['Classify Time'][n] = time.time() - start_classify_time
+
+    results['Accuracy'][n] = accuracy_score(y_test, y_pred) * 100.00
+
+    if (display_confusion_matrix):
+      labels = targets["lettr"].unique()
+      conf_matrix = confusion_matrix(y_test, y_pred, labels=labels)
+      df_cm = pd.DataFrame(conf_matrix, index=labels, columns=labels)
+      plt.figure(figsize=(6, 4))
+      sns.heatmap(df_cm, annot=True, cmap='Blues', fmt='d', cbar=False)
+      plt.title("Confusion Matrix Heatmap")
+      plt.xlabel("Predicted Labels")
+      plt.ylabel("True Labels")
+      plt.show()
+
+  return pd.DataFrame(results)
+
+
+if __name__ == '__main__':
+  # fetch dataset 
+  letter_recognition = fetch_ucirepo(id=59) 
+
+  # Store the features and targets
+  features = letter_recognition.data.features
+  targets = letter_recognition.data.targets
+
+  # Store a combination of features and targets
+  total = pd.DataFrame(data=letter_recognition.data.original, columns=letter_recognition.data.headers)
+
+  # Check for any missing values
+  print(total.isnull().sum())
+
+  # Get summary statistics of the data
+  print(total.describe())
+
+  # Check the distribution of target labels
+  for label in targets.columns.values:
+    print(total[label].value_counts())
+
+  benchmark_results = adaboost_benchmark(features, targets, N=1, display_confusion_matrix=True)
+  # benchmark_results = depth_benchmark(features, targets)
+  # benchmark_results = estimator_benchmark(features, targets, 20)
+  print(benchmark_results)
+
+  # Save to csv
+  benchmark_results.to_csv('benchmark.csv', index=False)
+\end{lstlisting}
 
 \newpage
 \section{Neural Network Code}
@@ -2222,7 +2828,7 @@ for layer_width in LAYER_WIDTHS:
 
 \textbf{Model Performance Visualization}
 
-The code block belows extracts the hyperparameters and training results from the params_result.json file and store is in a \lstinline{results_df} data frame
+The code block belows extracts the hyperparameters and training results from the params\_result.json file and store is in a \lstinline{results_df} data frame
 
 \begin{lstlisting}
 import pandas as pd
@@ -2282,7 +2888,7 @@ The top 10 parameter configurations that returned the highest training accuracy 
     results_df.sort_values(by='train_accuracy',ascending=False).head(10)
 \end{lstlisting}
 
-Boxplots of model performance accross different model structures
+Boxplots of model performance across different model structures
 \begin{lstlisting}
 import pandas as pd
 import seaborn as sns
