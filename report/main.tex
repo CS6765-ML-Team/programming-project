@@ -775,7 +775,7 @@ However, accuracy is not an indicative metric when making evaluation on an imbal
 \end{align}
 \end{subequations}
 
-The recall metric has the same representation as accuracy, but it is the percentage of correctly classified instances in each class. Thefore, if the model misclassified every instances as the majority classes, the recall of minority classes will be low. On the other hand, precision reflects the quality of the positive prediction of the model. This metrics is important when the positive must be accurate. For example, precision will be low if the classifier categorizes unacc, acc, or vgood cars as good. Finally, the F1-score is a harmonized metric that combines both the recall and precision
+The recall metric has the same representation as accuracy, but it is the percentage of correctly classified instances in each class. Therefore, if the model misclassified every instances as the majority classes, the recall of minority classes will be low. On the other hand, precision reflects the quality of the positive prediction of the model. This metrics is important when the positive must be accurate. For example, the precision of the \lstinline{good} class will be low if the classifier categorizes \lstinline{unacc}, \lstinline{acc}, or \lstinline{vgood} cars as good. Finally, the F1-score is a harmonized metric that combines both the recall and precision
 
 Furthermore, the team used a confusion matrix as shown in \autoref{fig:NBCcm} to visualize the classifier performance.
 
@@ -874,7 +874,7 @@ It was determined that there was no further imporvement in the model performance
 The accuracy was 87.86\% for the model with the 1.25 weighting factor and it was 86.71\% for the models with the 1.5 weighting factor. The confusion matrices of these classifiers are shown in \autoref{fig:NBCcm_acc_class_weight_factor} and the performance metrics are summarized in \autoref{tab:nb_performance_1.25_5_5}.
 
 
-\begin{figure}[h]
+\begin{figure}[ht]
   % typeset
   \centering
   \subcaptionbox{\label{subfig:NBCcm_1.25_5_5}}{\includegraphics[width=0.48\textwidth]{images/NBCcm_1.25_5_5.png}}
@@ -904,11 +904,10 @@ The accuracy was 87.86\% for the model with the 1.25 weighting factor and it was
 
 It was found that by increasing this weighting factor to 1.25 and 1.5 achieve better F1-score for the \lstinline{acc} class and the minority classes. However, from the confusion matrix of these classifiers, more unacc instances were classified as acceptable. This was reflected in the decrease in the recall metric of the \lstinline{unacc} class. Depending on the severity of this misclassification in the real-world scenario (i.e., passing an unacceptable car with low safety and high buying price as acceptable), this improvement is not desireable.
 
-\section{Convolutional Neural Network}
-A convolutional neural network (CNN) was successfully created using existing machine learning libraries to train on and classify handwritten digits using the MNIST dataset. The structure and several training parameters of this CNN were varied to evaluate the effect these parameters have on the performance of the model. This CNN was implemented using the \textit{Tensorflow} Python library, alongside its high-level API \textit{Keras}. These libraries were chosen based on their ease-of-use for implementing a CNN that can easily have its structure re-arranged in code. 
-
+\section{ANN Experiment with the MNIST handwritten digit dataset}
+In this section of the project report, the team reports the experimentation detail and results from implementing two ANN methods on the task of MNIST handwritten digit recognition
 \subsection{Dataset Details}
-The dataset of handwritten digits used to train and test the CNN was provided by MNIST and contained 60000 training examples and 10000 test examples. The examples were already split as described when acquired. Figure~\ref{fig:mnist-examples} contains 9 images randomly chosen from the 60000 examples and demonstrates what the CNN will be learning on and trying to classify.
+The dataset of handwritten digits used to train and test the CNN was provided by MNIST and contained 60,000 training examples and 10,000 test examples. The examples were already split as described when acquired. \autoref{fig:mnist-examples} contains 9 images randomly sampled from the 60,000 training instances and demonstrates what the CNN will be learning on and trying to classify.
 
 \begin{figure}[h]
     \centering
@@ -925,6 +924,155 @@ Among the provided dataset were 10 unique classes, the digits ranging from 0 to 
     \caption{Distribution of classes within the MNIST handwritten digit dataset.}
     \label{fig:mnist-class-dist}
 \end{figure}
+
+\subsection{Fully-Connected Feedforward Neural Network}
+In the FNN implementation of the handwritten digit recognition task, the TensorFlow Keras library was used extensively to formulate and train the model. There are several hyperparameters of interest that have a significant impact on the model performance. In this experiment, the team investigated the effect of the following four hyperparameters:
+
+\begin{enumerate}
+    \item \textbf{Model structure} - this governs both the depth and the width of the FNN. The depth of the FNN is the number of hidden layer, while the width of the network is the number of neurons in each layer. Theoretically, wider and deeper networks benefits from learning more complex latent features in the input, thus are expected to have higher performance. There are four model structures tested in this experiment
+    \begin{itemize}
+        \item a 2-layer model with 64 and 32 neurons,
+        \item a 2-layer model with 32 and 16 neurons,
+        \item a 3-layer model with 64, 32, and 16 neurons, and
+        \item a 3-layer model with 32, 16, and 8 neurons.
+    \end{itemize}
+    \item \textbf{Learning Rate} - this governs the speed of parameter optima convergence. Theoretically, a lower learning rate improbe the model training stability since the parameters are adjusted at a lower rate at every update. However, the model will also take a longer time to train. To investigate the effect of the learning rate on the model performance, learning rates of 0.001, 0.0005, and 0.0001 were tested.
+    \item \textbf{Epoch} - epochs governs the number of time that the entire training dataset used for training the model and updating the paramaters. The model parameters have the chance to improve and reach the optima with a higher number of epochs. However, the model can also overfit if it adapts to the specific features present in the training data but is not representative of validation or testing data. In this experiment, epoch sizes of 10, 25, and 50 were investigated.
+    \item \textbf{Activation Function} - The selection of activation function must consider different advantages and disadvantages of each function. For example, the sigmoid function is prone to the vanishing gradient problem for deep networks, thus ealier layers cannot effectively adjust in response to the loss function value. ReLU activation was introduced as a better alternative to tackle this vanishing gradient problem. The team investigated the effect of these activation functions on the model performance
+\end{enumerate}
+
+\subsubsection{Implementation Detail of FNNs}
+The construction of the FNN models followed a typical workflow of data import and exploration, model construction, model training, and model evaluation. In this project, this pipeline was done once for one model before being scaled up for a hyperparameter grid search.
+
+\begin{enumerate}
+    \item \textbf{Data import and exploration} - The Kaggle data was downloaded using the KaggleHub API and moved to within the project repository for easy access. Since the data file has a non-standard file type, the team utilized the \lstinline{MnistDataLoader()} and \lstinline{show_image()} classes provided with the dataset. Visualization of random samples from the training dataset were shown in \autoref{fig:mnist-examples}. The data was loaded into train and test feature and label sets using the data loader object. The number of instance in each set and the structure of the sets were investigated. Furthermore, the training data was further split into a train set and a validation set, so that the test set would be purely for testing and not access during the training process.
+    
+    Since there is a high number of models in the search space, the models will be trained on a GPU to accelerate the training process. However, the team had previously experienced some training difficulties on a memory-constrained GPU due to the training implementation of TensorFlow. To avoid the memory constrain problem, a DataGenerator() class was defined to send training data to the model in batches. 
+    \item \textbf{ANN Model Construction Function} - To easily construct any model when given the hyperparameter configuration, a function called \lstinline{build_ann_model()} for building ANN models was created. The function creates a Keras sequential model that starts with a flatten layer to flatten the 2D input into a 1D tensor. This layer is then followed by alternate Dense and BatchNormalization layers. The activation function of the dense layer is by default ReLU but can be defined otherwise. The number of layers and the number of neurons in each layer is defined by the input argument \lstinline{layer_widths}, which is a list of neurons in each hidden layer. The output layer is appended to the sequential model as a Dense layer with the number of neuron being the number of output classes. The activation function of this dense layer is always the softmax function. Within this function, the model is compiled with a learning rate, a loss function, and tracked metrics as defined by the corresponding input arguments.
+    
+    \item \textbf{Testing with one ANN model construction} - This function was first tested by building and training one model. A corresponding directory with the hyperparameter configuration was created to store the the hyperparameters and training performance. The \lstinline{plot_performance()} helper function was defined to visualize the model training history. Aside from plotting the training and testing loss and tracked metrics, the model was later modified such that the plots are saved in a specified directory. This helps keep a record of training performance for different model with different hyperparameter configurations.
+
+    \item \textbf{Grid Search Model Training} - In this section, the parameter grid previously specified were setup such that the algorithm iterate through each hyperparameter configuration combination. In each iteraction, the algorithm
+    \begin{itemize}
+        \itemsep=-5pt
+        \item creates a new directory corresponding to the training time and the current hyperparameter configuration, 
+        \item builds the model using the \lstinline{build_ann_model()} function defined above, 
+        \item saves the training parameters in a \lstinline{training_params} dictionary, 
+        \item saves the model\ summary/structure into a \lstinline{model_summary.json} file, 
+        \item trains the model and save the training time and final training result in a \lstinline{training_results} dictionary, 
+        \item stores the training parameters and final training results into a \lstinline{params_results.json} file, 
+        \item saves the model for future inference and testing, and 
+        \item plots the model training history using the  and save the figure in the directory
+    \end{itemize}
+    
+    \item \textbf{Model Training Performance Visualization} - After all the models were trained and stored in the corresponding folder in the \lstinline{ann_model_results} directory, the model hyperparameters and training results can be extracted from the JSON files and stored in a \lstinline{results_df} dataframe. In this section, the team investigated the top 10 hyperparameter configurations that resulted in the highest training accuracy and validation accuracy. These models are summarized in \autoref{tab:ann_performance_top10_training_accuracy} and \autoref{tab:ann_performance_top10_validation_accuracy}. Furthermore, to investigate the effect of each hyperparameter on a macro level, the resulting data frame was grouped according to each hyperparameter and a box plot was drawn to capture the overall performance for each value of the hyperparameter. These results are included in section \ref{ann_model_result_hyperparameter}
+\end{enumerate}
+
+\begin{table}[ht]
+    \centering
+    \caption{Training performance of the 10 models with the highest training accuracy}
+    \label{tab:ann_performance_top10_training_accuracy}
+    \begin{tabular}{|| c c c c | c c c c ||}
+  
+    \hline
+    \centering
+    \textbf{Structure}  &\textbf{learning\_rate} &\textbf{epochs}    &\textbf{activation}    & \textbf{train\_loss}   &\textbf{train\_acc} &\textbf{val\_loss}  &\textbf{val\_acc} \\
+    \hline \hline
+    [64,32]             & 0.0001                & 50                & relu                  & 0.000927              & 1.000000          &0.229352           & 0.966833 \\ 
+    \hline
+    [64,32,16]          & 0.0005                & 50                & relu                  & 0.003082              & 0.999146          &0.168138           & 0.973083 \\ 
+    \hline
+    [64,32,16]          & 0.0001                & 50                & relu                  & 0.005420              & 0.998521          &0.229432           & 0.961750 \\ 
+    \hline
+    [64,32]             & 0.0005                & 50                & relu                  & 0.004767              & 0.998396          &0.175682           & 0.970667 \\ 
+    \hline
+    [64,32]             & 0.0010                & 50                & relu                  & 0.005936              & 0.998208          &0.188590           & 0.970664 \\ 
+    \hline
+    [64,32]             & 0.0001                & 25                & relu                  & 0.016039              & 0.998042          &0.125761           & 0.967917 \\ 
+    \hline
+    [64,32]             & 0.0005                & 25                & relu                  & 0.007371              & 0.998021          &0.166564           & 0.966417 \\ 
+    \hline
+    [32,16]             & 0.0005                & 50                & relu                  & 0.009465              & 0.997667          &0.254109           & 0.957000 \\ 
+    \hline
+    [64,32,16]          & 0.0010                & 50                & relu                  & 0.007377              & 0.997604          &0.188418           & 0.970417 \\ 
+    \hline
+    [64,32]             & 0.0010                & 25                & relu                  & 0.008554              & 0.997333          &0.158781           & 0.971250 \\ 
+    \hline
+    \end{tabular}
+\end{table}
+
+\begin{table}[ht]
+    \centering
+    \caption{Training performance of the 10 models with the highest validation accuracy}
+    \label{tab:ann_performance_top10_validation_accuracy}
+    \begin{tabular}{|| c c c c | c c c c ||}
+  
+    \hline
+    \centering
+    \textbf{Structure}  &\textbf{learning\_rate} &\textbf{epochs}    &\textbf{activation}    & \textbf{train\_loss}   &\textbf{train\_acc} &\textbf{val\_loss}  &\textbf{val\_acc} \\
+    \hline \hline
+    [64,32,16]          & 0.0005                & 50                & relu                  & 0.003082              & 0.999146          &0.168138           & 0.973083 \\ 
+    \hline
+    [64,32,16]          & 0.0005                & 25                & relu                  & 0.010872              & 0.996625          &0.143203           & 0.972917 \\ 
+    \hline
+    [64,32,16]          & 0.0010                & 25                & relu                  & 0.013520              & 0.995625          &0.124847           & 0.972833 \\ 
+    \hline
+    [64,32]             & 0.0010                & 25                & relu                  & 0.008554              & 0.997333          &0.158781           & 0.971250 \\ 
+    \hline
+    [64,32]             & 0.0005                & 50                & relu                  & 0.004767              & 0.998396          &0.175682           & 0.970667 \\ 
+    \hline
+    [64,32]             & 0.0010                & 50                & relu                  & 0.005936              & 0.998208          &0.188590           & 0.970667 \\ 
+    \hline
+    [64,32,16]          & 0.0010                & 50                & relu                  & 0.007377              & 0.997604          &0.188418           & 0.970417 \\ 
+    \hline
+    [64,32]             & 0.0010                & 10                & relu                  & 0.033115              & 0.989792          &0.109751           & 0.970333 \\ 
+    \hline
+    [64,32]             & 0.0005                & 10                & relu                  & 0.031812              & 0.990896          &0.110450           & 0.968917 \\ 
+    \hline
+    [64,32]             & 0.0001                & 25                & relu                  & 0.016039              & 0.998042          &0.125761           & 0.967917 \\ 
+    \hline
+    \end{tabular}
+\end{table}
+
+\subsubsection{Results of Training and Validation Performance} \label{ann_model_result_hyperparameter}
+\textbf{Effects of the model structure}
+
+\begin{figure} [htbp]
+    \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_modelstructure.png}}
+    \caption{The effect of the model structure on the training and validation accuracy} 
+    \label{fig:mnist_ann_result_modelstructure}
+\end{figure}
+
+\textbf{Effects of the learning rate}
+
+\begin{figure} [htbp]
+    \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_learningrate.png}}
+    \caption{The effect of the learning rate on the training and validation accuracy} 
+    \label{fig:mnist_ann_result_learningrate}
+\end{figure}
+
+\textbf{Effects of the epoch size}
+
+
+\begin{figure} [htbp]
+    \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_epoch.png}}
+    \caption{The effect of the epoch size on the training and validation accuracy} 
+    \label{fig:mnist_ann_result_epoch}
+\end{figure}
+
+\textbf{Effects of the activation function}
+
+
+\begin{figure} [htbp]
+    \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_activation.png}}
+    \caption{The effect of the activation function on the training and validation accuracy} 
+    \label{fig:mnist_ann_result_activation}
+\end{figure}
+
+\newpage
+
+\subsection{Convolutional Neural Network}
+A convolutional neural network (CNN) was successfully created using existing machine learning libraries to train on and classify handwritten digits using the MNIST dataset. The structure and several training parameters of this CNN were varied to evaluate the effect these parameters have on the performance of the model. This CNN was implemented using the \textit{TensorFlow} Python library, alongside its high-level API \textit{Keras}. These libraries were chosen based on their ease-of-use for implementing a CNN that can easily have its structure re-arranged in code. 
 
 \subsection{Testing Different CNN Structures}
 
