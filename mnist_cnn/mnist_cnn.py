@@ -7,6 +7,22 @@ from keras.api.optimizers import SGD
 
 from mnist_data_loader import MnistDataloader
 
+def plot_performance_plot(history, title=None, ylim=None):
+  plt.plot(history['accuracy'], label='Training Accuracy')
+  plt.plot(history['val_accuracy'], label='Validation Accuracy')
+  plt.xlabel('Epoch')
+  plt.ylabel('Accuracy')
+  if (ylim is not None):
+    plt.ylim([0.8, 1])
+  if (title is not None):
+    plt.title(title)
+  plt.legend(loc='lower right')
+  plt.grid(True)
+  
+def plot_performance_subplot(subplot_size, subplot_idx, history, title=None, ylim=None):
+  plt.subplot(subplot_size[0], subplot_size[1], subplot_idx)
+  plot_performance_plot(history, title, ylim)
+
 def define_seq_model(name, input_shape, n_layers, n_filters, kernel_size, pool_size, use_dropout=False, dropout_rate=0.2, use_batch_norm=False, use_max_pool=True):
   """ Create the CNN model with provided
   name and number of layers.
@@ -86,39 +102,6 @@ if __name__ == '__main__':
 
   (x_trainval, y_trainval), (x_test, y_test) = mnist_dataloader.load_data()
 
-
-  # # Create a histogram
-  # plt.hist(y_trainval, np.arange(11) - 0.5)
-  # plt.xticks(np.unique(y_trainval))
-
-  # # Add title and labels
-  # plt.xlabel('Classes')
-  # plt.ylabel('Number of Occurences in Dataset')
-
-  # # Display the plot
-  # plt.show()
-
-  x_trainval_dim = x_trainval.shape
-  y_trainval_dim = y_trainval.shape
-
-  x_test_dim = x_test.shape
-  y_test_dim = y_test.shape
-
-  print(f"There are {len(np.unique(y_trainval))} unique classes")
-  print(f"There are {x_trainval_dim[0]} samples in the training dataset, each of size {x_trainval_dim[1], x_trainval_dim[2]}\n"
-        f"There are {x_test_dim[0]} samples in the testing dataset ")
-  print(f"The training label set has dimension of {y_trainval_dim}")
-
-  # Randomly show some images
-  # for i in range(9):
-  #     index = np.random.randint(0, x_trainval_dim[0])
-  #     plt.subplot(3, 3, i+1)
-  #     plt.title(str(y_trainval[index]))
-  #     plt.imshow(x_trainval[index], cmap='gray')
-  #     plt.axis('off')
-
-  # plt.show()
-
   # Scale values to within normalized range
   x_trainval, x_test = x_trainval / 255.0, x_test / 255.0
 
@@ -144,13 +127,7 @@ if __name__ == '__main__':
   control_history = control_cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=512, validation_data=(x_test, y_test), verbose=0)
 
   # Plot the control CNN
-  plt.plot(control_history.history['accuracy'], label='Training Accuracy')
-  plt.plot(control_history.history['val_accuracy'], label='Validation Accuracy')
-  plt.xlabel('Epoch')
-  plt.ylabel('Accuracy')
-  plt.ylim([0.8, 1])
-  plt.legend(loc='lower right')
-  plt.grid(True)
+  plot_performance_plot(control_history.history, None, [0.8, 1])
   plt.tight_layout()
   plt.show()
 
@@ -197,25 +174,11 @@ if __name__ == '__main__':
   
   # Plot result of changing the number of filters 
   for i in range(3):
-    plt.subplot(2, 3, i+1)
-    plt.plot(filters_results[i].history['accuracy'], label='Training Accuracy')
-    plt.plot(filters_results[i].history['val_accuracy'], label='Validation Accuracy')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.title(f'Number of Filters: {filters[i]}')
-    plt.legend(loc='lower right')
-    plt.grid(True)
+    plot_performance_subplot((2, 3), i+1, filters_results[i].history, f'Number of Filters: {filters[i]}')
   
   # Plot result of changing the number of layers 
   for i in range(3):
-    plt.subplot(2, 3, i+4)
-    plt.plot(layers_results[i].history['accuracy'], label='Training Accuracy')
-    plt.plot(layers_results[i].history['val_accuracy'], label='Validation Accuracy')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.title(f'Number of Layers: {n_layers[i]}')
-    plt.legend(loc='lower right')
-    plt.grid(True)
+    plot_performance_subplot((2, 3), i+4, layers_results[i].history, f'Number of Layers: {n_layers[i]}')
 
   # Show the above plots
   plt.tight_layout()
@@ -244,23 +207,9 @@ if __name__ == '__main__':
 
   # Plot result of adding Dropout layers with different dropout rates, compared
   # to the control CNN that was tested with no dropout layers
-  plt.subplot(2, 2, 1)
-  plt.plot(control_history.history['accuracy'], label='Training Accuracy')
-  plt.plot(control_history.history['val_accuracy'], label='Validation Accuracy')
-  plt.xlabel('Epoch')
-  plt.ylabel('Accuracy')
-  plt.title('No Drop Out')
-  plt.legend(loc='lower right')
-  plt.grid(True)
+  plot_performance_subplot((2, 2), 1, control_history.history, "No Drop Out")
   for i in range(3):
-    plt.subplot(2, 2, i+2)
-    plt.plot(dropout_rates_results[i].history['accuracy'], label='Training Accuracy')
-    plt.plot(dropout_rates_results[i].history['val_accuracy'], label='Validation Accuracy')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.title(f'Rate of Dropout: {dropout_rates[i]}')
-    plt.legend(loc='lower right')
-    plt.grid(True)
+    plot_performance_subplot((2, 2), i+2, dropout_rates_results[i].history, f'Rate of Dropout: {dropout_rates[i]}')
 
   # Show the above plot
   plt.tight_layout()
@@ -284,23 +233,8 @@ if __name__ == '__main__':
     
   # Plot result of adding Batch Normalization layers, compared
   # to the control CNN that was tested with no Batch Normalization.
-  plt.subplot(2, 1, 1)
-  plt.plot(control_history.history['accuracy'], label='Training Accuracy')
-  plt.plot(control_history.history['val_accuracy'], label='Validation Accuracy')
-  plt.xlabel('Epoch')
-  plt.ylabel('Accuracy')
-  plt.title('No Batch Normalization')
-  plt.legend(loc='lower right')
-  plt.grid(True)
-
-  plt.subplot(2, 1, 2)
-  plt.plot(batch_norm_history.history['accuracy'], label='Training Accuracy')
-  plt.plot(batch_norm_history.history['val_accuracy'], label='Validation Accuracy')
-  plt.xlabel('Epoch')
-  plt.ylabel('Accuracy')
-  plt.title('With Batch Normalization')
-  plt.legend(loc='lower right')
-  plt.grid(True)
+  plot_performance_subplot((2, 1), 1, control_history.history, "No Batch Normalization")
+  plot_performance_subplot((2, 1), 2, batch_norm_history.history, "With Batch Normalization")
 
   # Show the above plot
   plt.tight_layout()
@@ -324,23 +258,8 @@ if __name__ == '__main__':
   avg_pool_history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=512, validation_data=(x_test, y_test), verbose=0)
 
   # Plot the results of using Max vs. Average pooling
-  plt.subplot(2, 1, 1)
-  plt.plot(control_history.history['accuracy'], label='Training Accuracy')
-  plt.plot(control_history.history['val_accuracy'], label='Validation Accuracy')
-  plt.xlabel('Epoch')
-  plt.ylabel('Accuracy')
-  plt.title('Max Pooling')
-  plt.legend(loc='lower right')
-  plt.grid(True)
-
-  plt.subplot(2, 1, 2)
-  plt.plot(avg_pool_history.history['accuracy'], label='Training Accuracy')
-  plt.plot(avg_pool_history.history['val_accuracy'], label='Validation Accuracy')
-  plt.xlabel('Epoch')
-  plt.ylabel('Accuracy')
-  plt.title('Average Pooling')
-  plt.legend(loc='lower right')
-  plt.grid(True)
+  plot_performance_subplot((2, 1), 1, control_history.history, "Max Pooling")
+  plot_performance_subplot((2, 1), 2, avg_pool_history.history, "Average Pooling")
 
   # Show the above plot
   plt.tight_layout()
@@ -385,30 +304,13 @@ if __name__ == '__main__':
     history = cnn.fit(x_trainval, y_trainval, epochs=10, batch_size=bs, validation_data=(x_test, y_test), verbose=0)
     batch_sizes_results[idx] = history
 
-  # Plot the results from the above tests 
-  plt.figure(figsize=(15, 15))
-  
   # plot learning rate:
   for i in range(3):
-    plt.subplot(2, 3, i+1)
-    plt.plot(learning_rates_results[i].history['accuracy'], label='Training Accuracy')
-    plt.plot(learning_rates_results[i].history['val_accuracy'], label='Validation Accuracy')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.title(f'Learning Rate: {learning_rates[i]}')
-    plt.legend(loc='lower right')
-    plt.grid(True)
+    plot_performance_subplot((2, 3), i+1, learning_rates_results[i].history, f'Learning Rate: {learning_rates[i]}')
 
   # plot batch size:
   for i in range(3):
-    plt.subplot(2, 3, i+4)
-    plt.plot(batch_sizes_results[i].history['accuracy'], label='Training Accuracy')
-    plt.plot(batch_sizes_results[i].history['val_accuracy'], label='Validation Accuracy')
-    plt.xlabel('Epoch')
-    plt.ylabel('Accuracy')
-    plt.title(f'Batch Size: {batch_sizes[i]}')
-    plt.legend(loc='lower right')
-    plt.grid(True)
+    plot_performance_subplot((2, 3), i+4, batch_sizes_results[i].history, f'Batch Size: {batch_sizes[i]}')
 
   plt.tight_layout()
   plt.show()
