@@ -177,7 +177,7 @@ The Dataframe data structure, as part of the \textit{Pandas} library, is a data 
 
 A binary tree data structure was manually implemented in Python to fulfill the decision tree output of the ID3 algorithm. This binary tree implementation, named \textit{BinaryDecisionTree} in tree.py, is a recursive tree data structure that possesses four attributes: 1) a split feature index, 2) a split feature value, 3) a truth branch, 4) a false branch. The split feature index of the \textit{BinaryDecisionTree} is an integer value that represents the feature this node splits on in the training data. Instead of storing the name of the feature as a string, the index of the feature in the list of feature names is stored. This is done to improve performance. The split feature value is exactly as the name describes, it is the value of the split feature by which this node splits the data on. The truth branch is a reference to another \textit{BinaryDecisionTree} object, hence the recursive nature of the data structure. When traversing the \textit{BinaryDecisionTree}, this branch is evaluated when a provided feature value is greater than the split feature value of this node. Finally, the false branch is a reference to another \textit{BinaryDecisionTree} object that is evaluated when a provided feature value is less than or equal to the split feature value of this node. The form of the trees built by the \textit{BinaryDecisionTree} object can be seen in Figure~\ref{fig:binary-decision-tree}. 
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[scale=0.55]{images/binary-decision-tree.PNG}
     \caption{Binary decision tree created by \textit{BinaryDecisionTree} class.}
@@ -191,7 +191,7 @@ Two hyper-parameters were implemented for this Adaboost with ID3 base learner im
 
 The maximum tree depth of the learned binary decision tree is a hyper-parameter of the ID3 algorithm implementation, and it sets a limit on the maximum depth of recursion of the algorithm. This depth was monitored as a \textit{depth} parameter incremented on each recursive call. When the maximum depth was reached, the target value of majority in the current data set was returned as the leaf node. If the caller did not specify a maximum tree depth, then a tree depth of infinity was set, which essentially means the algorithm would only return a leaf node if one of its original three base cases were hit. It was experimentally determined, as can be seen in Figure~\ref{fig:depth-hyper-param}, that placing a limit on the depth of the trained binary decision tree less than the number of features in the data set actually reduces classification accuracy. For context, Figure~\ref{fig:depth-hyper-param} used a dataset with 16 features. This makes intuitive sense, as each node splits on a single feature, so there can only ever be a tree as deep as the number of features. Also, if we force a tree to terminate early, then we are forcing it to over generalize the data. Either way, this hyper-parameter remained as reducing the depth of the tree significantly improves training and classification performance. 
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[scale=0.7]{images/tree-depth-plot.png}
     \caption{Accuracy of classification vs. maximum tree depth of learned binary decision tree by ID3 algorithm.}
@@ -200,7 +200,7 @@ The maximum tree depth of the learned binary decision tree is a hyper-parameter 
 
 The second hyper-parameter implemented, the number of weak hypotheses learned by the Adaboost algorithm, is a hyper-parameter of the Adaboost algorithm that controls the number of models trained by the weak base learner for a single Adaboost training session. This hyper-parameter has direct influence on the performance of the Adaboost algorithm, both from a time point-of-view and an accuracy point-of-view. The more weak hypotheses trained, the longer training will take; however, the more accurate classification can become. It was experimentally determined that 14 is the optimal number of weak hypotheses to learn as it maximizes the classification accuracy while keeping the training time as low as possible. Figure~\ref{fig:estimator-hyper-param} demonstrates how at 14 weak hypotheses, the classification accuracy of the Adaboost algorithm reaches an asymptote. Although this is only for a particular split of the dataset, it remains consistent. Figure~\ref{fig:estimator-time} shows how the time taken for training the Adaboost algorithm increases linearly with the number of weak hypotheses learned by the algorithm. As such, it is optimal to use 14 weak hypotheses to maximize classification accuracy while ensuring training time doesn't continue to increase.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \begin{subfigure}[t]{0.48\textwidth}
         \centering
@@ -246,7 +246,7 @@ The dataset was taken from the UC Irvine Machine Learning Repository and has the
 
 The total number of classes in this dataset is 26, representing the number of capital letters in the English alphabet. The distribution of classes within the dataset is nearly uniform, as can be seen in Figure~\ref{fig:class-histogram}. As such, no re-sampling of data was needed.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[scale=0.7]{images/class-distribution.png}
     \caption{Distribution of classes within the Letter Distribution dataset.}
@@ -326,7 +326,7 @@ As mentioned, this section of the programming project saw the implementation of 
 
 For this assignment, as mentioned, a neural network was created with three layers: one input, one hidden, and one output. Justification for the choice of this structure can be found within Section \ref{ANNhyperparameterselection}. As such, the general structure of the neural network implemented is given by Figure \ref{fig:annstructure}:
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[scale = 0.5]{images/annstructure.png}
     \caption{Structure of the ANN that was developed.}
@@ -611,14 +611,14 @@ Null values were examined using the \textit{.isnull()} handle for Pandas data fr
 
 After detailing the theoretical background for the ANN structure, the libraries, platform, and data structures used, as well as the process of determining hyperparameters and analyzing the data set, it was thus time to test the dataset. Utilizing the hyperparameters and initialized weights determined in Section \ref{ANNhyperparameterselection}, the model was trained on the training data and the loss for both training and validation was visualized. Following this, the model was tested against the test dataset and a confusion matrix was generated to visualize its efficacy. To evaluate the model, the code was ran 10 times and the average accuracy was calculated. This meant that 10 models were generated with initialized weights, utilizing the same hyperparameters, and tested against a test set that was unique to that run. The average accuracy of the model after experimental evaluation was 95.56\%, with the highest measured accuracy being 98.837\%, and the lowest accuracy being 91.86\%. The training results and testing confusion matrix of the highest run are shown within Figures \ref{fig:anntrain} and \ref{fig:anncm}, respectively. 
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.9\linewidth]{images/ANNtrain.png}
     \caption{Training results of the best run for testing the ANN.}
     \label{fig:anntrain}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\linewidth]{images/ANNcm.png}
     \caption{Confusion matrix results of the best run for testing the ANN.}
@@ -790,7 +790,7 @@ The recall metric has the same representation as accuracy, but it is the percent
 
 Furthermore, the team used a confusion matrix as shown in \autoref{fig:NBCcm} to visualize the classifier performance.
 
-\begin{figure} [h]
+\begin{figure} [h!]
   \centering{\includegraphics[scale=0.3]{images/NBCcm.png}}
   \caption{Confusion matrix of the Naive Bayes classifier} 
   \label{fig:NBCcm}
@@ -804,7 +804,7 @@ When there was no weighting factor to boost the prior probability of the \lstinl
 
 The overall accuracy of this classifier was 86.71\%. The confusion matrix of this unmodified classifier is shown in \autoref{fig:NBCcm_unmodified}. 
 
-\begin{figure} [h]
+\begin{figure} [h!]
   \centering{\includegraphics[scale=0.3]{images/NBCcm_unmodified.png}}
   \caption{Confusion matrix of the Naive Bayes classifier with unmodified prior probabilities} 
   \label{fig:NBCcm_unmodified}
@@ -812,7 +812,7 @@ The overall accuracy of this classifier was 86.71\%. The confusion matrix of thi
 
 The other metrics of the model are included in \autoref{tab:nb_performance_unmodified}. As expected, the classifier exhibit outstanding precision and recall for the majority class. However, these quantities are significantly lower for the other three classes. This was the result of the prior probability discrepancy and lack of adequate training data in the minority classes.
 
-\begin{table}[ht]
+\begin{table}[h!]
   \centering
   \caption{Performance Metrics of the Unmodified Naive Bayes classifier}
   \label{tab:nb_performance_unmodified}
@@ -831,13 +831,13 @@ The other metrics of the model are included in \autoref{tab:nb_performance_unmod
 \subsubsection{Classifier with a weighting factor of 5}
 Compared to the unmodifed classifier, the accuracy improved to 87.86\% when incorporating a weighting factor of 5 on the prior probabilities of both the minority classes. \autoref{fig:NBCcm_5} shows the confusion matrix of this classifier, while the classifier recall, precision, and F1-score are included in \autoref{tab:nb_performance_5}. Compared to th previous confusion matrix, we observed a rightward shift in the prediction, where some \lstinline{acc} instances are classified as \lstinline{good} and \lstinline{vgood} and some instances previously misclassified as \lstinline{acc} are now correctly classified as the minority classes. Evident by \autoref{tab:nb_performance_5}, by increasing the importance of the minority class, the model achieved significantly better performance on the minority classes while only slightly reduce its previous performance in the \lstinline{acc} class.
 
-\begin{figure} [h]
+\begin{figure} [h!]
   \centering{\includegraphics[scale=0.3]{images/NBCcm_10.png}}
   \caption{Confusion matrix of the Naive Bayes classifier with a weighting factor of 5} 
   \label{fig:NBCcm_5}
 \end{figure}
 
-\begin{table}[ht]
+\begin{table}[h!]
   \centering
   \caption{Performance Metrics of the Unmodified Naive Bayes classifier}
   \label{tab:nb_performance_5}
@@ -857,14 +857,14 @@ Compared to the unmodifed classifier, the accuracy improved to 87.86\% when inco
 \subsubsection{Classifier with a weighting factor of 10}
 The accuracy of the model was slightly improved to 87.28\% when a weighting factor of 10 was incorporated in the prior probability of both the \lstinline{good} and \lstinline{vgood} classes. The confusion matrix of the classifier is provided in \autoref{fig:NBCcm_10} while the classifier recall, precision, and F1-score are included in \autoref{tab:nb_performance_10}. In terms of the F1-score, this classifier had comparable performance for both the \lstinline{unacc} and \lstinline{acc} classes compared to the previous classifier with a slight decrease in performance for the \lstinline{good} class
 
-\begin{figure} [h]
+\begin{figure} [h!]
   \centering{\includegraphics[scale=0.3]{images/NBCcm_5.png}}
   \caption{Confusion matrix of the Naive Bayes classifier with a weighting factor of 10} 
   \label{fig:NBCcm_10}
 \end{figure}
 
 
-\begin{table}[ht]
+\begin{table}[h!]
   \centering
   \caption{Performance Metrics of the Unmodified Naive Bayes classifier}
   \label{tab:nb_performance_10}
@@ -885,7 +885,7 @@ It was determined that there was no further imporvement in the model performance
 The accuracy was 87.86\% for the model with the 1.25 weighting factor and it was 86.71\% for the models with the 1.5 weighting factor. The confusion matrices of these classifiers are shown in \autoref{fig:NBCcm_acc_class_weight_factor} and the performance metrics are summarized in \autoref{tab:nb_performance_1.25_5_5}.
 
 
-\begin{figure}[ht]
+\begin{figure}[h!]
   % typeset
   \centering
   \subcaptionbox{\label{subfig:NBCcm_1.25_5_5}}{\includegraphics[width=0.48\textwidth]{images/NBCcm_1.25_5_5.png}}
@@ -894,7 +894,7 @@ The accuracy was 87.86\% for the model with the 1.25 weighting factor and it was
   \label{fig:NBCcm_acc_class_weight_factor}
 \end{figure}
 
-\begin{table}[ht]
+\begin{table}[h!]
   \centering
   \caption{Performance Metrics of the Naive Bayes classifier with mixed weighting factors}
   \label{tab:nb_performance_1.25_5_5}
@@ -920,7 +920,7 @@ In this section of the project report, the team reports the experimentation deta
 \subsection{Dataset Details}
 The dataset of handwritten digits used to train and test the CNN was provided by MNIST and contained 60,000 training examples and 10,000 test examples. The examples were already split as described when acquired. \autoref{fig:mnist-examples} contains 9 images randomly sampled from the 60,000 training instances and demonstrates what the CNN will be learning on and trying to classify.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{images/mnist-examples.png}
     \caption{Nine randomly chosen examples from the MNIST handwritten digit dataset.}
@@ -929,7 +929,7 @@ The dataset of handwritten digits used to train and test the CNN was provided by
 
 Among the provided dataset were 10 unique classes, the digits ranging from 0 to 9. The distribution of these classes among the training dataset can be seen in Figure~\ref{fig:mnist-class-dist}. Due to the nearly uniform distribution shown in Figure~\ref{fig:mnist-class-dist}, no pre-processing of the data was performed.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{images/mnist-class-dist.png}
     \caption{Distribution of classes within the MNIST handwritten digit dataset.}
@@ -979,7 +979,7 @@ The construction of the FNN models followed a typical workflow of data import an
     \item \textbf{Model Training Performance Visualization} - After all the models were trained and stored in the corresponding folder in the \lstinline{ann_model_results} directory, the model hyperparameters and training results can be extracted from the JSON files and stored in a \lstinline{results_df} dataframe. In this section, the team investigated the top 10 hyperparameter configurations that resulted in the highest training accuracy and validation accuracy. These models are summarized in \autoref{tab:ann_performance_top10_training_accuracy} and \autoref{tab:ann_performance_top10_validation_accuracy}. Furthermore, to investigate the effect of each hyperparameter on a macro level, the resulting data frame was grouped according to each hyperparameter and a box plot was drawn to capture the overall performance for each value of the hyperparameter. These results are included in section \ref{ann_model_result_hyperparameter}
 \end{enumerate}
 
-\begin{table}[ht]
+\begin{table}[h!]
     \centering
     \caption{Training performance of the 10 models with the highest training accuracy}
     \label{tab:ann_performance_top10_training_accuracy}
@@ -1012,7 +1012,7 @@ The construction of the FNN models followed a typical workflow of data import an
     \end{tabular}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[h!]
     \centering
     \caption{Training performance of the 10 models with the highest validation accuracy}
     \label{tab:ann_performance_top10_validation_accuracy}
@@ -1050,7 +1050,7 @@ The construction of the FNN models followed a typical workflow of data import an
 
 The influence of the model structure on the model performance is shown in \autoref{fig:mnist_ann_result_modelstructure}. On average, models with more neurons in a layers tend to have better performance than narrower models. The average performance of the [64, 32] model and the [64,32,16] model were approximately 96\%, compared to the average performance of 94\% of the [32, 16] and the [32,16,8] models. Furthermore, although deeper models can capture more complex features, the team observed that adding another layer can slightly degrade the model performance, both in training and validation, in the current task. The performance decrease in the training data potentially comes from the deeper models that were not trained for a higher number of epochs, thus the parameters in the whole model were not as updated compared to a shallower model. The general degradation in validation result is large attributed to the possible overfitting of the more complex models, where they learned some specific patterns that were only present in the training dataset but were not generalizable to real testing data.
 
-\begin{figure} [htbp]
+\begin{figure} [h!]
     \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_modelstructure.png}}
     \caption{The effect of the model structure on the training and validation accuracy} 
     \label{fig:mnist_ann_result_modelstructure}
@@ -1058,7 +1058,8 @@ The influence of the model structure on the model performance is shown in \autor
 
 \textbf{Effects of the learning rate}
 
-\begin{figure} [htbp]
+Since the learning rate affect the model training stability, it indirectly influence the model performance. \autoref{fig:mnist_ann_result_learningrate} shows the overall model performance at various learning rates. On average, the models had similar tranining performance, while validation performance shows that the middle learning rate had slightly better results compared to the others. This is understandable as a model with low learning rate requires more training epochs to attain similar results as one with a moderate learning rate trained with the same number of epochs. Given the maximum 50 training epochs, the model with higher learning rate will be closer to the optima. However, a high learning rate might suffer from longer training since the parameters can overshoot the optima and leads to unstable training. In some cases, the model can diverge from the desired state. 
+\begin{figure} [h!]
     \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_learningrate.png}}
     \caption{The effect of the learning rate on the training and validation accuracy} 
     \label{fig:mnist_ann_result_learningrate}
@@ -1066,8 +1067,9 @@ The influence of the model structure on the model performance is shown in \autor
 
 \textbf{Effects of the epoch size}
 
+The model performance results accross various epoch sizes are shown in \autoref{fig:mnist_ann_result_epoch}. Theoretically, when a model is trained for a longer period, the parameters will further converge to the optimal region. These results are in accordance with the expectation as the models trained with 50 epochs had higher training and validation accuracy on average compared to those trained on 25 and 10 epochs. 
 
-\begin{figure} [htbp]
+\begin{figure} [h!]
     \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_epoch.png}}
     \caption{The effect of the epoch size on the training and validation accuracy} 
     \label{fig:mnist_ann_result_epoch}
@@ -1075,8 +1077,9 @@ The influence of the model structure on the model performance is shown in \autor
 
 \textbf{Effects of the activation function}
 
+The ReLU activation function was introduced as a better alternative to the sigmoid activation function since it helps solve the vanishing gradient problem (VGP). Therefore, the team expected the models trained with ReLU activation to have better performance due to a lower impact of VGP. \autoref{fig:mnist_ann_result_activation} shows the model performance result comparison between the model trained with ReLU and those trained with sigmoid activation. The performance discrepancy between these hyperparameters are more pronounced compared to the previously considered hyperparameter. The majority of the models trained with ReLU activation attained higher performance during training and validation
 
-\begin{figure} [htbp]
+\begin{figure} [h!]
     \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_activation.png}}
     \caption{The effect of the activation function on the training and validation accuracy} 
     \label{fig:mnist_ann_result_activation}
@@ -1107,7 +1110,7 @@ In addition to this, several results of the above modifications to the structure
 \end{itemize}
 The performance curve of this control CNN model can be seen in Figure~\ref{fig:control-cnn}. Please note that the number of layers referenced above represents the number of convolutional and pooling layer pairs, and does not include the fully-connected feed-forward network used for classification after these layers.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{images/control-cnn.png}
     \caption{Performance of control CNN with default structure.}
@@ -1118,7 +1121,7 @@ The performance curve of this control CNN model can be seen in Figure~\ref{fig:c
 
 The results of training the CNN model with 1, 2, and 3 layers, as well as training the model with 16, 32, and 64 filters, can be seen in Figure~\ref{fig:layers-filters}. The results in Figure~\ref{fig:layers-filters} demonstrates how increasing the number of filters can actually lead to over-fitting in the CNN. The maximum training and validation accuracy after 10 epochs for the 16 filter and 32 filter models stay relatively close together. However, for the 64 filter case, the accuracies actually diverge with the validation accuracy being less than the training accuracy. Conversely, Figure~\ref{fig:layers-filters} also demonstrates how increasing the number of layers in the CNN model actually reduces the effect of over-fitting.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[scale=0.45]{images/n-layers-n-filters-cnn.png}
     \caption{Performance of training the CNN model with different number of layers and filters.}
@@ -1129,7 +1132,7 @@ The results of training the CNN model with 1, 2, and 3 layers, as well as traini
 
 The results of training the CNN model with the addition of drop-out layers with varying drop-out rates after each convolutional layer can be seen in Figure~\ref{fig:drop-out}. These models were trained with 3 total convolutional and pooling layer pairs, thus 3 total drop-out layers. As expected, the results shown in Figure~\ref{fig:drop-out} demonstrate reduced overfitting of the model as the drop-out rate increases, at the cost of training accuracy. It's clear from the results of the control model in Figure~\ref{fig:control-cnn} that over-fitting isn't a particularly big problem for our model, as such the use of drop-out layers is not necessary. 
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{images/drop-out-cnn.png}
     \caption{Performance of training the CNN model with drop-out layers of varying drop-out rates.}
@@ -1140,7 +1143,7 @@ The results of training the CNN model with the addition of drop-out layers with 
 
 The results of training the CNN model with the addition of batch normalization layers after each convolutional layer can be seen in Figure~\ref{fig:batch-norm}. These results clearly demonstrate how batch normalization can be used as an effective regularizer. The maximum training and validation accuracies after 10 epochs diverge considerably when batch normalization is used, with the validation accuracy being the strongest, compared to the control model. This shows reduced over-fitting in the model.
 
-\begin{figure}[h]
+\begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{images/batch-norm-cnn.png}
     \caption{Performance of training the CNN model with batch normalization layers.}
@@ -1182,7 +1185,7 @@ This report saw the implementation of several machine learning algorithms, with 
 
 Following this, an artificial neural network was implemented from scratch complete with backpropagation, which was derived by hand. This implementation was trained and tested on the Wisconsin Breast Cancer Diagnostic dataset, which contains the mean, worst case, and standard deviation of 10 real-valued features pertaining to potentially cancerous cell mass recorded using fine-needle aspirate. An object oriented approach was taken for the implementation of this neural network, which allowed networks to be instantiated with varying amounts of neurons. A relatively shallow network was designed for this project, consisting of only 1 hidden layer. The average classification accuracy for 10 trails was 95.56\%, with the highest measured mean accuracy being 98.837\%, and the lowest being 91.86\%. This was compared against the average accuracy of 92.308\% while using a neural network by the developers of the dataset, and this implementation was therefore considered a success. A Naive Bayes classifier was implemented after this, and was utilized to predict the acceptability of a car given several features about the vehicle. This model was evaluated using both an unmodified prior probability and a modified prior probablity, meaning that there was a weighing factor to boost the prior probability of certain classes. For the unmodified case, it was found that the overall accuracy of the model was 86.71\%, and the majority class exhibited a precision, recall, and F1-score of 0.92, 0.96, and 0.94, respectively. These values were less than desirable for the other classes, and as such different weighing factors were examined to boost the weight of the minority classes. A weighing factor of 5 improved the overall classifier accuracy to 87.86\%, and the precision, recall, and F1-score for the minority classes saw improvements. Further adjustments, such as using mixed weighing factors, saw even greater improvements in the precision, recall, and F1-score for the minority classes, but the overall classifier accuracy never exceeded 87.86\%.
 
-After implementing these three algorithms from scratch, the focus then turned towards the use of pre-existing machine learning libraries for classification on the MNIST handwritten dataset. Firstly, a fully-connected feedforward neural network was implemented using the TensorFlow Keras API. Model structure, learning rate, number of epochs, and the activation function were the hyperparameters that were examined in the process of training the model. A parameter grid search was implemented to determine the best hyperparameter combination, and the best model examined had an accuracy of \hl{INSERT ACCURACY}. Following this, a convolutional neural network was implemented, also using the TensorFlow Keras API. The hyperparameters that were examined were the number of filters of each convolutional layer in the CNN, the number of layers in the CNN, the effects of a drop-out layer with different drop-out rates, the use of batch-normalization, and the use of either average pooling layers vs. max pooling layers. These hyperparameter combinations were compared against a ``control'' model that utilized 3 layers, 32 3x3 filters, no drop-out layers, no batch normalization layers, and max pooling layers. The control model achieved a validation accuracy of 97.5\%. It was found that an increasing number of filters lead the training accuracy and the validation accuracy to diverge, whereas an increasing number of convolutional + pooling layers brought the accuracies back together. Drop-out was able to reduce the effects of overfitting, at the cost of sacrificing overall model accuracy. Drop-out was determined to not be necessary as the model itself does not overfit that much, and a higher accuracy was preferred. Batch normalization was determined to be an effective regularizer, and average pooling was determined to produce higher validation accuracies than max pooling, at the cost of a reduced training accuracy. Finally, two more hyperparameters were analyzed, those being the learning rate of the model with a stochastic gradient descent optimizer, and the batch size of the model. Smaller learning rates lead to slower convergence, at a higher stability, whereas higher learning rates lead to a faster, unstable convergence. Batch size was found to speed up both the training of the model and the performance of the model.
+After implementing these three algorithms from scratch, the focus then turned towards the use of pre-existing machine learning libraries for classification on the MNIST handwritten dataset. Firstly, a fully-connected feedforward neural network was implemented using the TensorFlow Keras API. Model structure, learning rate, number of epochs, and the activation function were the hyperparameters that were examined in the process of training the model. A parameter grid search was implemented to determine the best hyperparameter combination, and the best model examined had a test accuracy of 97.25\%. Following this, a convolutional neural network was implemented, also using the TensorFlow Keras API. The hyperparameters that were examined were the number of filters of each convolutional layer in the CNN, the number of layers in the CNN, the effects of a drop-out layer with different drop-out rates, the use of batch-normalization, and the use of either average pooling layers vs. max pooling layers. These hyperparameter combinations were compared against a ``control'' model that utilized 3 layers, 32 3x3 filters, no drop-out layers, no batch normalization layers, and max pooling layers. The control model achieved a validation accuracy of 97.5\%. It was found that an increasing number of filters lead the training accuracy and the validation accuracy to diverge, whereas an increasing number of convolutional + pooling layers brought the accuracies back together. Drop-out was able to reduce the effects of overfitting, at the cost of sacrificing overall model accuracy. Drop-out was determined to not be necessary as the model itself does not overfit that much, and a higher accuracy was preferred. Batch normalization was determined to be an effective regularizer, and average pooling was determined to produce higher validation accuracies than max pooling, at the cost of a reduced training accuracy. Finally, two more hyperparameters were analyzed, those being the learning rate of the model with a stochastic gradient descent optimizer, and the batch size of the model. Smaller learning rates lead to slower convergence, at a higher stability, whereas higher learning rates lead to a faster, unstable convergence. Batch size was found to speed up both the training of the model and the performance of the model.
 
 Overall, this project was entirely beneficial to us as prospective ML engineers. This project allowed us to develop a deep, theoretically grounded appreciation for these models. It is important to understand how these models work from the ground up, such that you can better utilize them in practice. By understanding the intricacies of these models, we are better poised to understand how changing different hyperparameters can affect these models, and as such, have become more knowledgeable on their implemenation. This project also gave us a newly found appreciation for ML libraries, as they can be used to quickly implement complex models with ease. 
 
