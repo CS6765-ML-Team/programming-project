@@ -89,27 +89,27 @@
 \maketitle
 
 \begin{abstract}
-    In the field of Artificial Intelligence and Machine Learning, it can be very easy for the complexities of learning models to be obscured away behind the black boxes that are machine learning libraries. Despite the ease of use by which these libraries present, they do not always provide a complete understanding of how the learning is taking place. To truly grasp and take advantage of machine learning, one must understand the inner workings of the learning models being applied. This assignment saw students manually implement three machine learning models to truly test their understanding of these models and how they function. These models were: Adaboost with an ID3 weak base learner, an Artificial Neural Network with back-propagation, and Naïve Bayes. In addition to manually implementing these three learning models from scratch, two machine learning problems were solved using pre-existing machine learning libraries. These problems included developing a Deep Fully-Connected Feed-Forward Artificial Neural Network, and a Convolutional Neural Network to be trained and tested on the MNIST dataset of handwritten digits.
+    In the field of Artificial Intelligence (AI) and Machine Learning (ML), it can be very easy for the complexities of learning models to be obscured away behind the black boxes that are machine learning libraries. Despite the ease of use by which these libraries present, they do not always provide a complete understanding of how the learning is taking place. To truly grasp and take advantage of machine learning, one must understand the inner workings of the learning models being applied. This assignment saw students manually implement three machine learning models to truly test their understanding of these models and how they function. These models were: Adaboost with an ID3 weak base learner, an Artificial Neural Network with back-propagation, and Naïve Bayes. In addition to manually implementing these three learning models from scratch, two machine learning problems were solved using pre-existing machine learning libraries. These problems included developing a Deep Fully-Connected Feed-Forward Artificial Neural Network, and a Convolutional Neural Network to be trained and tested on the MNIST dataset of handwritten digits.
 \end{abstract}
 
 \newpage
 
 \section{Introduction}
 
-Machine learning has undoubtedly taken the world by storm, becoming entrenched within the cutting-edge technologies and research of today. These transformative algorithms have seen use in a broad range of applications, from self-driving cars, medical diagnoses, and financial analysis, to personalized movie recommendations. As both society and industry become further augmented through machine learning, there is an increasing demand for individuals who are not only familiar with the practical applications of these technologies but also fluent in their design and implementation. While machine learning has become more popular in recent years, it has also become increasingly accessible. Libraries and tools like PyTorch, TensorFlow, and Keras, when used in conjunction with services like Google Colab, have allowed machine learning to no longer be constrained to research labs with intense computing power. These algorithms and their implementations have spread beyond research tools for universities, and have can be utilized by anyone. 
+Machine learning has undoubtedly taken the world by storm, becoming entrenched within the cutting-edge technologies and research of today. These transformative algorithms have seen use in a broad range of applications, from self-driving cars, medical diagnoses, and financial analysis, to personalized movie recommendations. As both society and industry become further augmented through machine learning, there is an increasing demand for individuals who are not only familiar with the practical applications of these technologies but also fluent in their design and implementation. While machine learning has become more popular in recent years, it has also become increasingly accessible. Libraries and tools like PyTorch, TensorFlow, and Keras, when used in conjunction with services like Google Colab, have allowed machine learning to no longer be constrained to research labs with intense computing power. These algorithms and their implementations have spread beyond research tools for universities and can be utilized by anyone. 
 
-With the advent of easily accessible ML, it is quite easy to become reliant on these easy-to-develop models, and lose an appreciation for the fundamental theory that enables them to work. Individuals can now implement machine learning algorithms and achieve impressive results, but may not have an appreciation or understanding of the mathematical formulations that enabled those results. Utilizing machine learning as an infallible, ``plug-and-play" tool without understanding the deeper theoretical foundations of how these algorithms work, why they behave as they do, when they should be used, and how to interpret their results deducts from one's own credibility as an ML or software engineer. It therefore becomes important to have a deeper theoretical understanding of these algorithms achieved solely through implementing them yourself. By writing out the fundamental equations behind these algorithms and structuring their implementation yourself, one can gain a heightened knowledge about their workings which might give them an edge compared to others within the field. 
+With the advent of easily accessible ML, it is quite easy to become reliant on these easy-to-develop models and lose an appreciation for the fundamental theory that enables them to work. Individuals can now implement machine learning algorithms and achieve impressive results, but may not have an appreciation or understanding of the mathematical formulations that enabled those results. Utilizing machine learning as an infallible, ``plug-and-play" tool without understanding the deeper theoretical foundations of how these algorithms work, why they behave as they do when they should be used, and how to interpret their results deducts from one's credibility as an ML or software engineer. It therefore becomes important to have a deeper theoretical understanding of these algorithms achieved solely through implementing them yourself. By writing out the fundamental equations behind these algorithms and structuring their implementation yourself, one can gain a heightened knowledge about their workings which might give them an edge compared to others within the field. 
 
-For these reasons, this assignment saw students doing just that: implementing machine learning algorithms from scratch and developing models to train and test on some provided, well-known datasets. The first algorithm that was implemented was the Adaboost algorithm, a coveted ensemble learning technique, utilizing ID3 as a base learner. This model was trained and tested on the Letter Recognition dataset. Following this, an artificial neural network with backpropagation was developed from first principles, where the backpropagation equations were derived by hand and implemented within the Python programming language. The ANN model was trained on the Wisconsin Breast Cancer Dataset. Finally, the Naive Bayes algorithm was implemented for classification on the Car Evaluation dataset. The implementation of each algorithm is described in thorough detail within this report, examining first a theoretical breakdown of the algorithm, followed by a description of the platform used, the dataset examined, the necessary pre-processing steps taken as well as hyperparameters are chosen, the design of the implementation, and the experimental results.
+For these reasons, this assignment saw students doing just that: implementing machine learning algorithms from scratch and developing models to train and test on some provided, well-known datasets. The first algorithm that was implemented was the Adaboost algorithm, a coveted ensemble learning technique, utilizing ID3 as a base learner. This model was trained and tested on the Letter Recognition dataset. Following this, an artificial neural network (ANN) with backpropagation was developed from first principles, where the backpropagation equations were derived by hand and implemented within the Python programming language. The ANN model was trained on the Wisconsin Breast Cancer Dataset. Finally, the Naïve Bayes algorithm was implemented for classification on the Car Evaluation dataset. The implementation of each algorithm is described in thorough detail within this report, examining first a theoretical breakdown of the algorithm, followed by a description of the platform used, the dataset examined, the necessary pre-processing steps taken as well as hyperparameters are chosen, the design of the implementation, and the experimental results.
 
-Similarly, machine learning libraries were utilized, allowing for an interesting contrast between developing machine learning algorithms from scratch and using popular, dedicated libraries. A deep fully-connected feed-forward ANN was developed, examining different structures (layers, number of neurons, etc.), as well as activation functions. Conversely, a convolutional neural network was developed by examining different CNN structures, filters, and hyperparameters. Both implementations were trained and tested on the classic MNIST dataset, and both implementations were developed using Keras, a high-level API for TensorFlow. All machine learning implementations, those implemented from scratch and those implemented using Keras, can be found within the appendices at the end of this report. 
+Similarly, machine learning libraries were utilized, allowing for an interesting contrast between developing machine learning algorithms from scratch and using popular, dedicated libraries. A deep fully-connected feed-forward ANN was developed, examining different structures (layers, number of neurons, etc.), as well as activation functions. Conversely, a convolutional neural network (CNN) was developed by examining different CNN structures, filters, and hyperparameters. Both implementations were trained and tested on the classic MNIST dataset, and both implementations were developed using Keras, a high-level API for TensorFlow. All machine learning implementations, those implemented from scratch and those implemented using Keras, can be found within the appendices at the end of this report. 
 
-The remainder of this report is structured as follows. Section \ref{adaboost} examines the implementation of Adaboost with ID3 as the base learner, Section \ref{ann} examines the implementation of an artificial neural network with backpropagation from scratch, and Section \ref{naive} examines the implementation of the Naive Bayes algorithm for car evaluation. Following this, both implementations using machine learning libraries are examined, with the ANN being examined in Section \ref{ann_lib}, and the CNN being examined in Section \ref{cnn_lib}. Concluding remarks are made within Section \ref{conclusion}.
+The remainder of this report is structured as follows. Section \ref{adaboost} examines the implementation of Adaboost with ID3 as the base learner, Section \ref{ann} examines the implementation of an artificial neural network with backpropagation from scratch, and Section \ref{Naïve} examines the implementation of the Naïve Bayes algorithm for car evaluation. Following this, both implementations using machine learning libraries are examined, with the ANN being examined in Section \ref{ann_lib}, and the CNN being examined in Section \ref{cnn_lib}. Concluding remarks are made within Section \ref{conclusion}.
 
 \section{Adaboost with ID3 Base Learner}\label{adaboost}
-The Adaptive Boosting (Adaboost) classification algorithm was successfully implemented using the Python 3 programming language. The version of Adaboost implemented used the Iterative Dichotomiser 3 (ID3) decision tree learning algorithm as a weak learner. This algorithm was trained on a dataset of English alphabet character image features and used to identify letters of the alphabet based on these features, i.e., letter recognition. The code for this algorithm can be found in~\ref{section:adaboost-code}
+The Adaptive Boosting (Adaboost) classification algorithm was successfully implemented using the Python 3 programming language. The version of Adaboost implemented used the Iterative Dichotomiser 3 (ID3) decision tree learning algorithm as a weak learner. This algorithm was trained on a dataset of English alphabet character image features and used to identify letters of the alphabet based on these features, i.e., letter recognition. The code for this algorithm can be found in~\ref{section:adaboost-code}.
 
-\subsection{Adaboost}\label
+\subsection{Adaboost}
 Adaboost is a boosted classifier that uses multiple weak hypotheses to build a single, strong hypothesis to be used for classification. These weak hypotheses are initially learned through a weak base learner algorithm, with the performance of these weak hypotheses dictating their weight in the final, strong hypothesis. To accomplish this, Adaboost first assigns an initial weight of $1/N$ to every training example, where $N$ is the number of training examples. Upon training of a weak hypothesis, Adaboost sums the weight of all misclassified examples against the trained weak hypothesis.  This sum, called the $error$ or $\epsilon$, is used to calculate the weight, or $\alpha$, for the given weak hypothesis according to Equation~\ref{eq:weak-h-alpha}.
 
 \begin{equation}
@@ -146,12 +146,13 @@ Where $X$ is the set of all classifications in $S$, and $p(x)$ is the probabilit
 \end{equation}
 
 Where $S_{\le V}$ is the subset of training examples in $S$ whose value for attribute $A$ is less than or equal to $V$, and $S_{> V}$ is the subset of training examples in $S$ whose value for attribute $A$ is greater than $V$. The largest information gain calculated for the current internal node determines the feature and feature value by which the data will be split going to the next level of the decision tree. The fact that there are only two splits for each internal node shows that this is a binary decision tree. This splitting of training examples and building of binary decision tree continues until one of the given three base cases are met:
+\newpage
 \begin{enumerate}
-    \item Base Case 1 - Every training example in \textit{S} belong to the same class. If this is the case, then return that class.
+    \item \textbf{Base Case 1} - Every training example in \textit{S} belong to the same class. If this is the case, then return that class.
 
-    \item Base Case 2 - There are no remaining attributes to split the data off of. If this is the case, then return the class of majority for the training examples in \textit{S}.
+    \item \textbf{Base Case 2} - There are no remaining attributes to split the data off of. If this is the case, then return the class of majority for the training examples in \textit{S}.
 
-    \item Base Case 3 - There are no training examples in \textit{S}. If this is the case, then return the class of majority for the training examples of the parent node.
+    \item \textbf{Base Case 3} - There are no training examples in \textit{S}. If this is the case, then return the class of majority for the training examples of the parent node.
 \end{enumerate}
 Base case 3 is especially important, as it is this which provides the ID3 algorithm with its generalizing power. A slight change to the ID3 algorithm was made in this implementation to account for it being used as a weak base learner in Adaboost. As previously mentioned, Adaboost will update the weights of each training example over its iterations to favor the incorrectly classified examples. The weak base learner, ID3 in this case, must therefore take these weights into account to try extra hard to correctly learn these incorrectly classified examples. This was accomplished by modifying Equation~\ref{eq:info-gain} to account for the total weight of the example subsets. This can be seen in Equation~\ref{eq:weighted-info-gain}.
 
@@ -161,19 +162,19 @@ Base case 3 is especially important, as it is this which provides the ID3 algori
 \end{equation}
 
 \subsection{Predicting with Adaboost}
-Once the $T$ weak hypotheses have been trained and each has their own associated weight $\alpha_t$, it is time to begin classifying test data. For each testing example $x_i$, $T$ classifications are acquired by classifying that example with each of the trained weak hypothesis. For each unique classification of $x_i$, the weights, or $\alpha_t$, of all base hypotheses that gave that classification are summed and this sum represents the weight of this classification for $x_i$. The classification with the largest weight becomes the final, or returned classification for testing example $x_i$. This process is repeated for all testing examples.
+Once the $T$ weak hypotheses have been trained and each have their own associated weight $\alpha_t$, it is time to begin classifying test data. For each testing example $x_i$, $T$ classifications are acquired by classifying that example with each of the trained weak hypothesis. For each unique classification of $x_i$, the weights, or $\alpha_t$, of all base hypotheses that gave that classification are summed and this sum represents the weight of this classification for $x_i$. The classification with the largest weight becomes the final, or returned classification for testing example $x_i$. This process is repeated for all testing examples.
 
 \subsection{Implementation Details}
 This section will outline all details related to this implementation of Adaboost and the ID3 algorithm.
 
 \subsubsection{Development Platform and Libraries}
-As was previously mentioned, all code written to implement the Adaboost and ID3 algorithms was written in Python 3. This code was written to run on a Windows operation system, but will run on any system that can run the Python programming language. All development was conducted through the Visual Studios Code text editor, and code versioning was controlled through Git to a remote repository hosted on GitHub. The Adaboost and ID3 algorithms were written completely from scratch using only Python's built-in functions, the \textit{Numpy} Python library for mathematical operations, and the \textit{Pandas} Python library for data manipulation and representation. The \textit{scikit-learn} maching learning Python library was used for pre-processing of training and testing data, as well as for evaluating the performance of the manually implemented algorithms. This machine learning library was not included or used in any of the Adaboost or ID3 algorithm implementations. The \textit{matplotlib} and \textit{seaborn} Python libraries were used to provide statistical data visualizations for the algorithm's results.
+As was previously mentioned, all code written to implement the Adaboost and ID3 algorithms was written in Python 3. This code was written to run on a Windows operation system, but will run on any system that can run the Python programming language. All development was conducted through the Visual Studios Code text editor, and code versioning was controlled through Git to a remote repository hosted on GitHub. The Adaboost and ID3 algorithms were written completely from scratch using only Python's built-in functions, the \textit{Numpy} Python library for mathematical operations, and the \textit{Pandas} Python library for data manipulation and representation. The \textit{scikit-learn} machine learning Python library was used for pre-processing the training and testing data, as well as for evaluating the performance of the manually implemented algorithms. This machine learning library was not included or used in any of the Adaboost or ID3 algorithm implementations. The \textit{matplotlib} and \textit{seaborn} Python libraries were used to provide statistical data visualizations for the algorithm's results.
 
 \subsubsection{Program Structure}
-Python classes were used to structure the various components of this Adaboost implementation. These classes included: \textit{AdaBoost} (adaboost.py), \textit{ID3Classifier} (id3.py), and \textit{BinaryDecisionTree} (tree.py). By following an object oriented approach, different instances of the learning algorithms could be instantiated with different hyper-parameters and then re-used when needed. This, in addition to allowing these classes to keep track of their own internal state while training, significantly cleaned up and optimized the code. For example, the \textit{AdaBoost} class has it's own internal member variables named \textit{models} and \textit{alphas} which store the trained weak hypotheses and their corresponding weights, respectively. This means that once the \textit{AdaBoost} models have been trained, these models and their weights can easily be accessed through these member variables, vastly reducing the amount of code required to keep track of this state. In addition to this, the \textit{ID3Classifier} class contains two private static methods used to calculate the entropy and information gain throughout its training process.
+Python classes were used to structure the various components of this Adaboost implementation. These classes included: \textit{AdaBoost} (adaboost.py), \textit{ID3Classifier} (id3.py), and \textit{BinaryDecisionTree} (tree.py). By following an object-oriented approach, different instances of the learning algorithms could be instantiated with different hyperparameters and then re-used when needed. This, in addition to allowing these classes to keep track of their own internal state while training, significantly cleaned up and optimized the code. For example, the \textit{AdaBoost} class has it's own internal member variables named \textit{models} and \textit{alphas} which store the trained weak hypotheses and their corresponding weights, respectively. This means that once the \textit{AdaBoost} models have been trained, these models and their weights can easily be accessed through these member variables, vastly reducing the amount of code required to keep track of this state. In addition to this, the \textit{ID3Classifier} class contains two private static methods used to calculate the entropy and information gain throughout its training process.
 
 \subsubsection{Data-Structures}
-The Dataframe data structure, as part of the \textit{Pandas} library, is a data structure that allows for data to be represented in a two-dimensional tabular format and was used extensively throughout this project. Using Dataframes allowed for the training and testing data to easily be extracted, segmented, manipulated, and represented throughout the entire training and classification process. Although operations on Dataframes are extremely slow, they also allow for the data to be exported to a two-dimensional Numpy array, and this feature was used a lot for data manipulation and calculations. Finally, Dataframes were leveraged to store training and classification results of the Adaboost algorithm in a tabular format and to export these results to a .csv file.
+The DataFrame data structure, as part of the \textit{Pandas} library, is a data structure that allows for data to be represented in a two-dimensional tabular format and was used extensively throughout this project. Using DataFrames allowed for the training and testing data to easily be extracted, segmented, manipulated, and represented throughout the entire training and classification process. Although operations on DataFrames are extremely slow, they also allow for the data to be exported to a two-dimensional Numpy array, and this feature was used a lot for data manipulation and calculations. Finally, DataFrames were leveraged to store training and classification results of the Adaboost algorithm in a tabular format and to export these results to a .csv file.
 
 A binary tree data structure was manually implemented in Python to fulfill the decision tree output of the ID3 algorithm. This binary tree implementation, named \textit{BinaryDecisionTree} in tree.py, is a recursive tree data structure that possesses four attributes: 1) a split feature index, 2) a split feature value, 3) a truth branch, 4) a false branch. The split feature index of the \textit{BinaryDecisionTree} is an integer value that represents the feature this node splits on in the training data. Instead of storing the name of the feature as a string, the index of the feature in the list of feature names is stored. This is done to improve performance. The split feature value is exactly as the name describes, it is the value of the split feature by which this node splits the data on. The truth branch is a reference to another \textit{BinaryDecisionTree} object, hence the recursive nature of the data structure. When traversing the \textit{BinaryDecisionTree}, this branch is evaluated when a provided feature value is greater than the split feature value of this node. Finally, the false branch is a reference to another \textit{BinaryDecisionTree} object that is evaluated when a provided feature value is less than or equal to the split feature value of this node. The form of the trees built by the \textit{BinaryDecisionTree} object can be seen in Figure~\ref{fig:binary-decision-tree}. 
 
@@ -186,30 +187,30 @@ A binary tree data structure was manually implemented in Python to fulfill the d
 
 As can be seen in Figure~\ref{fig:binary-decision-tree}, leaf nodes of the tree generated by \textit{BinaryDecisionTree} have their split feature set to the target attribute of the data set, and the split feature value is the classification of the target attribute. The true and false branches are empty. As such, predictions can be made on a learned \textit{BinaryDecisionTree} for a given testing example by simply following the trees branches, checking the testing example's feature values with the split feature values at each node, until a leaf is reached where the classification for the testing example is returned.
 
-\subsubsection{Algorithm Hyper-Parameters}
-Two hyper-parameters were implemented for this Adaboost with ID3 base learner implementation. These hyper-parameters include: 1) the maximum tree depth of the learned binary decision trees, and 2) the number of weak hypotheses learned by Adaboost. 
+\subsubsection{Algorithm hyperparameters}
+Two hyperparameters were implemented for this Adaboost with ID3 base learner implementation. These hyperparameters include: 1) the maximum tree depth of the learned binary decision trees, and 2) the number of weak hypotheses learned by Adaboost. 
 
-The maximum tree depth of the learned binary decision tree is a hyper-parameter of the ID3 algorithm implementation, and it sets a limit on the maximum depth of recursion of the algorithm. This depth was monitored as a \textit{depth} parameter incremented on each recursive call. When the maximum depth was reached, the target value of majority in the current data set was returned as the leaf node. If the caller did not specify a maximum tree depth, then a tree depth of infinity was set, which essentially means the algorithm would only return a leaf node if one of its original three base cases were hit. It was experimentally determined, as can be seen in Figure~\ref{fig:depth-hyper-param}, that placing a limit on the depth of the trained binary decision tree less than the number of features in the data set actually reduces classification accuracy. For context, Figure~\ref{fig:depth-hyper-param} used a dataset with 16 features. This makes intuitive sense, as each node splits on a single feature, so there can only ever be a tree as deep as the number of features. Also, if we force a tree to terminate early, then we are forcing it to over generalize the data. Either way, this hyper-parameter remained as reducing the depth of the tree significantly improves training and classification performance. 
+The maximum tree depth of the learned binary decision tree is a hyperparameter of the ID3 algorithm implementation, and it sets a limit on the maximum depth of recursion of the algorithm. This depth was monitored as a \textit{depth} parameter incremented on each recursive call. When the maximum depth was reached, the target value of majority in the current data set was returned as the leaf node. If the caller did not specify a maximum tree depth, then a tree depth of infinity was set, which essentially means the algorithm would only return a leaf node if one of its original three base cases were hit. It was experimentally determined, as can be seen in Figure~\ref{fig:depth-hyper-param}, that placing a limit on the depth of the trained binary decision tree less than the number of features in the data set actually reduces classification accuracy. For context, Figure~\ref{fig:depth-hyper-param} used a dataset with 16 features. This makes intuitive sense, as each node splits on a single feature, so there can only ever be a tree as deep as the number of features. Also, if we force a tree to terminate early, then we are forcing it to over-generalize the data. Either way, this hyperparameter remained as reducing the depth of the tree significantly improves training and classification performance. 
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.7]{images/tree-depth-plot.png}
+    \includegraphics[scale=0.6]{images/tree-depth-plot.png}
     \caption{Accuracy of classification vs. maximum tree depth of learned binary decision tree by ID3 algorithm.}
     \label{fig:depth-hyper-param}
 \end{figure}
 
-The second hyper-parameter implemented, the number of weak hypotheses learned by the Adaboost algorithm, is a hyper-parameter of the Adaboost algorithm that controls the number of models trained by the weak base learner for a single Adaboost training session. This hyper-parameter has direct influence on the performance of the Adaboost algorithm, both from a time point-of-view and an accuracy point-of-view. The more weak hypotheses trained, the longer training will take; however, the more accurate classification can become. It was experimentally determined that 14 is the optimal number of weak hypotheses to learn as it maximizes the classification accuracy while keeping the training time as low as possible. Figure~\ref{fig:estimator-hyper-param} demonstrates how at 14 weak hypotheses, the classification accuracy of the Adaboost algorithm reaches an asymptote. Although this is only for a particular split of the dataset, it remains consistent. Figure~\ref{fig:estimator-time} shows how the time taken for training the Adaboost algorithm increases linearly with the number of weak hypotheses learned by the algorithm. As such, it is optimal to use 14 weak hypotheses to maximize classification accuracy while ensuring training time doesn't continue to increase.
+The second hyperparameter implemented, the number of weak hypotheses learned by the Adaboost algorithm, is a hyperparameter of the Adaboost algorithm that controls the number of models trained by the weak base learner for a single Adaboost training session. This hyperparameter has a direct influence on the performance of the Adaboost algorithm, both from a time point-of-view and an accuracy point-of-view. The more weak hypotheses trained, the longer training will take; however, the more accurate classification can become. It was experimentally determined that 14 is the optimal number of weak hypotheses to learn as it maximizes the classification accuracy while keeping the training time as low as possible. Figure~\ref{fig:estimator-hyper-param} demonstrates how at 14 weak hypotheses, the classification accuracy of the Adaboost algorithm reaches an asymptote. Although this is only for a particular split of the dataset, it remains consistent. Figure~\ref{fig:estimator-time} shows how the time taken for training the Adaboost algorithm increases linearly with the number of weak hypotheses learned by the algorithm. As such, it is optimal to use 14 weak hypotheses to maximize classification accuracy while ensuring training time doesn't continue to increase.
 
 \begin{figure}[h!]
     \centering
-    \begin{subfigure}[t]{0.48\textwidth}
+    \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[width=\linewidth]{images/n-weak-hypotheses-plot.png}
         \caption{}
         \label{fig:estimator-hyper-param}
     \end{subfigure}%
     ~ 
-    \begin{subfigure}[t]{0.48\textwidth}
+    \begin{subfigure}[t]{0.5\textwidth}
         \centering
         \includegraphics[width=\linewidth]{images/adaboost-training-time.png}
         \caption{}
@@ -220,11 +221,13 @@ The second hyper-parameter implemented, the number of weak hypotheses learned by
     \label{fig:adaboost-hyper-param}
 \end{figure}   
 
+\newpage
+
 \subsection{Dataset Details}
-This section will outline all details related to dataset used to train and test the Adaboost implementation. 
+This section will outline all details related to the dataset used to train and test the Adaboost implementation. 
 
 \subsubsection{Description of Dataset}
-The dataset was taken from the UC Irvine Machine Learning Repository and has the ID 59 within this repository. The goal of the dataset is to identify each entry as a capital letter from the English alphabet based on 16 primitive numerical attributes extracted from a black-and-white image of the letter that the entry represents. The dataset contains 20 thousand entries with 17 columns for each entry, 16 columns being the previously mentioned primitive numerical attributes, and the final column being the classification of the entry, a letter in this case. These 16 primitive numerical attributes, or features in the context of machine learning, are integer values between 0 and 15 and are described as the following:
+The dataset was taken from the UC Irvine Machine Learning Repository and has the ID 59 within this repository. The goal of the dataset is to identify each entry as a capital letter from the English alphabet based on 16 primitive numerical attributes extracted from a black-and-white image of the letter that the entry represents. The dataset contains 20,000 entries with 17 columns for each entry, 16 columns being the previously mentioned primitive numerical attributes, and the final column being the classification of the entry, a letter in this case. These 16 primitive numerical attributes, or features in the context of machine learning, are integer values between 0 and 15 and are described as the following:
 \begin{enumerate}
     \item x-box - Horizontal position of box.
     \item y-box - Vertical position of box.
@@ -248,16 +251,16 @@ The total number of classes in this dataset is 26, representing the number of ca
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.7]{images/class-distribution.png}
+    \includegraphics[scale=0.55]{images/class-distribution.png}
     \caption{Distribution of classes within the Letter Distribution dataset.}
     \label{fig:class-histogram}
 \end{figure}
 
 \subsubsection{Pre-Processing}
-As previously mentioned, there are no missing values within the dataset used. As such, no pre-processing of the data to remove partial entries was required. The only pre-processing performed on the dataset was to split the data into testing and training datasets using the \textit{train\_test\_split()} function from the \textit{scikit-learn} machine learning library. A split of 80\%/20\% (16000/4000) was used for training and testing, respectively, as this was the split suggested by UC Irvine on the dataset's webpage. As such, in all results presented in the next sections, the Adaboost algorithm was trained on 16 000 randomly selected entries, and tested on the remaining 4000 entries of the dataset.
+As previously mentioned, there are no missing values within the dataset used. As such, no pre-processing of the data to remove partial entries was required. The only pre-processing performed on the dataset was to split the data into testing and training datasets using the \textit{train\_test\_split()} function from the \textit{scikit-learn} machine learning library. A split of 80\%/20\% (16,000/4,000) was used for training and testing, respectively, as this was the split suggested by UC Irvine on the dataset's webpage. As such, in all results presented in the next sections, the Adaboost algorithm was trained on 16,000 randomly selected entries, and tested on the remaining 4,000 entries of the dataset.
 
 \subsection{Experimental Results}
-The above discussed Adaboost algorithm with ID3 as a weak base learner implementation was tested extensively and the results of this testing can be seen in Table~\ref{tbl:adaboost-results}. As previously mentioned, these results were achieved by training the algorithm on 16 000 randomly sampled entries of the dataset, and tested on the remaining 4000 entries of the dataset. The seeds, or \textit{random\_states}, of the sampling is also reported in the table for reproducibility. The hyper-parameters were set to their previously mentioned optimal values of 16 for the maximum depth of a learned binary decision tree, and 14 for the number of weak hypotheses learned by the Adaboost algorithm.
+The aforementioned Adaboost algorithm with ID3 as a weak base learner implementation was tested extensively and the results of this testing can be seen in Table~\ref{tbl:adaboost-results}. As previously mentioned, these results were achieved by training the algorithm on 16,000 randomly sampled entries of the dataset, and tested on the remaining 4,000 entries of the dataset. The seeds, or \textit{random\_states}, of the sampling are also reported in the table for reproducibility. The hyperparameters were set to their previously mentioned optimal values of 16 for the maximum depth of a learned binary decision tree, and 14 for the number of weak hypotheses learned by the Adaboost algorithm.
 
 \begin{table}[h!]
     \centering
@@ -296,11 +299,11 @@ The above discussed Adaboost algorithm with ID3 as a weak base learner implement
         15 & 44078284 & 86.68 & 505.69 & 0.0908 \\ [1ex]
         \hline
     \end{tabular}
-    \caption{Results of training Adaboost implementation on 16 000 randomly sampled examples and classifying the remaining 4000 examples with maximum tree depth of 16 and 14 weak base hypotheses learned.}
+    \caption{Results of training Adaboost implementation on 16 000 randomly sampled examples and classifying the remaining 4,000 examples with a maximum tree depth of 16 and 14 weak base hypotheses learned.}
     \label{tbl:adaboost-results}
 \end{table}
 
-The mean classification accuracy of the results presented in Table~\ref{tbl:adaboost-results} is 85.254\%, with the mean training and classification times being 491.03 seconds and 0.08918 seconds, respectively. Despite not achieving 100\% accuracy, the Adaboost implementation is still a success in our opinion as it is a completely from scratch implementation. The lack of accuracy in classification may come from the weighted feature info gain calculation being employed, referenced in Equation~\ref{eq:weighted-info-gain}, to place more emphasis on previously incorrectly classified examples. As for the training time, ID3 is a greedy algorithm, as such it is expected to have a longer execution time. Much work was done in the ID3 implementation to ensure all math operations were vectorized within the Python programming language to minimize the amount of looping and memory copies required. No parallelization was employed as to not over complicate the implementation, yet the routine for determining the split feature can easily be parallelized as determining the split feature based on weighted info gain can be done independently of other features.
+The mean classification accuracy of the results presented in Table~\ref{tbl:adaboost-results} is 85.254\%, with the mean training and classification times being 491.03 seconds and 0.08918 seconds, respectively. Despite not achieving 100\% accuracy, the Adaboost implementation is still a success in our opinion as it is a completely from-scratch implementation. The lack of accuracy in classification may come from the weighted feature info gain calculation being employed, referenced in Equation~\ref{eq:weighted-info-gain}, to place more emphasis on previously incorrectly classified examples. As for the training time, ID3 is a greedy algorithm, as such it is expected to have a longer execution time. Much work was done in the ID3 implementation to ensure all math operations were vectorized within the Python programming language to minimize the amount of looping and memory copies required. No parallelization was employed as to not overcomplicate the implementation, yet the routine for determining the split feature can easily be parallelized as determining the split feature based on weighted info gain can be done independently of other features.
 
 The confusion matrix of the test with the highest accuracy, test 13 with seed 276617434, can be seen in Figure~\ref{fig:confusion-matrix}. The confusion matrix helps highlight the number of examples that were incorrectly classified, and what those incorrect classifications were compared to the correct classifications. As such, a strong diagonal of the matrix indicates high classification accuracy, as can be seen in Figure~\ref{fig:confusion-matrix}.
 
@@ -316,15 +319,15 @@ The confusion matrix of the test with the highest accuracy, test 13 with seed 27
 
 \section{ANN with Backpropagation}\label{ann}
 
-An Artificial Neural Network with backpropagation was successfully implemented using the Python 3 programming language. The artificial neural network that was created featured a simplistic design, utilizing only one hidden layer while simultaneously yielding great results. This algorithm was trained on a dataset that consisted of features computed from digitized images of fine needle aspirate of breast mass, describing charactersitics of the cell nuclei present in the image. The objective was classification of cell mass as either benign or malignant.
+An ANN with backpropagation was successfully implemented using the Python 3 programming language. The artificial neural network that was created featured a simplistic design, utilizing only one hidden layer while simultaneously yielding great results. This algorithm was trained on a dataset that consisted of features computed from digitized images of fine needle aspirate of breast mass, describing characteristics of the cell nuclei present in the image. The objective was the classification of cell mass as either benign or malignant.
 
 \subsection{Artificial Neural Networks}
 \label{ANNTheory}
 
-As mentioned, this section of the programming project saw the implementation of an artificial neural network from scratch. Artificial neural networks, or neural networks, are a machine learning technique that seek to mimic the biological neural networks found within human brains. A neural network consists of connected ``units", or nodes, that are called neurons. These neurons are designed such that they mimic the neurons found within a human brain, in the sense that they will not ``fire'', so to speak, if the input signal is not larger than a certain threshold. This thresholding is achieved through the use of an activation function, which ensures that important features that are interesting enough to be learned are actually learned by the network as they exceed the threshold. The output of a given neuron is therefore calculated by applying the activation function to the weighted sum of the inputs to that neuron. Neural networks are composed of three distinct layers, those being the input layer, the hidden layer, and the output layer. The input signal is first sent through the input layer, which takes in the data and sends it to the subsequent layers, known as the hidden layers. The hidden layers serve as an intermediary layer between the first layer and the last layer, the output layer. It is within these hidden layers that the input becomes further and further abstracted, and a new representation is learned that extracts the hidden relationship between the input features. 
+As mentioned, this section of the programming project saw the implementation of an artificial neural network from scratch. Artificial neural networks, or neural networks, are a machine learning technique that seek to mimic the biological neural networks found within human brains. A neural network consists of connected ``units", or nodes, that are called neurons. These neurons are designed such that they mimic the neurons found within a human brain, in the sense that they will not ``fire'', so to speak, if the input signal is not larger than a certain threshold. This thresholding is achieved through the use of an activation function, which ensures that important features that are interesting enough to be learned are learned by the network as they exceed the threshold. The output of a given neuron is therefore calculated by applying the activation function to the weighted sum of the inputs to that neuron. Neural networks are composed of three distinct layers, those being the input layer, the hidden layer, and the output layer. The input signal is first sent through the input layer, which takes in the data and sends it to the subsequent layers, known as the hidden layers. The hidden layers serve as an intermediary layer between the first layer and the last layer, the output layer. It is within these hidden layers that the input becomes further and further abstracted, and a new representation is learned that extracts the hidden relationship between the input features. 
 
 
-For this assignment, as mentioned, a neural network was created with three layers: one input, one hidden, and one output. Justification for the choice of this structure can be found within Section \ref{ANNhyperparameterselection}. As such, the general structure of the neural network implemented is given by Figure \ref{fig:annstructure}:
+For this assignment, as mentioned, a neural network was created with three layers: one input, one hidden, and one output. Justification for the choice of this structure can be found within Section \ref{ANNhyperparameterselection}. As such, the general structure of the neural network implemented is given by Figure \ref{fig:annstructure}. A vector of inputs $\overrightarrow{x}$ is fed into the first layer of the network and this vector is then multiplied by the matrix of weights for the connections between the input layer and the hidden layer, $\mathbb W_1$. There is also a bias that gets added to this weighted summation, denoted by $\overrightarrow{b_1}$. This process results in what is known as the net, which is the weighted summation that is fed into the activation function of the first hidden layer. This is given by Equation \ref{eq:net1} below:
 
 \begin{figure}[h!]
     \centering
@@ -332,8 +335,6 @@ For this assignment, as mentioned, a neural network was created with three layer
     \caption{Structure of the ANN that was developed.}
     \label{fig:annstructure}
 \end{figure}
-
-Where a vector of inputs $\overrightarrow{x}$ is fed into the first layer of the network, and this vector is then multiplied by the matrix of weights for the connections between the input layer and the hidden layer, $\mathbb W_1$. There is also a bias that gets added to this weighted summation, denoted by $\overrightarrow{b_1}$. This process results in what is known as the net, which is the weighted summation that is fed into the activation function of the first hidden layer. This is given by Equation \ref{eq:net1} below:
 
 \begin{equation}
     \label{eq:net1}
@@ -381,6 +382,8 @@ To train the network, we must update the weights according to the following equa
     \label{eq:trainW}
     \mathbb W_i = \mathbb W_i + \Delta{\mathbb W_i}
 \end{equation}
+
+\newpage
 
 Where the incremental change in weight, $\Delta{\mathbb W_i}$, is given by the following equation:
 
@@ -487,6 +490,7 @@ Therefore, we just need to determine the value of $\frac{\partial{o_d}}{\partial
     \end{aligned}
 \end{gather}
 
+\newpage 
 For $b_1$, this is done as follows:
 
 \begin{gather}
@@ -499,9 +503,9 @@ For $b_1$, this is done as follows:
 The general workflow for utilizing the neural network is as follows:
 
 \begin{enumerate}
-    \item A neural network object is instantiated from a class, specifying the input size, the hidden layer size, and output size.
-    \item This network is then trained, using a training function that is contained within the object. This training procedure calculates a forward pass first by passing the input vector through the network, which yields an output. This output, as well as the target values from the input vector and a learning rate are passed through a backward pass, which updates the weights using the backpropagation equations determined above.
-    \item Once the network has been trained, it can be tested by passing it features and labels, where it calculates the accuracy of the model based on how many it correctly classifies.
+    \item A neural network object is instantiated from a class, specifying the input size, the hidden layer size, and the output size.
+    \item This network is then trained, using a training function that is contained within the object. This training procedure calculates a forward pass first by passing the input vector through the network, which yields an output. This output, as well as the target values from the input vector and a learning rate, are passed through a backward pass, which updates the weights using the backpropagation equations determined above.
+    \item Once the network has been trained, it can be tested by passing the model features and labels, where it calculates the accuracy of the model based on how many it correctly classifies.
 \end{enumerate}
 
 With all of the pertinent equations for the backpropagation algorithm determined, as well as the workflow, the focus then turned towards the actual implementation of the neural network through code for performing classification on the given dataset.
@@ -512,12 +516,12 @@ This section outlines all details related to the implementation of the neural ne
 
 \subsubsection{Development Platform \& Libraries Used}
 
-As was previously mentioned, all code written to implement the neural network with backpropagation was written in Python 3. The code was written on a Windows operating system, and was not tested on other operating systems, but it is assumed that it will run on any system that can run the Python programming language. The development of this algorithm was done using Microsoft's Visual Studio Code. The environment was configured to run Jupyter Notebook .ipynb files, which due to their ability to run code one cell at a time, are favoured for machine learning development. The Python 3 kernel that was utilized within this .ipynb environment was Python 3.12.5. Code versioning was controlled through Git utilizing a remote repository hosted on GitHub. The neural network itself, as well as the backpropagation algorithm, were written completely from scratch using Python's built-in functionalities as well as the \textit{Numpy} Python library for mathematical operations. The \textit{Pandas} Python library was utilized for data manipulation and exploratory analysis, and the \textit{scikit-learn} machine learning Python library was used to apply pre-processing to the data, as well as performing the train/test split. It must be noted that this machine learning library was not used for anything other than splitting data and applying standardization. It was not incorporated within the actual neural network class, and did not contribute to the development of the neural network other than being a tool for data separation and scaling. The \textit{matplotlib} and \textit{seaborn} Python libraries were utilized for visualization of both training and testing results, and the \textit{csv} python package was used to save initial weights when a good run occurred and load them to initialize the network. Finally the UC Irvine Machine Learning Python package \textit{ucimlrepo} was used to fetch the dataset, which was hosted on their website. 
+As was previously mentioned, all code written to implement the neural network with backpropagation was written in Python 3. The code was written on a Windows operating system, and was not tested on other operating systems, but it is assumed that it will run on any system that can run the Python programming language. The development of this algorithm was done using Microsoft's Visual Studio Code. The environment was configured to run Jupyter Notebook .ipynb files, which due to their ability to run code one cell at a time, are favoured for machine learning development. The Python 3 kernel that was utilized within this .ipynb environment was Python 3.12.5. Code versioning was controlled through Git utilizing a remote repository hosted on GitHub. The neural network itself, as well as the backpropagation algorithm, were written completely from scratch using Python's built-in functionalities as well as the \textit{Numpy} Python library for mathematical operations. The \textit{Pandas} Python library was utilized for data manipulation and exploratory analysis, and the \textit{scikit-learn} machine learning Python library was used to apply pre-processing to the data, as well as performing the train/test split. It must be noted that this machine learning library was not used for anything other than splitting data and applying standardization. It was not incorporated within the actual neural network class, and did not contribute to the development of the neural network other than being a tool for data separation and scaling. The \textit{matplotlib} and \textit{seaborn} Python libraries were utilized for visualization of both training and testing results, and the \textit{csv} Python package was used to save initial weights when a good run occurred and load them to initialize the network. Finally, the UC Irvine Machine Learning Python package \textit{ucimlrepo} was used to fetch the dataset, which was hosted on their website. 
 
 \subsubsection{Program Structure}
 
 The neural network code was implemented using a .ipynb file within VS Code, as mentioned previously. This meant that the code could be partitioned into sections, and each section must be run sequentially for the code to function. The sections are as follows:
-
+\newpage
 \begin{enumerate}
     \item Importing Packages
     \item Loading the Dataset
@@ -538,16 +542,15 @@ The testing function effectively computes the forward pass, and extracts a class
 
 \subsubsection{Data Structures Used}
 
-When the data is initially fetched from the remote repo, it is imported as a special data structure called \textit{ucimlrepo.dotdict.dotdict}. This data type seems to be a dictionary of Pandas data frames because the feature and target values are stored within Pandas data frames. As mentioned previously, Pandas data frames were used extensively throughout this project due to their ease of manipulation and representation. This data frame structure allowed for exploratory analysis to be performed on the feature data, and the dataset could be examined in terms of how many instances there were, the number of features, the number of unique target variables, and the name of the features. A Pandas data frame also allows for using the \textit{.head()} handle to examine the first five rows of data, which allowed for quick visualization as the data was manipulated.
+When the data is initially fetched from the remote repo, it is imported as a special data structure called \textit{ucimlrepo.dotdict.dotdict}. This data type seems to be a dictionary of Pandas DataFrame because the feature and target values are stored within Pandas DataFrames. As mentioned previously, Pandas DataFrames were used extensively throughout this project due to their ease of manipulation and representation. This DataFrame structure allowed for exploratory analysis to be performed on the feature data, and the dataset could be examined in terms of how many instances there were, the number of features, the number of unique target variables, and the name of the features. A Pandas DataFrame also allows for using the \textit{.head()} handle to examine the first five rows of data, which allowed for quick visualization as the data was manipulated.
 
-Numpy arrays were utilized within the forward and backward pass operations due to their ease of mathematical computation and speed of computation compared to Pandas data frames. These arrays were also utilized to store the weights, biases, and activated nets of the network due to the mathematical operations to be performed using them. Data was fed into the network by extracting each row of the data frame and converting it to a Numpy column vector. Finally, lists were utilized to store the training and validation loss history, as well as the correct predictions and target values used in formulating the confusion matrix.
+Numpy arrays were utilized within the forward and backward pass operations due to their ease of mathematical computation and speed of computation compared to Pandas DataFrames. These arrays were also utilized to store the weights, biases, and activated nets of the network due to the mathematical operations to be performed using them. Data was fed into the network by extracting each row of the DataFrame and converting it to a Numpy column vector. Finally, lists were utilized to store the training and validation loss history, as well as the correct predictions and target values used in formulating the confusion matrix.
 
 \subsubsection{Hyperparameter Selection}\label{ANNhyperparameterselection}
 
 As was mentioned, the network designed had three layers: an input layer, a singular hidden layer, and an output layer. It was decided that the network would have one hidden layer for ease of formulation, and because of the simplicity of the binary classification task to be performed. Having one hidden layer made deriving the backpropagation equations simpler, as only four equations had to be determined: two for weights and two for biases. The network was able to extract the required relationships for correctly classifying a cell mass as benign of malignant at just one layer. As such, it was deemed that a single hidden layer was enough. It was decided that the activation function to be used within the hidden layer was to be a ReLu function, and the activation function to be used at the output was a sigmoid. The ReLu function was chosen to potentially combat any problems related to updating the weights, and the probabilistic sigmoid function was chosen because the classification task to be performed was binary, and the sigmoid function is capable of outputting within a range between 0 and 1. 
 
-Therefore, the hyperparameters explored were the number of epochs, the learning rate, and the number of neurons within the hidden layer. 10 hyperparameter combinations were explored, and the average accuracy after 5 runs was recorded for each combination. This process was done to determine which hyperparameter combination had a higher accuracy on average, as that would lead to the best model performance. All of these tests were performed by randomly sampling the weights from a normal distribution, which had the downside of a fluctuating accuracy that could perform very poorly if the initial weights used for gradient descent were poor. This process then allowed for determining a good set of initial weights and biases, which were then flattened and stored into a CSV that is now loaded every time the model is ran. This hyperparameter analysis was therefore utilized to determine the best combination of hyperparameters and the best initial weights to be used. Weights and biases are not hyperparameters, but the combination of hyperparameters that produced the best accuracy was then examined further to determine the best initial weights. The results of this hyperparameter analysis are shown below within Table \ref{tbl:hyperparametertesting}.
-\newpage
+Therefore, the hyperparameters explored were the number of epochs, the learning rate, and the number of neurons within the hidden layer. Ten hyperparameter combinations were explored, and the average accuracy after 5 runs was recorded for each combination. This process was done to determine which hyperparameter combination had a higher accuracy on average, as that would lead to the best model performance. All of these tests were performed by randomly sampling the weights from a normal distribution, which had the downside of a fluctuating accuracy that could perform very poorly if the initial weights used for gradient descent were poor. This process then allowed for determining a good set of initial weights and biases, which were then flattened and stored into a CSV that is now loaded every time the model is run. This hyperparameter analysis was therefore utilized to determine the best combination of hyperparameters and the best initial weights to be used. Weights and biases are not hyperparameters, but the combination of hyperparameters that produced the best accuracy was then examined further to determine the best initial weights. The results of this hyperparameter analysis are shown below within Table \ref{tbl:hyperparametertesting}.
 
 \begin{table}[h!]
     \centering
@@ -585,7 +588,7 @@ The highest average accuracy after 5 runs was exhibited by Test 4, which was tra
 \subsection{Dataset Details}
 
 The dataset used was from the UC-Irvine Machine Learning Repository and was donated by the University of Wisconsin-Madison in 1995. It is considered a multivariate dataset, consisting of several breast mass features that were computed from digitized images of fine needle aspirate. These features describe the characteristics of the cell nuclei present within a given image. 10 real-valued features are of importance for this dataset, those being:
-
+\newpage
 \begin{enumerate}
     \item radius (mean distances from the center to points on the perimeter)
     \item texture (standard deviation of gray-scale values)
@@ -603,13 +606,13 @@ For each of these real-valued features, there are 3 versions. These versions rep
 
 \subsection{Data Pre-processing}
 
-As mentioned, the dataset was loaded using the \textit{fetch\_ucirepo} command from the UCI-ML Python package. This command fetched the dataset from the UCI website, utilizing its intrinsic dataset ID, which was 17. This data was saved into a variable called \textit{breast}, as a unique class from the UCI-ML package, called \textit{ucimlrepo.dotdict.dotdict}, which is seemingly a dictionary-based class. This data was then split into features and target labels, by calling either \textit{.data.features} or \textit{.data.targets}, respectively. The feature values were saved into a Pandas data frame called \textit{breast\_x}, whereas the target values were saved into a Pandas data frame called \textit{breast\_y}. Following the importing and analysis of the Wisconsin Breast Cancer dataset, there arose a need to pre-process the data, as is the case with most machine learning applications. The pre-processing that was performed was an inquiry into the existence of null values, standardization of the values such that their values fell within a common range, and the categorical labels were encoded into binary 0 or 1, where 0 represents benign, and 1 represents malignant. 
+As mentioned, the dataset was loaded using the \textit{fetch\_ucirepo} command from the UCI-ML Python package. This command fetched the dataset from the UCI website, utilizing its intrinsic dataset ID, which was 17. This data was saved into a variable called \textit{breast}, as a unique class from the UCI-ML package, called \textit{ucimlrepo.dotdict.dotdict}, which is seemingly a dictionary-based class. This data was then split into features and target labels, by calling either \textit{.data.features} or \textit{.data.targets}, respectively. The feature values were saved into a Pandas DataFrame called \textit{breast\_x}, whereas the target values were saved into a Pandas DataFrame called \textit{breast\_y}. Following the importing and analysis of the Wisconsin Breast Cancer dataset, there arose a need to pre-process the data, as is the case with most machine learning applications. The pre-processing that was performed was an inquiry into the existence of null values, standardization of the values such that their values fell within a common range, and the categorical labels were encoded into binary 0 or 1, where 0 represents benign, and 1 represents malignant. 
 
-Null values were examined using the \textit{.isnull()} handle for Pandas data frames, combined with the \textit{.values.any()} handle from Python. This returned either True for null values, or False if no null values existed. If any null values were found within the dataset, the \textit{.dropna()} handle for Pandas data frames was used to remove all null values. This process was repeated for both the features and target values. Following this, the feature value was standardized. This was performed as the features of the input dataset had vast differences between their ranges, since different units were used for different features, as some measurements pertained to distances whereas some measurements pertained to areas or dimensionless concepts such as texture. The \textit{StandardScaler()} function from \textit{sklearn} was utilized to standardize the feature data. Finally, the categorical variables were encoded by indexing the ``Diagnosis" column of the target data frame, and mapping the value to 1 if the row value was ``M", and 0 if else. This effectively encoded the categorical data into a binary encoding suitable for use in a neural network. Following this, the dataset was split into 70\% training and 30\% testing/validation, which was then split using a 50-50 split. The entirety of this process can be seen within Appendix \hl{INSERT APPENDIX REF}.
+Null values were examined using the \textit{.isnull()} handle for Pandas DataFrames, combined with the \textit{.values.any()} handle from Python. This returned either True for null values, or False if no null values existed. If any null values were found within the dataset, the \textit{.dropna()} handle for Pandas DataFrames was used to remove all null values. This process was repeated for both the features and target values. Following this, the feature value was standardized. This was performed as the features of the input dataset had vast differences between their ranges, since different units were used for different features, as some measurements pertained to distances whereas some measurements pertained to areas or dimensionless concepts such as texture. The \textit{StandardScaler()} function from \textit{sklearn} was utilized to standardize the feature data. Finally, the categorical variables were encoded by indexing the ``Diagnosis" column of the target DataFrame, and mapping the value to 1 if the row value was ``M", and 0 if else. This effectively encoded the categorical data into a binary encoding suitable for use in a neural network. Following this, the dataset was split into 70\% training and 30\% testing/validation, which was then split using a 50-50 split. The entirety of this process can be seen within \ref{section:ann_code}.
 
 \subsection{Experimental Results}
 
-After detailing the theoretical background for the ANN structure, the libraries, platform, and data structures used, as well as the process of determining hyperparameters and analyzing the data set, it was thus time to test the dataset. Utilizing the hyperparameters and initialized weights determined in Section \ref{ANNhyperparameterselection}, the model was trained on the training data and the loss for both training and validation was visualized. Following this, the model was tested against the test dataset and a confusion matrix was generated to visualize its efficacy. To evaluate the model, the code was ran 10 times and the average accuracy was calculated. This meant that 10 models were generated with initialized weights, utilizing the same hyperparameters, and tested against a test set that was unique to that run. The average accuracy of the model after experimental evaluation was 95.56\%, with the highest measured accuracy being 98.837\%, and the lowest accuracy being 91.86\%. The training results and testing confusion matrix of the highest run are shown within Figures \ref{fig:anntrain} and \ref{fig:anncm}, respectively. 
+After detailing the theoretical background for the ANN structure, the libraries, platform, and data structures used, as well as the process of determining hyperparameters and analyzing the data set, it was thus time to test the dataset. Utilizing the hyperparameters and initialized weights determined in Section \ref{ANNhyperparameterselection}, the model was trained on the training data and the loss for both training and validation was visualized. Following this, the model was tested against the test dataset and a confusion matrix was generated to visualize its efficacy. To evaluate the model, the code was run 10 times and the average accuracy was calculated. This meant that 10 models were generated with initialized weights, utilizing the same hyperparameters, and tested against a test set that was unique to that run. The average accuracy of the model after experimental evaluation was 95.56\%, with the highest measured accuracy being 98.837\%, and the lowest accuracy being 91.86\%. The training results and testing confusion matrix of the highest run are shown within Figures \ref{fig:anntrain} and \ref{fig:anncm}, respectively. 
 
 \begin{figure}[h!]
     \centering
@@ -630,10 +633,10 @@ Overall, we are satisfied with the performance of the neural network. The develo
 
 This model also has its performance capped due to only having 1 hidden layer, and might even realize higher levels of accuracy with a deeper network, but the average accuracy for this model was deemed to be sufficient for this application. As seen within Figure \ref{fig:anntrain} the model does not seem to be overfitting, as evidenced by the validation loss that steadily plateaus instead of increasing. The confusion matrix for the best test, as shown in Figure \ref{fig:anncm}, showcases that even for a partially imbalanced test set, the model is still able to realize high performances. Future work for this model could entail utilizing a deeper network, or processes such as dropout, regularization, or the use of batches.
 
-\section{Naive Bayes for Car Evaluation}\label{naive}
-In this section of the report, the team implemented a Naive Bayes (NB) classifier from scratch and investigated the performance of the algorithm. In essence, NB classifiers are a machine learning model that learns the probability distribution in the training data under the naive assumption that the data features are conditionally independent. Therefore, the algorithm is a simple implementation of Bayesian networks. This section starts with a review of the theory and mechanism of NB classifiers, followed by a description of the car evaluation dataset, NB classifier implementation, finally the results and discussion of results.
+\section{Naïve Bayes for Car Evaluation}\label{Naïve}
+In this section of the report, the team implemented a Naïve Bayes (NB) classifier from scratch and investigated the performance of the algorithm. In essence, NB classifiers are a machine learning model that learn the probability distribution in the training data under the naïve assumption that the data features are conditionally independent. Therefore, the algorithm is a simple implementation of Bayesian networks. This section starts with a review of the theory and mechanism of NB classifiers, followed by a description of the car evaluation dataset, NB classifier implementation, and finally the results and discussion of results. The NB implementation is found in \ref{section:naivebayes_code}.
 
-\subsection{Naive Bayes Classifier Theory}
+\subsection{Naïve Bayes Classifier Theory}
 
 To assist in the formulation of an NB classifier, assume a dataset that contains training instances, each defined by a feature vector of \textit{n} features $\vec{x}=(x_1, x_2, \cdots x_n)$ and a class value, $C$. NB classifiers are ideal when working with categorical features. The NB classifier is trained to classify a test example based on its feature values and the probability distribution provided in the training set. NB classifier operates based on Bayes theorem, formulated as:
 
@@ -641,13 +644,13 @@ To assist in the formulation of an NB classifier, assume a dataset that contains
     p(C_k|\vec{x}) = \frac{p(C_k)p(\vec{x}|C_k)}{p(\vec{x})}
 \end{equation}
 
-where $p(C_k|\vec x)$ represents the probability of a class, $C_k$, given the input features, $p(C_k)$ is the prior probability of the class from the data set, $p(\vec x|C_k)$ is the likelihood of the feature vector given the class, and $p(\vec x)$ is the evidence probability. Bayes Theorem plays an important role in Bayes classifiers since it allows for the classification of new data samples by leveraging the known distribution from the dataset. The left expression in \cref{eq:Bayes_theorem} is the quantity of interest since one can determine the probability of each class given the feature vector $\vec {x}$ and classify the instance as the class with the highest probability. The probability of each class given a data sample has the same denominator, $p(\vec x)$, as a normalizing factor. This can be simplified when considering the relative probabilities among classes.
+where $p(C_k|\vec x)$ represents the probability of a class, $C_k$, given the input features, $p(C_k)$ is the prior probability of the class from the data set, $p(\vec x|C_k)$ is the likelihood of the feature vector given the class, and $p(\vec x)$ is the evidence probability. Bayes Theorem plays an important role in Bayes classifiers since it allows for the classification of new data samples by leveraging the known distribution from the dataset. The left expression in Equation~\ref{eq:Bayes_theorem} is the quantity of interest since one can determine the probability of each class given the feature vector $\vec {x}$ and classify the instance as the class with the highest probability. The probability of each class given a data sample has the same denominator, $p(\vec x)$, as a normalizing factor. This can be simplified when considering the relative probabilities among classes as shown in Equation~\ref{eq:Bayes_theorem_simplified}.
 
 \begin{equation} \label{eq:Bayes_theorem_simplified}
     p(C_k|\vec{x}) \propto p(C_k)p(\vec{x}|C_k)
 \end{equation}
 
-However, the left expression is challenging to obtain compared to the probabilities in the right expression. The prior probability $p(C_k)$ is the proportion of training samples with the class $C_k$ in the dataset. The likelihood $p(\vec x|C_k)$ is the number of samples of class $C_k$ with the features of $\vec x$. However, the curse of dimensionality presents the biggest drawback of this method. Computation time increases exponentially with the number of features. This quantity is further simplified in Naive Bayes with the assumption of conditional probability. Under this assumption, the features are independent when given the class label. Mathematically, this assumption simplifies the joint probability of the likelihood, $p(\vec x|C_k)$, to the product of individual conditional probabilities as:
+However, the left expression is challenging to obtain compared to the probabilities in the right expression. The prior probability $p(C_k)$ is the proportion of training samples with the class $C_k$ in the dataset. The likelihood $p(\vec x|C_k)$ is the number of samples of class $C_k$ with the features of $\vec x$. However, the curse of dimensionality presents the biggest drawback of this method. Computation time increases exponentially with the number of features. This quantity is further simplified in Naïve Bayes with the assumption of conditional probability. Under this assumption, the features are independent when given the class label. Mathematically, this assumption simplifies the joint probability of the likelihood, $p(\vec x|C_k)$, to the product of individual conditional probabilities as:
 
 \begin{equation}
 \begin{aligned}
@@ -656,39 +659,39 @@ However, the left expression is challenging to obtain compared to the probabilit
 \end{aligned}
 \end{equation}
 
-With this simplifying assumption, computation time only increases linearly with the number of features compared to the joint probability calculation. The expression in \cref{eq:Bayes_theorem_simplified} is then further simplified as:
+With this simplifying assumption, computation time only increases linearly with the number of features compared to the joint probability calculation. The expression in Equation~\ref{eq:Bayes_theorem_simplified} is then further simplified as:
 
 \begin{equation}
      p(C_k|\vec{x}) \, \propto \, p(C_k) \prod_{i=1}^n p(x_i|C_k)
 \end{equation}
 
-\subsection{Implementation of Naive Bayes Classifier}
+\subsection{Implementation of Naïve Bayes Classifier}
 
 \subsubsection{Platform} \label{subsubsec:platform}
 
-A Naive Bayes Classifier algorithm was developed using Python in the Visual Studio Code development environment. The code was implemented in the form of code blocks in a Jypyter notebook and versioning was handled using Git to the main project repository. The Naive Bayes classifier and the helper functions were developed from scratch and employed Python built-in libraries for efficient numerical handling. More specifically
+A Naïve Bayes Classifier algorithm was developed using Python in the Visual Studio Code development environment. The code was implemented in the form of code blocks in a Jypyter notebook and versioning was handled using Git to the main project repository. The Naïve Bayes classifier and the helper functions were developed from scratch and employed Python built-in libraries for efficient numerical handling. More specifically:
 
 \begin{itemize}
     \item \lstinline{ucimlrepo} - for importing the car dataset
-    \item \lstinline{pandas} - for working with data frames and related tasks, such as statistics, sample counting, ...
+    \item \lstinline{pandas} - for working with DataFrames and related tasks, such as statistics, sample counting, ...
     \item \lstinline{sklearn} - for splitting the dataset into train and test set and evaluation scoring metrics 
-    \item \lstinline{matplotlib} - for visualizing for 
+    \item \lstinline{matplotlib} - for visualization of model training and testing performance
     \item \lstinline{collection} - to import the \lstinline{defaultdict} construct to define empty nested dictionary for the individual conditional probabilities
 \end{itemize}
 
 \subsubsection{Dataset Description}
-From the data discovery steps, the original dataset contains 1727 instances. Each instance has six categorical features - buying price, maintenance cost, number of doors, passenger capacity, size of the lug boot, and safety - encoded as 
+From the data discovery steps, the original dataset contains 1,727 instances. Each instance has six categorical features - buying price, maintenance cost, number of doors, passenger capacity, size of the lug boot, and safety - encoded as:
 
 \begin{itemize}
     \item buying: The buying price has 4 categories - low, med, high, and high
     \item  maint: The maintenance price has the similar 4 categories
-    \item doors: The number of doors has 4 categories - 2, 3, 4, and 5more
+    \item doors: The number of doors has 4 categories - 2, 3, 4, and 5 or more
     \item person: The number of passenger capacity has 3 categories - 2, 4, and more
     \item lug\_boot: The size of luggage boot has 3 categories - small, med, and big
     \item safety: The estimated car safety has 3 categories - low, med, and high
 \end{itemize}
 
-From these categorical features, the team must create a Naive Bayes classifier to classify the car as unacceptable, acceptable, good, or very good. From the training dataset, the probability distribution of the output classes is given as:
+From these categorical features, the team must create an NB classifier to classify the car as unacceptable, acceptable, good, or very good. From the training dataset, the probability distribution of the output classes is given as:
 
 \begin{itemize}
     \item unacc class with 1,210 samples
@@ -699,21 +702,21 @@ From these categorical features, the team must create a Naive Bayes classifier t
 
 This seems to be an imbalanced dataset and will have a strong effect on the performance of the NB classifier since the \lstinline{unacc} class will have a much larger prior probability. Furthermore, since NB classifiers depend on the feature conditional probability $p(x_i|C_k)$. The conditional probability of the minority classes is inaccurate due to insufficient knowledge from the few samples of the class, such as \lstinline{good} or \lstinline{vgood}. In the end, even if the algorithm has high accuracy, it might still not be dependable as it might classify all cars as either \lstinline{unacc} or \lstinline{acc}. Therefore, precision, recall, and F1-score of the minority classes are other methods to provide insight into the model performance.
 
-From a brief review, there are two main methods for handling an imbalanced dataset - data resampling and weighting factor.
-The method of dataset resampling works by either upsampling the minority classes or downsampling the majority classes. As the name suggests, downsampling discards several instances of the majority class in the dataset, effectively causing a loss of information. This method is more applicable to large datasets with mild imbalances. On the other hand, upsampling techniques can duplicate or generate synthetic data from the existing minority instances, effectively boosting the prior probability of these classes. Duplicating existing data points is the simplest upsampling method, where we assume that the existing instances can capture the actual distribution of real-world data. However, once this assumption is violated, the classifier would overfit the existing data and generalize poorly to future testing data. A more advanced upsampling method is the synthetic minority oversampling technique, or SMOTE. This method works by synthesizing data points from the existing minority instances. The technique generates data points using K nearest neighbor, thus is only applicable for numerical data. Nonetheless, minority upsampling via duplication will be implemented and evaluated in this report.
+From a brief review, there are two main methods for handling an imbalanced dataset - data resampling and the incorporation of weighting factors.
+The method of dataset resampling works by either upsampling the minority classes or downsampling the majority classes. As the name suggests, downsampling discards several instances of the majority class in the dataset, effectively causing a loss of information. This method is more applicable to large datasets with mild imbalances. On the other hand, upsampling techniques can duplicate or generate synthetic data from the existing minority instances, effectively boosting the prior probability of these classes. Duplicating existing data points is the simplest upsampling method, where we assume that the existing instances can capture the actual distribution of real-world data. However, once this assumption is violated, the classifier would overfit the existing data and generalize poorly to future testing data. A more advanced upsampling method is the synthetic minority oversampling technique, or SMOTE. This method works by synthesizing data points from the existing minority instances using K nearest neighbor, thus is only applicable for numerical data. Nonetheless, minority upsampling via duplication will be implemented and evaluated in this report.
 
 The second method for handling imbalanced datasets is using weighting factors. This method essentially boost the prior probability, or the importance, of the underrepresented set. As a result of this, the classifier will have a higher chance to categorize instances as \lstinline{good} or \lstinline{vgood} depending on the feature vector.
 
 \subsubsection{Program Structure}
-The first section of the \lstinline{naivebayes.ipynb} notebook imports the dataset from the source and the necessary libraries for data handling (as detailed in \ref{subsubsec:platform}). The \lstinline{ucimlrepo} library has the \lstinline{fetch_ucirepo} function to load the dataset when given the dataset id. This function was used for importing the car evaluation dataset into a feature and a label data frame before they were split into the train and test data frames. The train test split was set as 90-10 and this parameter was not further experimented in this report.
+The first section of the \lstinline{naivebayes.ipynb} notebook imports the dataset from the source and the necessary libraries for data handling (as detailed in \ref{subsubsec:platform}). The \lstinline{ucimlrepo} library has the \lstinline{fetch_ucirepo} function to load the dataset when given the dataset id. This function was used for importing the car evaluation dataset into a feature and a label DataFrame before they were split into the train and test DataFrames. The train test split was set as 90-10 and this parameter was not further experimented in this report.
 
-To explore some statistics of the data frame and some data instances, the \lstinline{describe} and \lstinline{sample} functions were used. The first method reported several statistics for each feature, such as the number of instances, the number of unique feature values, the mode, and the frequency of the mode. The \lstinline{sample} function shows random samples from the dataset and displays the unique values of each feature. The team also investigated the number of training instances in each class to highlight the imbalance in the dataset.
+To explore some statistics of the DataFrame and some data instances, the \lstinline{describe} and \lstinline{sample} functions were used. The first method reported several statistics for each feature, such as the number of instances, the number of unique feature values, the mode, and the frequency of the mode. The \lstinline{sample} function shows random samples from the dataset and displays the unique values of each feature. The team also investigated the number of training instances in each class to highlight the imbalance in the dataset.
 
-The functional implementation of a Naive Bayes classifier consists of several subsections for defining helper functions, evaluating the prior and conditional probability, and the NB classifier implementation and evaluation. The first helper function, \lstinline{find_prior_probs()}, returns the prior probability of each classes in the dataset. The function takes the training data frame, the name of the label column, and a \lstinline{minority_class} dictionary containing user-defined weighting factors. The function extracts the list of unique label values, iterates through each label and counts the number of the labels in the training dataset, and divides this by the total number of training data to obtain the prior probability. If the class has a weighting factor defined in the \lstinline{minority_class} input argument, its prior probability is modified accordingly. The class name and prior probability are returned as a dictionary.
+The functional implementation of a Naïve Bayes classifier consists of several subsections for defining helper functions, evaluating the prior and conditional probability, and the NB classifier implementation and evaluation. The first helper function, \lstinline{find_prior_probs()}, returns the prior probability of each classes in the dataset. The function takes the training DataFrame, the name of the label column, and a \lstinline{minority_class} dictionary containing user-defined weighting factors. The function extracts the list of unique label values, iterates through each label and counts the number of the labels in the training dataset, and divides this by the total number of training data to obtain the prior probability. If the class has a weighting factor defined in the \lstinline{minority_class} input argument, its prior probability is modified accordingly. The class name and prior probability are returned as a dictionary.
 
-The function find\_cond\_probs was defined to determine the conditional probability of each feature when given the class. The information was stored in the format of class values \> feature names \> feature values \> feature conditional probability in a 3-tier Python library. An example of this nested structure is shown in \autoref{feature_conditional_prob_nested_dict}
+The function \lstinline{find_cond_probs()} was defined to determine the conditional probability of each feature when given the class. The information was stored in the format of class values \> feature names \> feature values \> feature conditional probability in a 3-tier Python library. An example of this nested structure is shown in \autoref{feature_conditional_prob_nested_dict}.
 
-\begin{lstlisting}[language=Python, label={feature_conditional_prob_nested_dict}, caption={Pseudo-code of the nested dictionary structure containing the conditional probabilities for P(feature value|class)}]
+\begin{lstlisting}[language=Python, label={feature_conditional_prob_nested_dict}, caption={Pseudo-code of the nested dictionary structure containing the conditional probabilities for P(feature value|class)}.]
 # level 1 - class values-feature name key-value pair
 # level 2 - feature name-feature value key-value pair
 # level 3 - feature value-conditional probability key-value pair
@@ -733,7 +736,7 @@ feature_cond_probs = {
 }
 \end{lstlisting}
 
-To access the conditional probabilty P(feature\_name==feature\_value|class==class\_value) for Naive Bayes algorithm, we would index into the dictionary as feature\_cond\_probs[class\_value][feature\_name][feature\_value]. The function populates all the conditional probability values feature-by-feature. For every feature, it iterates through the available classes, find the subset of the training dataset with that class, and find the probability of each feature value in the subset. In other words, the function divides the number of instance with both the current feature value and the current class value by the number of instances with the current class value according to the product rule of probability
+To access the conditional probability $P(feature\_name==feature\_value|class==class\_value)$ for the NB algorithm, we would index into the dictionary as feature\_cond\_probs[class\_value][feature\_name][feature\_value]. The function populates all the conditional probability values feature-by-feature. For every feature, it iterates through the available classes, finds the subset of the training dataset with that class, and finds the probability of each feature value in the subset. In other words, the function divides the number of instances with both the current feature value and the current class value by the number of instances with the current class value according to the product rule of probability.
 
 \begin{equation}
   \begin{aligned}
@@ -742,9 +745,9 @@ To access the conditional probabilty P(feature\_name==feature\_value|class==clas
   \end{aligned} 
 \end{equation}
 
-With these two functions, we can find the prior proability of the classes and the conditional probability of the feature values when given the class values from the dataset. As the dataset is highly imbalanced with the \lstinline{good} and \lstinline{vgood} minority classs, the prior probability of these classes were boosted by different weighting factors. A \lstinline{naive_bayes_classifier()} function was then defined to classify future testing instances given these probabilities. Classification is done by first extracting the prior probability $p(C_k)$ of each class k as shown in line 13 of \autoref{code:naive_bayes_classifier}. The function then cumulatively multiplies the individual conditional probability $p(x_i|C_k)$, where $x_i$ is the feature values of the instance to find the relative conditional probabilities of the instance (line 16-17 of \autoref{code:naive_bayes_classifier}). For each testing instance, the function finds the class probabilities and categorizes the instance as the class with the highest probability (line 20 in \autoref{code:naive_bayes_classifier}). The classifier function can takes an array of testing instances as a list of feature vectors. At the end, the function returns a list of class predictions for the given instances.
+With these two functions, we can find the prior probability of the classes and the conditional probability of the feature values when given the class values from the dataset. As the dataset is highly imbalanced with the \lstinline{good} and \lstinline{vgood} minority classes, the prior probability of these classes was boosted by different weighting factors. A \lstinline{naive_bayes_classifier()} function was then defined to classify future testing instances given these probabilities. Classification is done by first extracting the prior probability $p(C_k)$ of each class k as shown in line 13 of \autoref{code:naive_bayes_classifier}. The function then cumulatively multiplies the individual conditional probability $p(x_i|C_k)$, where $x_i$ is the feature values of the instance to find the relative conditional probabilities of the instance (line 16-17 of \autoref{code:naive_bayes_classifier}). For each testing instance, the function finds the class probabilities and categorizes the instance as the class with the highest probability (line 20 in \autoref{code:naive_bayes_classifier}). The classifier function can takes an array of testing instances as a list of feature vectors. At the end, the function returns a list of class predictions for the given instances.
 
-\begin{lstlisting} [language=Python, label={code:naive_bayes_classifier}, caption={Implementation of a Naive Bayes Classifier}]
+\begin{lstlisting} [language=Python, label={code:naive_bayes_classifier}, caption={Implementation of a Naïve Bayes Classifier}.]
   def naive_bayes_classifier(prior_probs, cond_probs, instances):
     # Get the list of classes (from the cond_probs structures)
     classes = []
@@ -759,7 +762,7 @@ With these two functions, we can find the prior proability of the classes and th
         for c in classes:
             class_probs[index][c] = prior_probs[c]                  # p(class==c)
 
-            # Iterate over instance features to accumulate conditional probabilties
+            # Iterate over instance features to accumulate conditional probabilities
             for feature,value in instance.items():
                 class_probs[index][c] *= max(cond_probs[c][feature][value],1e-6)       
                 # In case of zero probability, use a small number
@@ -768,7 +771,7 @@ With these two functions, we can find the prior proability of the classes and th
   return class_probs
 \end{lstlisting}
 
-The NB classifier was then used to make predictions on the samples from the test set. The test set was first converted from a data frame to a list of Python dictionaries, each representing the feature vector of an instance. The list of dictionaries are then passed into the classifier to produce a list of the prediction class. This list is then converted back into a pandas dataframe so that it can be concatenated to the original test set for label-prediction comparison. Random samples from the test set was displayed with the NB classifier prediction to show high similarity between the label and the prediction.
+The NB classifier was then used to make predictions on the samples from the test set. The test set was first converted from a DataFrame to a list of Python dictionaries, each representing the feature vector of an instance. The list of dictionaries are then passed into the classifier to produce a list of the prediction class. This list is then converted back into a pandas DataFrame so that it can be concatenated to the original test set for label-prediction comparison. Random samples from the test set was displayed with the NB classifier prediction to show high similarity between the label and the prediction.
 
 The team used several evaluation metrics for algorithm performance assessment. The first metric that came to mind is accuracy, given as:
 
@@ -786,13 +789,11 @@ However, accuracy is not an indicative metric when making evaluation on an imbal
 \end{align}
 \end{subequations}
 
-The recall metric has the same representation as accuracy, but it is the percentage of correctly classified instances in each class. Therefore, if the model misclassified every instances as the majority classes, the recall of minority classes will be low. On the other hand, precision reflects the quality of the positive prediction of the model. This metrics is important when the positive must be accurate. For example, the precision of the \lstinline{good} class will be low if the classifier categorizes \lstinline{unacc}, \lstinline{acc}, or \lstinline{vgood} cars as good. Finally, the F1-score is a harmonized metric that combines both the recall and precision
-
-Furthermore, the team used a confusion matrix as shown in \autoref{fig:NBCcm} to visualize the classifier performance.
+The recall metric has the same representation as accuracy, but it is the percentage of correctly classified instances in each class. Therefore, if the model misclassified every instance as the majority classes, the recall of minority classes would be low. On the other hand, precision reflects the quality of the positive prediction of the model. This metric is important when the positive must be accurate. For example, the precision of the \lstinline{good} class will be low if the classifier categorizes \lstinline{unacc}, \lstinline{acc}, or \lstinline{vgood} cars as good. Finally, the F1-score is a harmonized metric that combines both recall and precision. Furthermore, the team used a confusion matrix as shown in \autoref{fig:NBCcm} to visualize the classifier performance.
 
 \begin{figure} [h!]
   \centering{\includegraphics[scale=0.3]{images/NBCcm.png}}
-  \caption{Confusion matrix of the Naive Bayes classifier} 
+  \caption{Confusion matrix of the Naïve Bayes classifier.} 
   \label{fig:NBCcm}
 \end{figure}
 
@@ -800,21 +801,19 @@ Furthermore, the team used a confusion matrix as shown in \autoref{fig:NBCcm} to
 The results of the NB classifier, as quantified by the metrics outlined in the previous section, are reported here. In this section of the project, the weighting factor of the minority classes are varied to investigate their influence on the classification performance on the minority classes. Since the minority classes have similar distribution in the dataset, the same weighting factor was applied to both classes.
 
 \subsubsection{Classifier with unmodified prior probability}
-When there was no weighting factor to boost the prior probability of the \lstinline{good} and \lstinline{vgood} classes, it was expected that the model would predominantly classify testing instances as either \lstinline{unacc} or \lstinline{acc}. This was evident when the prior probability of each minority class was below 0.04 compared to $p(unacc)=0.699$ and $p(acc)=0.223$. 
-
-The overall accuracy of this classifier was 86.71\%. The confusion matrix of this unmodified classifier is shown in \autoref{fig:NBCcm_unmodified}. 
+When there was no weighting factor to boost the prior probability of the \lstinline{good} and \lstinline{vgood} classes, it was expected that the model would predominantly classify testing instances as either \lstinline{unacc} or \lstinline{acc}. This was evident when the prior probability of each minority class was below 0.04 compared to $p(unacc)=0.699$ and $p(acc)=0.223$. The overall accuracy of this classifier was 86.71\%. The confusion matrix of this unmodified classifier is shown in \autoref{fig:NBCcm_unmodified}. The other metrics of the model are included in \autoref{tab:nb_performance_unmodified}. As expected, the classifier exhibits outstanding precision and recall for the majority class. However, these quantities are significantly lower for the other three classes. This was the result of the prior probability discrepancy and lack of adequate training data in the minority classes.
 
 \begin{figure} [h!]
   \centering{\includegraphics[scale=0.3]{images/NBCcm_unmodified.png}}
-  \caption{Confusion matrix of the Naive Bayes classifier with unmodified prior probabilities} 
+  \caption{Confusion matrix of the Naïve Bayes classifier with unmodified prior probabilities.} 
   \label{fig:NBCcm_unmodified}
 \end{figure}
 
-The other metrics of the model are included in \autoref{tab:nb_performance_unmodified}. As expected, the classifier exhibit outstanding precision and recall for the majority class. However, these quantities are significantly lower for the other three classes. This was the result of the prior probability discrepancy and lack of adequate training data in the minority classes.
+
 
 \begin{table}[h!]
   \centering
-  \caption{Performance Metrics of the Unmodified Naive Bayes classifier}
+  \caption{Performance Metrics of the Unmodified Naïve Bayes classifier.}
   \label{tab:nb_performance_unmodified}
   \begin{tabular}{||cccc||}
   \hline
@@ -833,13 +832,13 @@ Compared to the unmodifed classifier, the accuracy improved to 87.86\% when inco
 
 \begin{figure} [h!]
   \centering{\includegraphics[scale=0.3]{images/NBCcm_10.png}}
-  \caption{Confusion matrix of the Naive Bayes classifier with a weighting factor of 5} 
+  \caption{Confusion matrix of the Naïve Bayes classifier with a weighting factor of 5.} 
   \label{fig:NBCcm_5}
 \end{figure}
 
 \begin{table}[h!]
   \centering
-  \caption{Performance Metrics of the Unmodified Naive Bayes classifier}
+  \caption{Performance Metrics of the Unmodified Naïve Bayes classifier.}
   \label{tab:nb_performance_5}
   \begin{tabular}{||cccc||}
   \hline
@@ -855,18 +854,18 @@ Compared to the unmodifed classifier, the accuracy improved to 87.86\% when inco
 
 
 \subsubsection{Classifier with a weighting factor of 10}
-The accuracy of the model was slightly improved to 87.28\% when a weighting factor of 10 was incorporated in the prior probability of both the \lstinline{good} and \lstinline{vgood} classes. The confusion matrix of the classifier is provided in \autoref{fig:NBCcm_10} while the classifier recall, precision, and F1-score are included in \autoref{tab:nb_performance_10}. In terms of the F1-score, this classifier had comparable performance for both the \lstinline{unacc} and \lstinline{acc} classes compared to the previous classifier with a slight decrease in performance for the \lstinline{good} class
+The accuracy of the model was slightly improved to 87.28\% when a weighting factor of 10 was incorporated in the prior probability of both the \lstinline{good} and \lstinline{vgood} classes. The confusion matrix of the classifier is provided in \autoref{fig:NBCcm_10} while the classifier recall, precision, and F1-score are included in \autoref{tab:nb_performance_10}. In terms of the F1-score, this classifier had comparable performance for both the \lstinline{unacc} and \lstinline{acc} classes compared to the previous classifier with a slight decrease in performance for the \lstinline{good} class.
 
 \begin{figure} [h!]
   \centering{\includegraphics[scale=0.3]{images/NBCcm_5.png}}
-  \caption{Confusion matrix of the Naive Bayes classifier with a weighting factor of 10} 
+  \caption{Confusion matrix of the Naïve Bayes classifier with a weighting factor of 10.} 
   \label{fig:NBCcm_10}
 \end{figure}
 
 
 \begin{table}[h!]
   \centering
-  \caption{Performance Metrics of the Unmodified Naive Bayes classifier}
+  \caption{Performance Metrics of the Unmodified Naïve Bayes classifier.}
   \label{tab:nb_performance_10}
   \begin{tabular}{||cccc||}
   \hline
@@ -880,9 +879,7 @@ The accuracy of the model was slightly improved to 87.28\% when a weighting fact
 \end{table}
 
 \subsection{Classifier with more prior probability adjustments} 
-It was determined that there was no further imporvement in the model performance by further scaling the prior probability of the minority classes. At this point, more data is needed to fine tune and improve the performance of the model, especially for classifying the minority classes. Another methods was to manually fine tune the weighting factors of the \lstinline{acc} class. To test this, the weighting factors for the minority classes were fixed while the weighting factor of \lstinline{acc} was increased. The minority class weighting factor was fixed at 5 since this gave the best performance from previous sections, and the weighting factor of \lstinline{acc} was initialized at 1.25 and later increased to 1.5. The reason behind the conservative factor stems from the concern of misclassifying unacceptable cars as acceptable.
-
-The accuracy was 87.86\% for the model with the 1.25 weighting factor and it was 86.71\% for the models with the 1.5 weighting factor. The confusion matrices of these classifiers are shown in \autoref{fig:NBCcm_acc_class_weight_factor} and the performance metrics are summarized in \autoref{tab:nb_performance_1.25_5_5}.
+It was determined that there was no further improvement in the model performance by further scaling the prior probability of the minority classes. At this point, more data is needed to fine-tune and improve the performance of the model, especially for classifying the minority classes. Another method was to manually fine-tune the weighting factors of the \lstinline{acc} class. To test this, the weighting factors for the minority classes were fixed while the weighting factor of \lstinline{acc} was increased. The minority class weighting factor was fixed at 5 since this gave the best performance from previous sections, and the weighting factor of \lstinline{acc} was initialized at 1.25 and later increased to 1.5. The reason behind the conservative factor stems from the concern of misclassifying unacceptable cars as acceptable. The accuracy was 87.86\% for the model with the 1.25 weighting factor and it was 86.71\% for the models with the 1.5 weighting factor. The confusion matrices of these classifiers are shown in \autoref{fig:NBCcm_acc_class_weight_factor} and the performance metrics are summarized in \autoref{tab:nb_performance_1.25_5_5}.
 
 
 \begin{figure}[h!]
@@ -890,13 +887,13 @@ The accuracy was 87.86\% for the model with the 1.25 weighting factor and it was
   \centering
   \subcaptionbox{\label{subfig:NBCcm_1.25_5_5}}{\includegraphics[width=0.48\textwidth]{images/NBCcm_1.25_5_5.png}}
   \subcaptionbox{\label{subfig:NBCcm_1.5_5_5}}{\includegraphics[width=0.48\textwidth]{images/NBCcm_1.5_5_5.png}}
-  \caption{Confusion matrix of the Naive Bayes classifier with a weighting factor of 5 for the minority classes and a weigting factor of 1.25 (left) and 1.5 (right) for the \lstinline{acc} class}
+  \caption{Confusion matrix of the Naïve Bayes classifier with a weighting factor of 5 for the minority classes and a weighting factor of 1.25 (left) and 1.5 (right) for the \lstinline{acc} class.}
   \label{fig:NBCcm_acc_class_weight_factor}
 \end{figure}
 
 \begin{table}[h!]
   \centering
-  \caption{Performance Metrics of the Naive Bayes classifier with mixed weighting factors}
+  \caption{Performance Metrics of the Naïve Bayes classifier with mixed weighting factors.}
   \label{tab:nb_performance_1.25_5_5}
   \begin{tabular}{||c | c c c | c c c||}
 
@@ -913,12 +910,13 @@ The accuracy was 87.86\% for the model with the 1.25 weighting factor and it was
 \end{table}
 
 
-It was found that by increasing this weighting factor to 1.25 and 1.5 achieve better F1-score for the \lstinline{acc} class and the minority classes. However, from the confusion matrix of these classifiers, more unacc instances were classified as acceptable. This was reflected in the decrease in the recall metric of the \lstinline{unacc} class. Depending on the severity of this misclassification in the real-world scenario (i.e., passing an unacceptable car with low safety and high buying price as acceptable), this improvement is not desireable.
+It was found that increasing this weighting factor to 1.25 and 1.5 achieves better F1-score for the \lstinline{acc} class and the minority classes. However, from the confusion matrix of these classifiers, more unacc instances were classified as acceptable. This was reflected in the decrease in the recall metric of the \lstinline{unacc} class. Depending on the severity of this misclassification in the real-world scenario (i.e., passing an unacceptable car with low safety and high buying price as acceptable), this improvement is not desirable.
 
-\section{ANN Experiment with the MNIST handwritten digit dataset}\label{ann_lib}
-In this section of the project report, the team reports the experimentation detail and results from implementing two ANN methods on the task of MNIST handwritten digit recognition
+\section{Implementation using Standard Libraries}
+In this section of the project report, the team reports the implementation details and experimental results from implementing a feed-forward neural network and a CNN using existing Python ML libraries. These models were then used to classify handwritten digits using the MNIST dataset.
+
 \subsection{Dataset Details}
-The dataset of handwritten digits used to train and test the CNN was provided by MNIST and contained 60,000 training examples and 10,000 test examples. The examples were already split as described when acquired. \autoref{fig:mnist-examples} contains 9 images randomly sampled from the 60,000 training instances and demonstrates what the CNN will be learning on and trying to classify.
+The dataset of handwritten digits used to train and test the models was provided by MNIST and contained 60,000 training examples and 10,000 test examples. The examples were already split as described when acquired. \autoref{fig:mnist-examples} contains 9 images randomly sampled from the 60,000 training instances and demonstrates what the models will be learning on and trying to classify. Among the provided dataset were 10 unique classes, the digits ranging from 0 to 9. The distribution of these classes among the training dataset can be seen in Figure~\ref{fig:mnist-class-dist}. Due to the nearly uniform distribution shown in Figure~\ref{fig:mnist-class-dist}, no pre-processing of the data was performed.
 
 \begin{figure}[h!]
     \centering
@@ -927,8 +925,6 @@ The dataset of handwritten digits used to train and test the CNN was provided by
     \label{fig:mnist-examples}
 \end{figure}
 
-Among the provided dataset were 10 unique classes, the digits ranging from 0 to 9. The distribution of these classes among the training dataset can be seen in Figure~\ref{fig:mnist-class-dist}. Due to the nearly uniform distribution shown in Figure~\ref{fig:mnist-class-dist}, no pre-processing of the data was performed.
-
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.5]{images/mnist-class-dist.png}
@@ -936,34 +932,33 @@ Among the provided dataset were 10 unique classes, the digits ranging from 0 to 
     \label{fig:mnist-class-dist}
 \end{figure}
 
-\subsection{Fully-Connected Feedforward Neural Network}
-In the FNN implementation of the handwritten digit recognition task, the TensorFlow Keras library was used extensively to formulate and train the model. There are several hyperparameters of interest that have a significant impact on the model performance. In this experiment, the team investigated the effect of the following four hyperparameters:
+\subsection{Fully-Connected Feedforward Neural Network} \label{ann_lib}
+In the FNN implementation, which can be found in \ref{section:ann_mnist}, the TensorFlow Keras library was used extensively to formulate and train the model. Several hyperparameters of interest have a significant impact on the model performance. In this experiment, the team investigated the effect of the following four hyperparameters:
 
 \begin{enumerate}
-    \item \textbf{Model structure} - this governs both the depth and the width of the FNN. The depth of the FNN is the number of hidden layer, while the width of the network is the number of neurons in each layer. Theoretically, wider and deeper networks benefits from learning more complex latent features in the input, thus are expected to have higher performance. There are four model structures tested in this experiment
+    \item \textbf{Model structure} - this governs both the depth and the width of the FNN. The depth of the FNN is the number of hidden layers, while the width of the network is the number of neurons in each layer. Theoretically, wider and deeper networks benefit from learning more complex latent features in the input and thus are expected to have higher performance. There are four model structures tested in this experiment:
     \begin{itemize}
         \item a 2-layer model with 64 and 32 neurons,
         \item a 2-layer model with 32 and 16 neurons,
         \item a 3-layer model with 64, 32, and 16 neurons, and
         \item a 3-layer model with 32, 16, and 8 neurons.
     \end{itemize}
-    \item \textbf{Learning Rate} - this governs the speed of parameter optima convergence. Theoretically, a lower learning rate improbe the model training stability since the parameters are adjusted at a lower rate at every update. However, the model will also take a longer time to train. To investigate the effect of the learning rate on the model performance, learning rates of 0.001, 0.0005, and 0.0001 were tested.
-    \item \textbf{Epoch} - epochs governs the number of time that the entire training dataset used for training the model and updating the paramaters. The model parameters have the chance to improve and reach the optima with a higher number of epochs. However, the model can also overfit if it adapts to the specific features present in the training data but is not representative of validation or testing data. In this experiment, epoch sizes of 10, 25, and 50 were investigated.
-    \item \textbf{Activation Function} - The selection of activation function must consider different advantages and disadvantages of each function. For example, the sigmoid function is prone to the vanishing gradient problem for deep networks, thus ealier layers cannot effectively adjust in response to the loss function value. ReLU activation was introduced as a better alternative to tackle this vanishing gradient problem. The team investigated the effect of these activation functions on the model performance
+    \item \textbf{Learning Rate} - this governs the speed of parameter optima convergence. Theoretically, a lower learning rate improves the model training stability since the parameters are adjusted at a lower rate at every update. However, the model will also take a longer time to train. To investigate the effect of the learning rate on the model performance, learning rates of 0.001, 0.0005, and 0.0001 were tested.
+    \newpage
+    \item \textbf{Epoch} - epochs govern the number of times that the entire training dataset is used for training the model and updating the parameters. The model parameters have the chance to improve and reach the optima with a higher number of epochs. However, the model can also overfit if it adapts to the specific features present in the training data but is not representative of validation or testing data. In this experiment, epoch sizes of 10, 25, and 50 were investigated.
+    \item \textbf{Activation Function} - The selection of activation function must consider different advantages and disadvantages of each function. For example, the sigmoid function is prone to the vanishing gradient problem for deep networks, thus earlier layers cannot effectively adjust in response to the loss function value. ReLU activation was introduced as a better alternative to tackle this vanishing gradient problem. The team investigated the effect of these activation functions on the model performance.
 \end{enumerate}
 
 \subsubsection{Implementation Detail of FNNs}
 The construction of the FNN models followed a typical workflow of data import and exploration, model construction, model training, and model evaluation. In this project, this pipeline was done once for one model before being scaled up for a hyperparameter grid search.
 
 \begin{enumerate}
-    \item \textbf{Data import and exploration} - The Kaggle data was downloaded using the KaggleHub API and moved to within the project repository for easy access. Since the data file has a non-standard file type, the team utilized the \lstinline{MnistDataLoader()} and \lstinline{show_image()} classes provided with the dataset. Visualization of random samples from the training dataset were shown in \autoref{fig:mnist-examples}. The data was loaded into train and test feature and label sets using the data loader object. The number of instance in each set and the structure of the sets were investigated. Furthermore, the training data was further split into a train set and a validation set, so that the test set would be purely for testing and not access during the training process.
+    \item \textbf{Data import and exploration} - The Kaggle data was downloaded using the KaggleHub API and moved to within the project repository for easy access. Since the data file has a non-standard file type, the team utilized the \lstinline{MnistDataLoader()} and \lstinline{show_image()} classes provided with the dataset. Visualization of random samples from the training dataset were shown in \autoref{fig:mnist-examples}. The data was loaded into train and test feature and label sets using the data loader object. The number of instance in each set and the structure of the sets were investigated. Furthermore, the training data was further split into a train set and a validation set, so that the test set would be purely for testing and not access during the training process. Since there is a high number of models in the search space, the models will be trained on a GPU to accelerate the training process. However, the team had previously experienced some training difficulties on a memory-constrained GPU due to the training implementation of TensorFlow. To avoid the memory constraint problem, a DataGenerator() class was defined to send training data to the model in batches. 
+    \item \textbf{ANN Model Construction Function} - To easily construct any model when given the hyperparameter configuration, a function called \lstinline{build_ann_model()} for building ANN models was created. The function creates a Keras sequential model that starts with a flatten layer to flatten the 2D input into a 1D tensor. This layer is then followed by alternate Dense and BatchNormalization layers. The activation function of the dense layer is by default ReLU but can be defined otherwise. The number of layers and the number of neurons in each layer is defined by the input argument \lstinline{layer_widths}, which is a list of neurons in each hidden layer. The output layer is appended to the sequential model as a Dense layer with the number of neurons being the number of output classes. The activation function of this dense layer is always the softmax function. Within this function, the model is compiled with a learning rate, a loss function, and tracked metrics as defined by the corresponding input arguments.
     
-    Since there is a high number of models in the search space, the models will be trained on a GPU to accelerate the training process. However, the team had previously experienced some training difficulties on a memory-constrained GPU due to the training implementation of TensorFlow. To avoid the memory constrain problem, a DataGenerator() class was defined to send training data to the model in batches. 
-    \item \textbf{ANN Model Construction Function} - To easily construct any model when given the hyperparameter configuration, a function called \lstinline{build_ann_model()} for building ANN models was created. The function creates a Keras sequential model that starts with a flatten layer to flatten the 2D input into a 1D tensor. This layer is then followed by alternate Dense and BatchNormalization layers. The activation function of the dense layer is by default ReLU but can be defined otherwise. The number of layers and the number of neurons in each layer is defined by the input argument \lstinline{layer_widths}, which is a list of neurons in each hidden layer. The output layer is appended to the sequential model as a Dense layer with the number of neuron being the number of output classes. The activation function of this dense layer is always the softmax function. Within this function, the model is compiled with a learning rate, a loss function, and tracked metrics as defined by the corresponding input arguments.
-    
-    \item \textbf{Testing with one ANN model construction} - This function was first tested by building and training one model. A corresponding directory with the hyperparameter configuration was created to store the the hyperparameters and training performance. The \lstinline{plot_performance()} helper function was defined to visualize the model training history. Aside from plotting the training and testing loss and tracked metrics, the model was later modified such that the plots are saved in a specified directory. This helps keep a record of training performance for different model with different hyperparameter configurations.
+    \item \textbf{Testing with one ANN model construction} - This function was first tested by building and training one model. A corresponding directory with the hyperparameter configuration was created to store the hyperparameters and training performance. The \lstinline{plot_performance()} helper function was defined to visualize the model training history. Aside from plotting the training and testing loss and tracked metrics, the model was later modified such that the plots were saved in a specified directory. This helps keep a record of training performance for different models with different hyperparameter configurations.
 
-    \item \textbf{Grid Search Model Training} - In this section, the parameter grid previously specified were setup such that the algorithm iterate through each hyperparameter configuration combination. In each iteraction, the algorithm
+    \item \textbf{Grid Search Model Training} - In this section, the parameter grid previously specified were set such that the algorithm iterate through each hyperparameter configuration combination. On each iteration, the algorithm goes through the following steps:
     \begin{itemize}
         \itemsep=-5pt
         \item creates a new directory corresponding to the training time and the current hyperparameter configuration, 
@@ -973,15 +968,15 @@ The construction of the FNN models followed a typical workflow of data import an
         \item trains the model and save the training time and final training result in a \lstinline{training_results} dictionary, 
         \item stores the training parameters and final training results into a \lstinline{params_results.json} file, 
         \item saves the model for future inference and testing, and 
-        \item plots the model training history using the  and save the figure in the directory
+        \item plots the model training history using the plotting function and saves the figure in the directory.
     \end{itemize}
     
-    \item \textbf{Model Training Performance Visualization} - After all the models were trained and stored in the corresponding folder in the \lstinline{ann_model_results} directory, the model hyperparameters and training results can be extracted from the JSON files and stored in a \lstinline{results_df} dataframe. In this section, the team investigated the top 10 hyperparameter configurations that resulted in the highest training accuracy and validation accuracy. These models are summarized in \autoref{tab:ann_performance_top10_training_accuracy} and \autoref{tab:ann_performance_top10_validation_accuracy}. Furthermore, to investigate the effect of each hyperparameter on a macro level, the resulting data frame was grouped according to each hyperparameter and a box plot was drawn to capture the overall performance for each value of the hyperparameter. These results are included in section \ref{ann_model_result_hyperparameter}
+    \item \textbf{Model Training Performance Visualization} - After all the models were trained and stored in the corresponding folder in the \lstinline{ann_model_results} directory, the model hyperparameters and training results can be extracted from the JSON files and stored in a \lstinline{results_df} DataFrame. In this section, the team investigated the top 10 hyperparameter configurations that resulted in the highest training accuracy and validation accuracy. These models are summarized in \autoref{tab:ann_performance_top10_training_accuracy} and \autoref{tab:ann_performance_top10_validation_accuracy}. Furthermore, to investigate the effect of each hyperparameter on a macro level, the resulting DataFrame was grouped according to each hyperparameter and a box plot was drawn to capture the overall performance for each value of the hyperparameter. These results are included in Section \ref{ann_model_result_hyperparameter}.
 \end{enumerate}
 
 \begin{table}[h!]
     \centering
-    \caption{Training performance of the 10 models with the highest training accuracy}
+    \caption{Training performance of the 10 models with the highest training accuracy.}
     \label{tab:ann_performance_top10_training_accuracy}
     \begin{tabular}{|| c c c c | c c c c ||}
   
@@ -1014,7 +1009,7 @@ The construction of the FNN models followed a typical workflow of data import an
 
 \begin{table}[h!]
     \centering
-    \caption{Training performance of the 10 models with the highest validation accuracy}
+    \caption{Training performance of the 10 models with the highest validation accuracy.}
     \label{tab:ann_performance_top10_validation_accuracy}
     \begin{tabular}{|| c c c c | c c c c ||}
   
@@ -1048,49 +1043,50 @@ The construction of the FNN models followed a typical workflow of data import an
 \subsubsection{Results of Training and Validation Performance} \label{ann_model_result_hyperparameter}
 \textbf{Effects of the model structure}
 
-The influence of the model structure on the model performance is shown in \autoref{fig:mnist_ann_result_modelstructure}. On average, models with more neurons in a layers tend to have better performance than narrower models. The average performance of the [64, 32] model and the [64,32,16] model were approximately 96\%, compared to the average performance of 94\% of the [32, 16] and the [32,16,8] models. Furthermore, although deeper models can capture more complex features, the team observed that adding another layer can slightly degrade the model performance, both in training and validation, in the current task. The performance decrease in the training data potentially comes from the deeper models that were not trained for a higher number of epochs, thus the parameters in the whole model were not as updated compared to a shallower model. The general degradation in validation result is large attributed to the possible overfitting of the more complex models, where they learned some specific patterns that were only present in the training dataset but were not generalizable to real testing data.
+The influence of the model structure on the model performance is shown in \autoref{fig:mnist_ann_result_modelstructure}. On average, models with more neurons in a layer tend to have better performance than narrower models. The average performance of the [64, 32] model and the [64,32,16] model was approximately 96\%, compared to the average performance of 94\% of the [32, 16] and [32,16,8] models. Furthermore, although deeper models can capture more complex features, the team observed that adding another layer can slightly degrade the model performance, both in training and validation, in the current task. The performance decrease in the training data potentially comes from the deeper models that were not trained for a higher number of epochs, thus the parameters in the whole model were not as updated compared to a shallower model. The general degradation in validation results is largely attributed to the possible overfitting of the more complex models, where they learned some specific patterns that were only present in the training dataset but were not generalizable to real testing data.
 
 \begin{figure} [h!]
     \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_modelstructure.png}}
-    \caption{The effect of the model structure on the training and validation accuracy} 
+    \caption{The effect of the model structure on the training and validation accuracy.} 
     \label{fig:mnist_ann_result_modelstructure}
 \end{figure}
 
+\newpage
 \textbf{Effects of the learning rate}
 
-Since the learning rate affect the model training stability, it indirectly influence the model performance. \autoref{fig:mnist_ann_result_learningrate} shows the overall model performance at various learning rates. On average, the models had similar tranining performance, while validation performance shows that the middle learning rate had slightly better results compared to the others. This is understandable as a model with low learning rate requires more training epochs to attain similar results as one with a moderate learning rate trained with the same number of epochs. Given the maximum 50 training epochs, the model with higher learning rate will be closer to the optima. However, a high learning rate might suffer from longer training since the parameters can overshoot the optima and leads to unstable training. In some cases, the model can diverge from the desired state. 
+Since the learning rate affects the model training stability, it indirectly influences the model performance. \autoref{fig:mnist_ann_result_learningrate} shows the overall model performance at various learning rates. On average, the models had similar training performance, while validation performance shows that the middle learning rate had slightly better results compared to the others. This is understandable as a model with a low learning rate requires more training epochs to attain similar results as one with a moderate learning rate trained with the same number of epochs. Given the maximum 50 training epochs, the model with a higher learning rate will be closer to the optima. However, a high learning rate might suffer from longer training since the parameters can overshoot the optima and lead to unstable training. In some cases, the model can diverge from the desired state. 
 \begin{figure} [h!]
     \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_learningrate.png}}
-    \caption{The effect of the learning rate on the training and validation accuracy} 
+    \caption{The effect of the learning rate on the training and validation accuracy.} 
     \label{fig:mnist_ann_result_learningrate}
 \end{figure}
 
 \textbf{Effects of the epoch size}
 
-The model performance results accross various epoch sizes are shown in \autoref{fig:mnist_ann_result_epoch}. Theoretically, when a model is trained for a longer period, the parameters will further converge to the optimal region. These results are in accordance with the expectation as the models trained with 50 epochs had higher training and validation accuracy on average compared to those trained on 25 and 10 epochs. 
+The model performance results across various epoch sizes are shown in \autoref{fig:mnist_ann_result_epoch}. Theoretically, when a model is trained for a longer period, the parameters will further converge to the optimal region. These results are in accordance with the expectation as the models trained with 50 epochs had higher training and validation accuracy on average compared to those trained on 25 and 10 epochs. 
 
 \begin{figure} [h!]
     \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_epoch.png}}
-    \caption{The effect of the epoch size on the training and validation accuracy} 
+    \caption{The effect of the epoch size on the training and validation accuracy.} 
     \label{fig:mnist_ann_result_epoch}
 \end{figure}
 
 \textbf{Effects of the activation function}
 
-The ReLU activation function was introduced as a better alternative to the sigmoid activation function since it helps solve the vanishing gradient problem (VGP). Therefore, the team expected the models trained with ReLU activation to have better performance due to a lower impact of VGP. \autoref{fig:mnist_ann_result_activation} shows the model performance result comparison between the model trained with ReLU and those trained with sigmoid activation. The performance discrepancy between these hyperparameters are more pronounced compared to the previously considered hyperparameter. The majority of the models trained with ReLU activation attained higher performance during training and validation
+The ReLU activation function was introduced as a better alternative to the sigmoid activation function since it helps solve the vanishing gradient problem (VGP). Therefore, the team expected the models trained with ReLU activation to have better performance due to a lower impact of VGP. \autoref{fig:mnist_ann_result_activation} shows the model performance result comparison between the model trained with ReLU and those trained with sigmoid activation. The performance discrepancy between these hyperparameters is more pronounced compared to the previously considered hyperparameter. The majority of the models trained with ReLU activation attained higher performance during training and validation.
 
 \begin{figure} [h!]
     \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_activation.png}}
-    \caption{The effect of the activation function on the training and validation accuracy} 
+    \caption{The effect of the activation function on the training and validation accuracy.} 
     \label{fig:mnist_ann_result_activation}
 \end{figure}
 
 \newpage
 
-\section{Convolutional Neural Network}\label{cnn_lib}
-A convolutional neural network (CNN) was successfully created using existing machine learning libraries to train on and classify handwritten digits using the MNIST dataset. The structure and several training parameters of this CNN were varied to evaluate the effect these parameters have on the performance of the model. This CNN was implemented using the \textit{TensorFlow} Python library, alongside its high-level API \textit{Keras}. These libraries were chosen based on their ease-of-use for implementing a CNN that can easily have its structure re-arranged in code. 
+\subsection{Convolutional Neural Network}\label{cnn_lib}
+A convolutional neural network (CNN) was successfully created using existing machine learning libraries to train on and classify handwritten digits using the MNIST dataset. The structure and several training parameters of this CNN were varied to evaluate the effect these parameters have on the performance of the model. This CNN was implemented using the \textit{TensorFlow} Python library, alongside its high-level API \textit{Keras}. These libraries were chosen based on their ease of use for implementing a CNN that can easily have its structure re-arranged in code. The code for this implementation can be found in \ref{section:cnn-code}.
 
-\subsection{Testing Different CNN Structures}
+\subsubsection{Testing Different CNN Structures}
 
 As was previously mentioned, several aspects of the structure of the CNN were varied and tested to evaluate their effect on the performance of the model. The following structural components of the CNN were varied and compared:
 \begin{enumerate}
@@ -1101,6 +1097,7 @@ As was previously mentioned, several aspects of the structure of the CNN were va
     \item Using average pooling layers vs. max pooling layers. 
 \end{enumerate}
 In addition to this, several results of the above modifications to the structure of the CNN were compared to a control CNN model with the following default structural attributes:
+\newpage
 \begin{itemize}
     \item Number of layers: 3
     \item Number of filters: 32
@@ -1112,36 +1109,36 @@ The performance curve of this control CNN model can be seen in Figure~\ref{fig:c
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.5]{images/control-cnn.png}
+    \includegraphics[scale=0.45]{images/control-cnn.png}
     \caption{Performance of control CNN with default structure.}
     \label{fig:control-cnn}
 \end{figure}
 
-\subsubsection{Number of Layers and Filters}
+\textbf{Number of Layers and Filters}
 
-The results of training the CNN model with 1, 2, and 3 layers, as well as training the model with 16, 32, and 64 filters, can be seen in Figure~\ref{fig:layers-filters}. The results in Figure~\ref{fig:layers-filters} demonstrates how increasing the number of filters can actually lead to over-fitting in the CNN. The maximum training and validation accuracy after 10 epochs for the 16 filter and 32 filter models stay relatively close together. However, for the 64 filter case, the accuracies actually diverge with the validation accuracy being less than the training accuracy. Conversely, Figure~\ref{fig:layers-filters} also demonstrates how increasing the number of layers in the CNN model actually reduces the effect of over-fitting.
+The results of training the CNN model with 1, 2, and 3 layers, as well as training the model with 16, 32, and 64 filters, can be seen in Figure~\ref{fig:layers-filters}. The results in Figure~\ref{fig:layers-filters} demonstrate how increasing the number of filters can lead to overfitting in the CNN. The maximum training and validation accuracy after 10 epochs for the 16 filter and 32 filter models stay relatively close together. However, for the 64 filter case, the accuracies actually diverge with the validation accuracy being less than the training accuracy. Conversely, Figure~\ref{fig:layers-filters} also demonstrates how increasing the number of layers in the CNN model actually reduces the effect of overfitting.
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.45]{images/n-layers-n-filters-cnn.png}
+    \includegraphics[scale=0.4]{images/n-layers-n-filters-cnn.png}
     \caption{Performance of training the CNN model with different number of layers and filters.}
     \label{fig:layers-filters}
 \end{figure}
 
-\subsubsection{Addition of Drop-Out Layers}
+\textbf{Addition of Drop-Out Layers}
 
-The results of training the CNN model with the addition of drop-out layers with varying drop-out rates after each convolutional layer can be seen in Figure~\ref{fig:drop-out}. These models were trained with 3 total convolutional and pooling layer pairs, thus 3 total drop-out layers. As expected, the results shown in Figure~\ref{fig:drop-out} demonstrate reduced overfitting of the model as the drop-out rate increases, at the cost of training accuracy. It's clear from the results of the control model in Figure~\ref{fig:control-cnn} that over-fitting isn't a particularly big problem for our model, as such the use of drop-out layers is not necessary. 
+The results of training the CNN model with the addition of drop-out layers with varying drop-out rates after each convolutional layer can be seen in Figure~\ref{fig:drop-out}. These models were trained with 3 total convolutional and pooling layer pairs, thus 3 total drop-out layers. As expected, the results shown in Figure~\ref{fig:drop-out} demonstrate reduced overfitting of the model as the drop-out rate increases, at the cost of training accuracy. It's clear from the results of the control model in Figure~\ref{fig:control-cnn} that overfitting isn't a particularly big problem for our model, as such the use of drop-out layers is not necessary. 
 
 \begin{figure}[h!]
     \centering
-    \includegraphics[scale=0.5]{images/drop-out-cnn.png}
+    \includegraphics[scale=0.45]{images/drop-out-cnn.png}
     \caption{Performance of training the CNN model with drop-out layers of varying drop-out rates.}
     \label{fig:drop-out}
 \end{figure}
 
-\subsubsection{Addition of Batch Normalization Layers}
+\textbf{Addition of Batch Normalization Layers}
 
-The results of training the CNN model with the addition of batch normalization layers after each convolutional layer can be seen in Figure~\ref{fig:batch-norm}. These results clearly demonstrate how batch normalization can be used as an effective regularizer. The maximum training and validation accuracies after 10 epochs diverge considerably when batch normalization is used, with the validation accuracy being the strongest, compared to the control model. This shows reduced over-fitting in the model.
+The results of training the CNN model with the addition of batch normalization layers after each convolutional layer can be seen in Figure~\ref{fig:batch-norm}. These results clearly demonstrate how batch normalization can be used as an effective regularizer. The maximum training and validation accuracies after 10 epochs diverge considerably when batch normalization is used, with the validation accuracy being the strongest, compared to the control model. This shows reduced overfitting in the model.
 
 \begin{figure}[h!]
     \centering
@@ -1150,7 +1147,8 @@ The results of training the CNN model with the addition of batch normalization l
     \label{fig:batch-norm}
 \end{figure}
 
-\subsubsection{Max Pooling vs. Average Pooling}
+\newpage
+\textbf{Max Pooling vs. Average Pooling}
 
 The results of training the CNN model with both max pooling and average pooling layers can be seen in Figure~\ref{fig:pooling}. Pooling layers directly follow convolutional layers to down-sample the feature map output from these layers. How they accomplish this is either through a max operation or average operation over a defined window of the feature map output from the convolutional layer. From Figure~\ref{fig:pooling} it can be seen that using average pooling significantly reduces the training accuracy of the model, however the validation accuracy stays consistent with the model that used max pooling. It appears that due to the simplicity of this task, the difference between using max pooling vs. average pooling is not as significant. However, this may not be the case in other problems that require training a CNN model.
 
@@ -1161,13 +1159,13 @@ The results of training the CNN model with both max pooling and average pooling 
     \label{fig:pooling}
 \end{figure}
 
-\subsection{Testing Different Training Parameters}
+\subsubsection{Testing Different Training Parameters}
 In addition to experimenting on the structure of the CNN model to evaluate its performance, two training parameters were also varied to evaluate their effect on the performance of the model. These training parameters were:
 \begin{enumerate}
     \item The learning rate of the model using a stochastic gradient descent optimizer.
     \item The batch size, or the number of samples per gradient update.
 \end{enumerate}
-The result of varying these trainig parameters on the performance of a CNN with 3 layers can be seen in Figure~\ref{fig:training-params}.
+The result of varying these training parameters on the performance of a CNN with 3 layers can be seen in Figure~\ref{fig:training-params}. The learning rate parameter influences how drastically the model weights will change on each weight update. As a result, a smaller learning rate causes model convergence to take longer, as is evident in Figure~\ref{fig:training-params} where the learning rate is set to 0.001. However, this can be a good thing as it allows for more stable results and reduces overfitting as it gives the model more chances to explore the feature space. The results for the model with the smallest learning rate in Figure~\ref{fig:training-params} show this with the validation accuracy being greater than the training accuracy, at the cost of a smaller validation accuracy compared to the other models. The batch size parameter affects the number of training examples used per gradient update when training the model. Hence, mini-batch gradient descent is being used. The batch size will directly influence the speed of model training, as well as the performance of the trained model. A larger batch size will result in the gradient being calculated fewer times, potentially providing a speedup to the training process. In addition to this, a larger batch size can reduce overfitting as the noise introduced into the gradient from outliers in the training data is averaged over a larger number of samples, as demonstrated in Figure~\ref{fig:training-params} for the model trained with a batch size of 512.
 
 \begin{figure}[h!]
     \centering
@@ -1176,25 +1174,24 @@ The result of varying these trainig parameters on the performance of a CNN with 
     \label{fig:training-params}
 \end{figure}
 
-The learning rate parameter influences how drastically the model weights will change on each weight update. As a result, a smaller learning rate causes model convergence to take longer, as is evident in Figure~\ref{fig:training-params} where the learning rate is set to 0.001. However, this can be a good thing as it allows for more stable results and reduces over-fitting as it gives the model more chances to explore the feature space. The results for the model with the smallest learning rate in Figure~\ref{fig:training-params} show this with the validation accuracy being greater than the training accuracy, at the cost of a smaller validation accuracy compared to the other models. The batch size parameter affects the number of training examples used per gradient update when training the model. Hence, mini-batch gradient descent is being used. The batch size will directly influence the speed of model training, as well as the performance of the trained model. A larger batch size will result in the gradient being calculated fewer times, potentially providing a speedup to the training process. In addition to this, a larger batch size can reduce over-fitting as the noise introduced into the gradient from outliers in the training data is averaged over a larger number of samples, as demonstrated in Figure~\ref{fig:training-params} for the model trained with a batch size of 512.
 
 \newpage
 \section{Conclusion}\label{conclusion}
 
-This report saw the implementation of several machine learning algorithms, with some being implemented from scratch using first principles and basic libraries within Python, and others being implemented used commonly used machine learning libraries such as Keras, the high-level API for TensorFlow. This project was beneficial in that it allowed us to develop a deeper understanding on how these algorithms function, by allowing us to explore their intricacies through our own unique implementations. With the advent of advanced machine learning libraries, it can be easy to become reliant on using these libraries as a ``black-box'', without understanding or appreciating the fundamental theory that allows them to function. This programming project exposed us to several different algorithms, both from scratch and using these libraries. Adaboost using the ID3 algorithm as a base learner was implemented from scratch, and was trained and tested on the Letter Recognition dataset. An object-oriented approach was taken for this implementation, defining Python classes to structure the various components of the Adaboost implementation. An \textit{Adaboost} class was defined to store the trained weak hypotheses and their weights, whereas the \textit{ID3Classifier} class was utilized to calculate entropy and information gain throughout the training process, and the actual decision tree output of the ID3 algorithm was stored within a \textit{BinaryDecisionTree} class. Upon evaluation, it was found that this algorithm had a mean classification accuracy of 85.254\%, with a mean training and classification time of 491.03 seconds and 0.08918 seconds, respectively. The highest realized accuracy was 86.70\%.
+This report saw the implementation of several machine learning algorithms, with some being implemented from scratch using first principles and basic libraries within Python, and others being implemented using commonly used machine learning libraries such as Keras, the high-level API for TensorFlow. This project was beneficial in that it allowed us to develop a deeper understanding of how these algorithms function, by allowing us to explore their intricacies through our own unique implementations. With the advent of advanced machine learning libraries, it can be easy to become reliant on using these libraries as a ``black box'', without understanding or appreciating the fundamental theory that allows them to function. This programming project exposed us to several different algorithms, both from scratch and using these libraries. Adaboost using the ID3 algorithm as a base learner was implemented from scratch and was trained and tested on the Letter Recognition dataset. An object-oriented approach was taken for this implementation, defining Python classes to structure the various components of the Adaboost implementation. An \textit{Adaboost} class was defined to store the trained weak hypotheses and their weights, whereas the \textit{ID3Classifier} class was utilized to calculate entropy and information gain throughout the training process, and the actual decision tree output of the ID3 algorithm was stored within a \textit{BinaryDecisionTree} class. Upon evaluation, it was found that this algorithm had a mean classification accuracy of 85.254\%, with a mean training and classification time of 491.03 seconds and 0.08918 seconds, respectively. The highest realized accuracy was 86.70\%.
 
-Following this, an artificial neural network was implemented from scratch complete with backpropagation, which was derived by hand. This implementation was trained and tested on the Wisconsin Breast Cancer Diagnostic dataset, which contains the mean, worst case, and standard deviation of 10 real-valued features pertaining to potentially cancerous cell mass recorded using fine-needle aspirate. An object oriented approach was taken for the implementation of this neural network, which allowed networks to be instantiated with varying amounts of neurons. A relatively shallow network was designed for this project, consisting of only 1 hidden layer. The average classification accuracy for 10 trails was 95.56\%, with the highest measured mean accuracy being 98.837\%, and the lowest being 91.86\%. This was compared against the average accuracy of 92.308\% while using a neural network by the developers of the dataset, and this implementation was therefore considered a success. A Naive Bayes classifier was implemented after this, and was utilized to predict the acceptability of a car given several features about the vehicle. This model was evaluated using both an unmodified prior probability and a modified prior probablity, meaning that there was a weighing factor to boost the prior probability of certain classes. For the unmodified case, it was found that the overall accuracy of the model was 86.71\%, and the majority class exhibited a precision, recall, and F1-score of 0.92, 0.96, and 0.94, respectively. These values were less than desirable for the other classes, and as such different weighing factors were examined to boost the weight of the minority classes. A weighing factor of 5 improved the overall classifier accuracy to 87.86\%, and the precision, recall, and F1-score for the minority classes saw improvements. Further adjustments, such as using mixed weighing factors, saw even greater improvements in the precision, recall, and F1-score for the minority classes, but the overall classifier accuracy never exceeded 87.86\%.
+Following this, an artificial neural network was implemented from scratch complete with backpropagation, which was derived by hand. This implementation was trained and tested on the Wisconsin Breast Cancer Diagnostic dataset, which contains the mean, worst case, and standard deviation of 10 real-valued features pertaining to potentially cancerous cell mass recorded using fine-needle aspirate. An object-oriented approach was taken for the implementation of this neural network, which allowed networks to be instantiated with varying amounts of neurons. A relatively shallow network was designed for this project, consisting of only 1 hidden layer. The average classification accuracy for 10 trails was 95.56\%, with the highest measured mean accuracy being 98.837\%, and the lowest being 91.86\%. This was compared against the average accuracy of 92.308\% while using a neural network by the developers of the dataset, and this implementation was therefore considered a success. A Naïve Bayes classifier was implemented after this and was utilized to predict the acceptability of a car given several features about the vehicle. This model was evaluated using both an unmodified prior probability and a modified prior probability, meaning that there was a weighing factor to boost the prior probability of certain classes. For the unmodified case, it was found that the overall accuracy of the model was 86.71\%, and the majority class exhibited a precision, recall, and F1-score of 0.92, 0.96, and 0.94, respectively. These values were less than desirable for the other classes, and as such different weighing factors were examined to boost the weight of the minority classes. A weighing factor of 5 improved the overall classifier accuracy to 87.86\%, and the precision, recall, and F1-score for the minority classes saw improvements. Further adjustments, such as using mixed weighing factors, saw even greater improvements in the precision, recall, and F1-score for the minority classes, but the overall classifier accuracy never exceeded 87.86\%.
 
-After implementing these three algorithms from scratch, the focus then turned towards the use of pre-existing machine learning libraries for classification on the MNIST handwritten dataset. Firstly, a fully-connected feedforward neural network was implemented using the TensorFlow Keras API. Model structure, learning rate, number of epochs, and the activation function were the hyperparameters that were examined in the process of training the model. A parameter grid search was implemented to determine the best hyperparameter combination, and the best model examined had a test accuracy of 97.25\%. Following this, a convolutional neural network was implemented, also using the TensorFlow Keras API. The hyperparameters that were examined were the number of filters of each convolutional layer in the CNN, the number of layers in the CNN, the effects of a drop-out layer with different drop-out rates, the use of batch-normalization, and the use of either average pooling layers vs. max pooling layers. These hyperparameter combinations were compared against a ``control'' model that utilized 3 layers, 32 3x3 filters, no drop-out layers, no batch normalization layers, and max pooling layers. The control model achieved a validation accuracy of 97.5\%. It was found that an increasing number of filters lead the training accuracy and the validation accuracy to diverge, whereas an increasing number of convolutional + pooling layers brought the accuracies back together. Drop-out was able to reduce the effects of overfitting, at the cost of sacrificing overall model accuracy. Drop-out was determined to not be necessary as the model itself does not overfit that much, and a higher accuracy was preferred. Batch normalization was determined to be an effective regularizer, and average pooling was determined to produce higher validation accuracies than max pooling, at the cost of a reduced training accuracy. Finally, two more hyperparameters were analyzed, those being the learning rate of the model with a stochastic gradient descent optimizer, and the batch size of the model. Smaller learning rates lead to slower convergence, at a higher stability, whereas higher learning rates lead to a faster, unstable convergence. Batch size was found to speed up both the training of the model and the performance of the model.
+After implementing these three algorithms from scratch, the focus then turned towards the use of pre-existing machine learning libraries for classification on the MNIST handwritten dataset. Firstly, a fully-connected feedforward neural network was implemented using the TensorFlow Keras API. Model structure, learning rate, number of epochs, and the activation function were the hyperparameters that were examined in the process of training the model. A parameter grid search was implemented to determine the best hyperparameter combination, and the best model examined had a test accuracy of 97.25\%. Following this, a convolutional neural network was implemented, also using the TensorFlow Keras API. The hyperparameters that were examined were the number of filters of each convolutional layer in the CNN, the number of layers in the CNN, the effects of a drop-out layer with different drop-out rates, the use of batch-normalization, and the use of either average pooling layers vs. max pooling layers. These hyperparameter combinations were compared against a ``control'' model that utilized 3 layers, 32 3x3 filters, no drop-out layers, no batch normalization layers, and max pooling layers. The control model achieved a validation accuracy of 97.5\%. It was found that an increasing number of filters led the training accuracy and the validation accuracy to diverge, whereas an increasing number of convolutional + pooling layers brought the accuracies back together. Drop-out was able to reduce the effects of overfitting, at the cost of sacrificing overall model accuracy. Drop-out was determined to not be necessary as the model itself does not overfit that much, and a higher accuracy was preferred. Batch normalization was determined to be an effective regularizer, and average pooling was determined to produce higher validation accuracies than max pooling, at the cost of a reduced training accuracy. Finally, two more hyperparameters were analyzed, those being the learning rate of the model with a stochastic gradient descent optimizer, and the batch size of the model. Smaller learning rates lead to slower convergence, at a higher stability, whereas higher learning rates lead to a faster, unstable convergence. Batch size was found to speed up both the training of the model and the performance of the model.
 
-Overall, this project was entirely beneficial to us as prospective ML engineers. This project allowed us to develop a deep, theoretically grounded appreciation for these models. It is important to understand how these models work from the ground up, such that you can better utilize them in practice. By understanding the intricacies of these models, we are better poised to understand how changing different hyperparameters can affect these models, and as such, have become more knowledgeable on their implemenation. This project also gave us a newly found appreciation for ML libraries, as they can be used to quickly implement complex models with ease. 
+Overall, this project was entirely beneficial to us as prospective ML engineers. This project allowed us to develop a deep, theoretically grounded appreciation for these models. It is important to understand how these models work from the ground up, such that you can better utilize them in practice. By understanding the intricacies of these models, we are better poised to understand how changing different hyperparameters can affect these models, and as such, have become more knowledgeable on their implementation. This project also gave us a newly found appreciation for ML libraries, as they can be used to quickly implement complex models with ease. 
 
 \newpage
-\renewcommand{\thesection}{Appendix \Alph{section}: \hspace{-4mm}}
+\renewcommand{\thesection}{Appendix \Alph{section}}
 \setcounter{section}{0} % Reset section counter
 
 \newpage
-\section{Adaboost with ID3 Base Learner Code}
+\section{\hspace{-5mm}: Adaboost with ID3 Base Learner Code}
 \label{section:adaboost-code}
 \textbf{tree.py}
 \begin{lstlisting}[basicstyle= \scriptsize]
@@ -1358,7 +1355,7 @@ class ID3Classifier:
     """ Calculate the entropy for a sample
     of training examples based on Shanon's 
     Entropy Model. The first column in the passed
-    targets Dataframe is taken as the target
+    targets DataFrame is taken as the target
     to calculate the entropy against.
     """
     target_name = targets.columns.values[0]
@@ -1379,7 +1376,7 @@ class ID3Classifier:
 
     # Calculate the less than or equal to and the greater than
     # splits of the data set using the unique values for this feature.
-    # This creates an array of Dataframes of length len(unique_values)
+    # This creates an array of DataFrames of length len(unique_values)
     less_subsets = [examples.loc[examples[feature] <= value] for value in unique_values] 
     greater_subsets = [examples.loc[examples[feature] > value] for value in unique_values]
 
@@ -1571,7 +1568,7 @@ def estimator_benchmark(features, targets, T=50):
   sessions on the provided features and targets but
   varying the number of estimators, or weak hypotheses
   learned by the Adaboost algorithm during each session.
-  Returns a Dataframe containing the following:
+  Returns a DataFrame containing the following:
     - Test data 'random state' integer (for reproducibility).
     - Accuracy of training.
     - Depth of learned tree.
@@ -1611,7 +1608,7 @@ def estimator_benchmark(features, targets, T=50):
     # Number of estimators to use for current test
     estimators = estimator_tests[n]
 
-    # Copy the dataframes into this iteration's datasets
+    # Copy the DataFrames into this iteration's datasets
     training_examples = X_train.copy(deep=True)
     training_targets = y_train.copy(deep=True)
 
@@ -1639,7 +1636,7 @@ def depth_benchmark(features, targets):
   found in Adaboost.py by running training/testing
   sessions on the provided features and targets but
   varying the depth of the learned trees on each session.
-  Returns a Dataframe containing the following:
+  Returns a DataFrame containing the following:
     - Test data 'random state' integer (for reproducibility).
     - Accuracy of training.
     - Depth of learned tree.
@@ -1679,7 +1676,7 @@ def depth_benchmark(features, targets):
     # Depth of learned decision tree for current test
     depth = depths[n]
 
-    # Copy the dataframes into this iteration's datasets
+    # Copy the DataFrames into this iteration's datasets
     training_examples = X_train.copy(deep=True)
     training_targets = y_train.copy(deep=True)
 
@@ -1705,7 +1702,7 @@ def adaboost_benchmark(features, targets, N=10, display_confusion_matrix=False):
   """ Benchmark the Adaboost implementation
   found in Adaboost.py by running N training/testing
   sessions on the provided features and targets. 
-  Returns a Dataframe containing the following:
+  Returns a DataFrame containing the following:
     - Test data 'random_state' integer (for reproducibility).
     - Accuracy of training.
     - Depth of learned tree.
@@ -1738,7 +1735,7 @@ def adaboost_benchmark(features, targets, N=10, display_confusion_matrix=False):
     # Split using a random state.
     X_train, X_test, y_train, y_test = train_test_split(features, targets, test_size=0.2, random_state=results['State'][n])
 
-    # Copy the dataframes into this iteration's datasets
+    # Copy the DataFrames into this iteration's datasets
     training_examples = X_train.copy(deep=True)
     training_targets = y_train.copy(deep=True)
 
@@ -1802,7 +1799,8 @@ if __name__ == '__main__':
 \end{lstlisting}
 
 \newpage
-\section{Neural Network Code}
+\section{\hspace{-5mm}: Neural Network Code}
+\label{section:ann_code}
 \textbf{Importing Packages:}
 \begin{lstlisting}[basicstyle= \scriptsize]
 # import packages:
@@ -1824,8 +1822,8 @@ import matplotlib.pyplot as plt       # used for visualization of training loss
 breast_data = fetch_ucirepo(id = 17)
 
 # can now access the data:
-breast_x = breast_data.data.features    # extract the features from the dict into a pandas data frame
-breast_y = breast_data.data.targets     # extract the labels from the dict into a pandas data frame
+breast_x = breast_data.data.features    # extract the features from the dict into a pandas DataFrame
+breast_y = breast_data.data.targets     # extract the labels from the dict into a pandas DataFrame
 \end{lstlisting}
 
 \textbf{Examining Dataset Properties:}
@@ -1841,7 +1839,7 @@ print(f"the available diagnoses are: {breast_y['Diagnosis'].unique()}")
 
 # get the names of the features:
 print(f"the available features are: \n")
-for col in breast_x.columns:    # for every column in the data frame, 
+for col in breast_x.columns:    # for every column in the DataFrame, 
     print(col)                  # print the column    
 \end{lstlisting}
 
@@ -2161,7 +2159,8 @@ plt.show()
 \end{lstlisting}
 
 \newpage
-\section{Naive Bayes Code}
+\section{\hspace{-5mm}: Naïve Bayes Code}
+\label{section:naivebayes_code}
 \textbf{Library and data import}
 \begin{lstlisting}
 from ucimlrepo import fetch_ucirepo
@@ -2198,7 +2197,7 @@ X.sample(10)
 \end{lstlisting}
 
 \begin{lstlisting}
-# Concatenate the feature and label data frames
+# Concatenate the feature and label DataFrames
 df = pd.concat([X,y],axis=1)
 print(df.sample(10))
 # Return the class distribution
@@ -2218,10 +2217,10 @@ print(df_test.shape)
 \begin{lstlisting}
 def find_prior_probs(df, label_column, minority_class = None):
 '''
-This function finds the prior probability of each class in the dataframe and report them in a dictionary
+This function finds the prior probability of each class in the DataFrame and report them in a dictionary
 
 Parameters:
-- df (pd dataframe): DataFrame from which the probability is determined
+- df (pd DataFrame): DataFrame from which the probability is determined
 - label_colum (str): name of the class/label column
 - minority_class (dict): a dictionary containing the name of the minority classes (keu) and the upweighting factor corresponding to the class as (value)
 
@@ -2253,13 +2252,13 @@ feature_cond_probs = defaultdict(lambda: defaultdict(lambda: defaultdict(float))
 
 # Considering the conditional probability feature by feature
 for feature in df.columns:
-    # Skip this step if the feature is the label column of the dataframe
+    # Skip this step if the feature is the label column of the DataFrame
     if feature == label_column:
         pass
     
-    # Iterate over each class c of the dataframe to find the conditional probabilities of each feature P(feature = value | class)
+    # Iterate over each class c of the DataFrame to find the conditional probabilities of each feature P(feature = value | class)
     for c in classes: 
-        df_subset = df[df[label_column]==c]                         # Subset of the dataframe where class has the value c
+        df_subset = df[df[label_column]==c]                         # Subset of the DataFrame where class has the value c
         feature_count = df_subset[feature].value_counts()           # Get a series with the number of instances of each feature value in the subset
 
         # Iterate over all the feature values and calculate the conditional probabilities of each value 
@@ -2297,7 +2296,7 @@ for key_1, value_1 in cond_probs.items():
                 count += 1
 \end{lstlisting}
 
-The code block below shows the Naive-Bayes classifier function, which takes the prior and conditional probability from the dataset to classify testing data.
+The code block below shows the Naïve-Bayes classifier function, which takes the prior and conditional probability from the dataset to classify testing data.
 
 \begin{lstlisting}
 def naive_bayes_classifier(prior_probs, cond_probs, instances):
@@ -2332,7 +2331,7 @@ for index, instance in enumerate(instances):
 return class_probs
 \end{lstlisting}
 
-\textbf{Test the Naive Bayes classifier}
+\textbf{Test the Naïve Bayes classifier}
 \begin{lstlisting}
 # Drop the index to later concatenate with the predicted label
 test_instances = df_test.reset_index(drop=True)
@@ -2388,7 +2387,8 @@ print("\nClassification Report:\n", report)
 \end{lstlisting}
 
 \newpage
-\section{ANN Code - Using Libraries}
+\section{\hspace{-5mm}: FNN Code - Using Libraries}
+\label{section:ann_mnist}
 \textbf{GPU Hardware Check}
 \begin{lstlisting}
 import tensorflow as tf
@@ -2846,7 +2846,7 @@ for layer_width in LAYER_WIDTHS:
 
 \textbf{Model Performance Visualization}
 
-The code block belows extracts the hyperparameters and training results from the params\_result.json file and store is in a \lstinline{results_df} data frame
+The code block belows extracts the hyperparameters and training results from the params\_result.json file and store is in a \lstinline{results_df} DataFrame
 
 \begin{lstlisting}
 import pandas as pd
@@ -3026,7 +3026,7 @@ plt.show()
 \end{lstlisting}
 
 \newpage
-\section{CNN Code - Using Libraries}
+\section{\hspace{-5mm}: CNN Code - Using Libraries}
 \label{section:cnn-code}
 \textbf{mnist\_data\_loader.py}
 \begin{lstlisting}[basicstyle= \scriptsize]
