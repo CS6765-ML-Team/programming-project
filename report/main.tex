@@ -96,10 +96,20 @@
 
 \section{Introduction}
 
-\section{Adaboost with ID3 Base Learner}
+Machine learning has undoubtedly taken the world by storm, becoming entrenched within the cutting-edge technologies and research of today. These transformative algorithms have seen use in a broad range of applications, from self-driving cars, medical diagnoses, and financial analysis, to personalized movie recommendations. As both society and industry become further augmented through machine learning, there is an increasing demand for individuals who are not only familiar with the practical applications of these technologies but also fluent in their design and implementation. While machine learning has become more popular in recent years, it has also become increasingly accessible. Libraries and tools like PyTorch, TensorFlow, and Keras, when used in conjunction with services like Google Colab, have allowed machine learning to no longer be constrained to research labs with intense computing power. These algorithms and their implementations have spread beyond research tools for universities, and have can be utilized by anyone. 
+
+With the advent of easily accessible ML, it is quite easy to become reliant on these easy-to-develop models, and lose an appreciation for the fundamental theory that enables them to work. Individuals can now implement machine learning algorithms and achieve impressive results, but may not have an appreciation or understanding of the mathematical formulations that enabled those results. Utilizing machine learning as an infallible, ``plug-and-play" tool without understanding the deeper theoretical foundations of how these algorithms work, why they behave as they do, when they should be used, and how to interpret their results deducts from one's own credibility as an ML or software engineer. It therefore becomes important to have a deeper theoretical understanding of these algorithms achieved solely through implementing them yourself. By writing out the fundamental equations behind these algorithms and structuring their implementation yourself, one can gain a heightened knowledge about their workings which might give them an edge compared to others within the field. 
+
+For these reasons, this assignment saw students doing just that: implementing machine learning algorithms from scratch and developing models to train and test on some provided, well-known datasets. The first algorithm that was implemented was the Adaboost algorithm, a coveted ensemble learning technique, utilizing ID3 as a base learner. This model was trained and tested on the Letter Recognition dataset. Following this, an artificial neural network with backpropagation was developed from first principles, where the backpropagation equations were derived by hand and implemented within the Python programming language. The ANN model was trained on the Wisconsin Breast Cancer Dataset. Finally, the Naive Bayes algorithm was implemented for classification on the Car Evaluation dataset. The implementation of each algorithm is described in thorough detail within this report, examining first a theoretical breakdown of the algorithm, followed by a description of the platform used, the dataset examined, the necessary pre-processing steps taken as well as hyperparameters are chosen, the design of the implementation, and the experimental results.
+
+Similarly, machine learning libraries were utilized, allowing for an interesting contrast between developing machine learning algorithms from scratch and using popular, dedicated libraries. A deep fully-connected feed-forward ANN was developed, examining different structures (layers, number of neurons, etc.), as well as activation functions. Conversely, a convolutional neural network was developed by examining different CNN structures, filters, and hyperparameters. Both implementations were trained and tested on the classic MNIST dataset, and both implementations were developed using Keras, a high-level API for TensorFlow. All machine learning implementations, those implemented from scratch and those implemented using Keras, can be found within the appendices at the end of this report. 
+
+The remainder of this report is structured as follows. Section \ref{adaboost} examines the implementation of Adaboost with ID3 as the base learner, Section \ref{ann} examines the implementation of an artificial neural network with backpropagation from scratch, and Section \ref{naive} examines the implementation of the Naive Bayes algorithm for car evaluation. Following this, both implementations using machine learning libraries are examined, with the ANN being examined in Section \ref{ann_lib}, and the CNN being examined in Section \ref{cnn_lib}. Concluding remarks are made within Section \ref{conclusion}.
+
+\section{Adaboost with ID3 Base Learner}\label{adaboost}
 The Adaptive Boosting (Adaboost) classification algorithm was successfully implemented using the Python 3 programming language. The version of Adaboost implemented used the Iterative Dichotomiser 3 (ID3) decision tree learning algorithm as a weak learner. This algorithm was trained on a dataset of English alphabet character image features and used to identify letters of the alphabet based on these features, i.e., letter recognition. The code for this algorithm can be found in~\ref{section:adaboost-code}
 
-\subsection{Adaboost}
+\subsection{Adaboost}\label
 Adaboost is a boosted classifier that uses multiple weak hypotheses to build a single, strong hypothesis to be used for classification. These weak hypotheses are initially learned through a weak base learner algorithm, with the performance of these weak hypotheses dictating their weight in the final, strong hypothesis. To accomplish this, Adaboost first assigns an initial weight of $1/N$ to every training example, where $N$ is the number of training examples. Upon training of a weak hypothesis, Adaboost sums the weight of all misclassified examples against the trained weak hypothesis.  This sum, called the $error$ or $\epsilon$, is used to calculate the weight, or $\alpha$, for the given weak hypothesis according to Equation~\ref{eq:weak-h-alpha}.
 
 \begin{equation}
@@ -304,7 +314,7 @@ The confusion matrix of the test with the highest accuracy, test 13 with seed 27
 
 \newpage
 
-\section{ANN with Backpropagation}
+\section{ANN with Backpropagation}\label{ann}
 
 An Artificial Neural Network with backpropagation was successfully implemented using the Python 3 programming language. The artificial neural network that was created featured a simplistic design, utilizing only one hidden layer while simultaneously yielding great results. This algorithm was trained on a dataset that consisted of features computed from digitized images of fine needle aspirate of breast mass, describing charactersitics of the cell nuclei present in the image. The objective was classification of cell mass as either benign or malignant.
 
@@ -620,7 +630,7 @@ Overall, we are satisfied with the performance of the neural network. The develo
 
 This model also has its performance capped due to only having 1 hidden layer, and might even realize higher levels of accuracy with a deeper network, but the average accuracy for this model was deemed to be sufficient for this application. As seen within Figure \ref{fig:anntrain} the model does not seem to be overfitting, as evidenced by the validation loss that steadily plateaus instead of increasing. The confusion matrix for the best test, as shown in Figure \ref{fig:anncm}, showcases that even for a partially imbalanced test set, the model is still able to realize high performances. Future work for this model could entail utilizing a deeper network, or processes such as dropout, regularization, or the use of batches.
 
-\section{Naive Bayes for Car Evaluation}
+\section{Naive Bayes for Car Evaluation}\label{naive}
 In this section of the report, the team implemented a Naive Bayes (NB) classifier from scratch and investigated the performance of the algorithm. In essence, NB classifiers are a machine learning model that learns the probability distribution in the training data under the naive assumption that the data features are conditionally independent. Therefore, the algorithm is a simple implementation of Bayesian networks. This section starts with a review of the theory and mechanism of NB classifiers, followed by a description of the car evaluation dataset, NB classifier implementation, finally the results and discussion of results.
 
 \subsection{Naive Bayes Classifier Theory}
@@ -800,8 +810,8 @@ The overall accuracy of this classifier was 86.71\%. The confusion matrix of thi
   \label{fig:NBCcm_unmodified}
 \end{figure}
 
-
 The other metrics of the model are included in \autoref{tab:nb_performance_unmodified}. As expected, the classifier exhibit outstanding precision and recall for the majority class. However, these quantities are significantly lower for the other three classes. This was the result of the prior probability discrepancy and lack of adequate training data in the minority classes.
+
 \begin{table}[ht]
   \centering
   \caption{Performance Metrics of the Unmodified Naive Bayes classifier}
@@ -905,7 +915,7 @@ The accuracy was 87.86\% for the model with the 1.25 weighting factor and it was
 
 It was found that by increasing this weighting factor to 1.25 and 1.5 achieve better F1-score for the \lstinline{acc} class and the minority classes. However, from the confusion matrix of these classifiers, more unacc instances were classified as acceptable. This was reflected in the decrease in the recall metric of the \lstinline{unacc} class. Depending on the severity of this misclassification in the real-world scenario (i.e., passing an unacceptable car with low safety and high buying price as acceptable), this improvement is not desireable.
 
-\section{ANN Experiment with the MNIST handwritten digit dataset}
+\section{ANN Experiment with the MNIST handwritten digit dataset}\label{ann_lib}
 In this section of the project report, the team reports the experimentation detail and results from implementing two ANN methods on the task of MNIST handwritten digit recognition
 \subsection{Dataset Details}
 The dataset of handwritten digits used to train and test the CNN was provided by MNIST and contained 60,000 training examples and 10,000 test examples. The examples were already split as described when acquired. \autoref{fig:mnist-examples} contains 9 images randomly sampled from the 60,000 training instances and demonstrates what the CNN will be learning on and trying to classify.
@@ -1072,7 +1082,7 @@ The construction of the FNN models followed a typical workflow of data import an
 
 \newpage
 
-\section{Convolutional Neural Network}
+\section{Convolutional Neural Network}\label{cnn_lib}
 A convolutional neural network (CNN) was successfully created using existing machine learning libraries to train on and classify handwritten digits using the MNIST dataset. The structure and several training parameters of this CNN were varied to evaluate the effect these parameters have on the performance of the model. This CNN was implemented using the \textit{TensorFlow} Python library, alongside its high-level API \textit{Keras}. These libraries were chosen based on their ease-of-use for implementing a CNN that can easily have its structure re-arranged in code. 
 
 \subsection{Testing Different CNN Structures}
@@ -1164,7 +1174,7 @@ The result of varying these trainig parameters on the performance of a CNN with 
 The learning rate parameter influences how drastically the model weights will change on each weight update. As a result, a smaller learning rate causes model convergence to take longer, as is evident in Figure~\ref{fig:training-params} where the learning rate is set to 0.001. However, this can be a good thing as it allows for more stable results and reduces over-fitting as it gives the model more chances to explore the feature space. The results for the model with the smallest learning rate in Figure~\ref{fig:training-params} show this with the validation accuracy being greater than the training accuracy, at the cost of a smaller validation accuracy compared to the other models. The batch size parameter affects the number of training examples used per gradient update when training the model. Hence, mini-batch gradient descent is being used. The batch size will directly influence the speed of model training, as well as the performance of the trained model. A larger batch size will result in the gradient being calculated fewer times, potentially providing a speedup to the training process. In addition to this, a larger batch size can reduce over-fitting as the noise introduced into the gradient from outliers in the training data is averaged over a larger number of samples, as demonstrated in Figure~\ref{fig:training-params} for the model trained with a batch size of 512.
 
 \newpage
-\section{Conclusion}
+\section{Conclusion}\label{conclusion}
 
 \newpage
 % Bibliography/Reference Stuff
