@@ -942,7 +942,9 @@ In the FNN implementation of the handwritten digit recognition task, the TensorF
     \item \textbf{Activation Function} - The selection of activation function must consider different advantages and disadvantages of each function. For example, the sigmoid function is prone to the vanishing gradient problem for deep networks, thus ealier layers cannot effectively adjust in response to the loss function value. ReLU activation was introduced as a better alternative to tackle this vanishing gradient problem. The team investigated the effect of these activation functions on the model performance
 \end{enumerate}
 
-\subsubsection{Implementation Detail of FNNs}
+The grid search contained 72 combination of hyperparameter configurations and model training was automated to iterate through these combinations (detail in Section \ref{implementation_fnn}). The training and validation performance of these models were stored in corresponding directories throughout the grid search. The results were extracted into a dataframe to analyze the effect of each parameter on the model performance.
+
+\subsubsection{Implementation Detail of FNNs} \label{implementation_fnn}
 The construction of the FNN models followed a typical workflow of data import and exploration, model construction, model training, and model evaluation. In this project, this pipeline was done once for one model before being scaled up for a hyperparameter grid search.
 
 \begin{enumerate}
@@ -966,10 +968,10 @@ The construction of the FNN models followed a typical workflow of data import an
         \item plots the model training history using the  and save the figure in the directory
     \end{itemize}
     
-    \item \textbf{Model Training Performance Visualization} - After all the models were trained and stored in the corresponding folder in the \lstinline{ann_model_results} directory, the model hyperparameters and training results can be extracted from the JSON files and stored in a \lstinline{results_df} dataframe. In this section, the team investigated the top 10 hyperparameter configurations that resulted in the highest training accuracy and validation accuracy. These models are summarized in \autoref{tab:ann_performance_top10_training_accuracy} and \autoref{tab:ann_performance_top10_validation_accuracy}. Furthermore, to investigate the effect of each hyperparameter on a macro level, the resulting data frame was grouped according to each hyperparameter and a box plot was drawn to capture the overall performance for each value of the hyperparameter. These results are included in section \ref{ann_model_result_hyperparameter}
+    \item \textbf{Model Training Performance Visualization} - After the 72 models were trained and stored in the corresponding folder in the \lstinline{ann_model_results} directory, the model hyperparameters and training results can be extracted from the JSON files and stored in a \lstinline{results_df} dataframe. In this section, the team investigated the top 10 hyperparameter configurations that resulted in the highest training accuracy and validation accuracy. These models are summarized in \autoref{tab:ann_performance_top10_training_accuracy} and \autoref{tab:ann_performance_top10_validation_accuracy}. Furthermore, to investigate the effect of each hyperparameter on a macro level, the resulting data frame was grouped according to the hyperparameter and a box plot was drawn to capture the overall performance at each hyperparameter values (e.g., comparing the general performance for epoch of 10, 25, and 50). These results are included in section \ref{ann_model_result_hyperparameter}
 \end{enumerate}
 
-\begin{table}[ht]
+\begin{table}[htbp]
     \centering
     \caption{Training performance of the 10 models with the highest training accuracy}
     \label{tab:ann_performance_top10_training_accuracy}
@@ -1002,7 +1004,7 @@ The construction of the FNN models followed a typical workflow of data import an
     \end{tabular}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[htbp]
     \centering
     \caption{Training performance of the 10 models with the highest validation accuracy}
     \label{tab:ann_performance_top10_validation_accuracy}
@@ -1037,6 +1039,8 @@ The construction of the FNN models followed a typical workflow of data import an
 
 \subsubsection{Results of Training and Validation Performance} \label{ann_model_result_hyperparameter}
 \textbf{Effects of the model structure}
+
+The influence of the model structure on the model performance is shown in \autoref{fig:mnist_ann_result_modelstructure}. On average, models with more neurons in a layers tend to have better performance than narrower models. The average performance of the [64, 32] model and the [64,32,16] model were approximately 96\%, compared to the average performance of 94\% of the [32, 16] and the [32,16,8] models. Furthermore, although deeper models can capture more complex features, the team observed that adding another layer can slightly degrade the model performance, both in training and validation, in the current task. The performance decrease in the training data potentially comes from the deeper models that were not trained for a higher number of epochs, thus the parameters in the whole model were not as updated compared to a shallower model. The general degradation in validation result is large attributed to the possible overfitting of the more complex models, where they learned some specific patterns that were only present in the training dataset but were not generalizable to real testing data.
 
 \begin{figure} [htbp]
     \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_modelstructure.png}}
