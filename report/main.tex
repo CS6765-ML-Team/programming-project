@@ -1048,6 +1048,8 @@ The construction of the FNN models followed a typical workflow of data import an
 \subsubsection{Results of Training and Validation Performance} \label{ann_model_result_hyperparameter}
 \textbf{Effects of the model structure}
 
+The influence of the model structure on the model performance is shown in \autoref{fig:mnist_ann_result_modelstructure}. On average, models with more neurons in a layers tend to have better performance than narrower models. The average performance of the [64, 32] model and the [64,32,16] model were approximately 96\%, compared to the average performance of 94\% of the [32, 16] and the [32,16,8] models. Furthermore, although deeper models can capture more complex features, the team observed that adding another layer can slightly degrade the model performance, both in training and validation, in the current task. The performance decrease in the training data potentially comes from the deeper models that were not trained for a higher number of epochs, thus the parameters in the whole model were not as updated compared to a shallower model. The general degradation in validation result is large attributed to the possible overfitting of the more complex models, where they learned some specific patterns that were only present in the training dataset but were not generalizable to real testing data.
+
 \begin{figure} [htbp]
     \centering{\includegraphics[width=0.8\linewidth]{images/mnist_ann_result_modelstructure.png}}
     \caption{The effect of the model structure on the training and validation accuracy} 
